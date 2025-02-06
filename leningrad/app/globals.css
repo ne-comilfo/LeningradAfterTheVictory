@@ -2,20 +2,130 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
+  margin: 0;
   font-family: Arial, Helvetica, sans-serif;
+  background-color: #f9f9f9;
 }
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  justify-content: flex-end; /* Выравнивание навигации вправо */
+  align-items: center;
+  padding: 10px 20px;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-bar {
+  display: flex;
+  gap: 30px; /* Увеличено расстояние между элементами */
+  align-items: center; /* Центровка элементов внутри */
+}
+
+.nav-link {
+  text-decoration: none;
+  color: black;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.nav-link.active {
+  color: blue; /* Синий цвет активной ссылки */
+}
+
+.nav-bar img {
+  width: 40px; /* Увеличенный размер для удобства */
+  height: 40px;
+  margin-left: 20px; /* Отступ от последней ссылки */
+  border-radius: 50%; /* Скругление для круглой иконки */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-bar img:hover {
+  transform: scale(1.2); /* Лёгкое увеличение иконки при наведении */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень при наведении */
+}
+
+.page-container {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.section-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.hero {
+  background: url('/images/main_picture.png') no-repeat center center/cover;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.about {
+  background-color: #f0f8ff;
+}
+
+.team {
+  background-color: #fff4e6;
+}
+
+/* Дополнительные стили для навигации */
+.nav-bar .nav-link:hover {
+  color: gray; /* Цвет при наведении */
+}
+
+.nav-bar .nav-link:last-child {
+  margin-right: 0; /* Убираем отступ у последнего элемента */
+}
+
+.nav-bar img:last-child {
+  margin-left: 30px; /* Отступ для иконки пользователя */
+}
+
+.profile-icon {
+  width: 77px; /* Длина контейнера */
+  height: 35px; /* Высота контейнера */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px; /* Отступ от навигации */
+  border-radius: 20px; /* Скруглённые углы */
+  overflow: hidden; /* Убираем лишнее изображение за границей */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-icon img {
+  width: auto; /* Автоматическая ширина */
+  height: 100%; /* Полностью вписать в высоту контейнера */
+  object-fit: contain; /* Сохранение пропорций изображения */
+}
+
+.profile-icon:hover {
+  transform: scale(1.05); /* Небольшое увеличение при наведении */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Лёгкая тень */
+}
+
+
+
