@@ -10,7 +10,7 @@ body {
 }
 
 main {
-  margin-top: 189px;
+  margin-top: 17.5vh;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -18,7 +18,7 @@ main {
 }
 
 .text {
-  font-size: clamp(16px, 4vw, 25px);
+  font-size: clamp(16px, 2.5vh, 25px);
   color: rgba(112, 111, 109, 1);
   font-family: 'Geologica', sans-serif;
 }
@@ -37,24 +37,28 @@ main {
   border-radius: 50px;
   width: clamp(300px, 80vw, 738px);
   max-width: 90%;
-  padding: 24px;
+  padding: 2vh;
   box-sizing: border-box;
 }
+
 .qw {
   color: rgba(13, 116, 189, 1);
 }
+
 .form {
-  height: 73px;
-  margin-bottom: 10px;
+  min-height: 8vh;
+  height: auto;
+  margin-bottom: 1vh;
   background-color: white;
 }
 
 .form-1 {
-  height: 572px;
+  min-height: 56vh;
+  height: auto;
   flex-direction: column;
   justify-content: flex-start;
   background-color: white;
-  padding-top: 40px;
+  padding-top: 5vh;
   margin-bottom: 10px;
 }
 
@@ -68,49 +72,52 @@ main {
 .input-group {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Центрирует input */
+  align-items: center;
   width: 90%;
-  margin-bottom: 15px;
+  margin-bottom: 1.5vh;
   color: black;
   font-family: 'Geologica', sans-serif;
 }
 
 .input-group label {
-  font-size: clamp(16px, 4vw, 25px);
+  font-size: clamp(16px, 2.5vh, 25px);
   color: #0D74BD;
   text-align: left;
-  width: 90%; 
-  margin-left: 15px; 
+  width: 90%;
+  margin-left: 1.5vh;
 }
 
 .input-group input {
-  padding: 10px;
+  padding: 1vh;
   border: 2px solid #0D74BD;
   border-radius: 40px;
-  width: 100%; /* Растягиваем input на всю ширину */
-  max-width: 609px; /* Задаем максимальную ширину */
-  font-size: clamp(16px, 4vw, 18px);
+  width: 100%;
+  max-width: 609px;
+  font-size: clamp(16px, 2.5vh, 18px);
   text-align: left;
-  padding-left: 15px;
+  padding-left: 1.5vh;
   box-sizing: border-box;
-  height: 65px;
+  height: 5vh;
 }
-
 
 .form-links {
   width: 90%;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-top: 50px;
+  margin-top: 5vh;
 }
 
 .form-links a {
   color: rgba(11, 131, 217, 1);
-  font-size: clamp(16px, 4vw, 25px);
+  font-size: clamp(16px, 2.5vh, 25px);
   font-family: 'Geologica', sans-serif;
   text-decoration: underline;
-  margin-bottom: 5px;
+  margin-bottom: 0.5vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
 }
 
 @media screen and (max-width: 450px) {
@@ -120,25 +127,54 @@ main {
 
   .box {
     width: 95%;
-    padding: 16px;
+    padding: 2vh;
     font-size: 8px;
   }
 
   .input-group label {
     font-size: 16px;
-    margin-left: 8px;
+    margin-left: 1vh;
   }
 
   .input-group input {
     font-size: 16px;
-    padding: 8px;
-    height: 45px;
+    padding: 1vh;
+    height: 5vh;
   }
+
   .form-links a {
-    font-size: 16px; 
+    font-size: 16px;
   }
+
   .form-1 {
-    height: 500px;
+    height: auto;
   }
 }
 
+@media screen and (max-height: 500px) {
+  .text {
+    font-size: 16px;
+  }
+
+  .input-group label {
+    font-size: 16px;
+  }
+
+  .input-group input {
+    font-size: 16px;
+    height: 40px;
+  }
+
+  .form-links a {
+    font-size: 16px;
+  }
+
+  .form-1 {
+    height: auto;
+    padding-top: 2vh;
+  }
+
+  .box {
+    padding: 1vh;
+  }
+}
