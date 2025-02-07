@@ -1,7 +1,7 @@
 export default function AuthenticationLayout({ children }) {
     return (
         <div>
-            <header>Аутентификация</header>
+            <header></header>
             <main>{children}</main>
         </div>
     );
