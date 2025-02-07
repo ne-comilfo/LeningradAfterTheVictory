@@ -1,6 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
+
 
 body {
   margin: 0;
@@ -28,15 +30,16 @@ body {
 }
 
 .nav-link {
+  font-family: "Geologica", sans-serif;;
+  /*font: "Geologica";*/
   text-decoration: none;
   color: black;
   font-size: 1rem;
-  font-weight: bold;
   transition: color 0.3s ease;
 }
 
 .nav-link.active {
-  color: blue; /* Синий цвет активной ссылки */
+  color: #0D74BD;
 }
 
 .nav-bar img {
@@ -78,10 +81,22 @@ body {
 }
 
 .hero {
-  background: url('/images/main_picture.png') no-repeat center center/cover;
+  background: url('/images/main_picture.png') no-repeat center center;
+  background-size: contain; /* Изображение полностью вписывается в границы секции */
+  background-attachment: scroll; /* Убираем фиксированность изображения */
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  height: 100vh; /* Высота секции остается полной */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
 }
+
+
+
 
 .about {
   background-color: #f0f8ff;
@@ -105,7 +120,7 @@ body {
 }
 
 .profile-icon {
-  width: 77px; /* Длина контейнера */
+  width: 75px; /* Длина контейнера */
   height: 35px; /* Высота контейнера */
   display: flex;
   align-items: center;
@@ -126,6 +141,9 @@ body {
   transform: scale(1.05); /* Небольшое увеличение при наведении */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Лёгкая тень */
 }
+
+
+
 
 
 
