@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
+
+:root {
+    --main-color: #0D74BD;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+.transition {
+    background: linear-gradient(#FFFFFF, #E9E7E1);
+    width: 100%;
+    height: 50%;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    z-index: -1;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Geologica";
+}
+
+.enter_sign {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 38%;
+    margin: 0;
+    font-size: 25px;
+}
+
+.input_border1 {
+    display: flex;
+    justify-content: center;
+
+    border: 2px solid var(--main-color);
+    border-radius: 40px;
+    width: 100%;
+    background-color:white;
+    text-align: left;
+    padding: 13px 0;
+
+    margin: 5px 0;
+}
+
+.enter_style {
+    font-weight: 700;
+    color: var(--main-color);
+}
+
+.reg_style {
+    font-weight: 400;
+    white-space: pre;
+    color: #706F6D;
+}
+
+.input_border2 {
+    color: var(--main-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    border: 2px solid var(--main-color);
+    border-radius: 40px;
+    width: 100%;
+    background-color:white;
+    text-align: left;
+    margin: 0;
+}
+
+.input_piece {
+    width: 82%;
+    height: 100%;
+    font-weight: 400;
+    margin: 0;
+    padding-top: 6%;
+}
+
+.input_left {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin: 5px;
+}
+.input_center {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 5px;
+}
+
+.input_label {
+    color: var(--main-color);
+    margin: 0 0 5px 6%;
+}
+
+.input_text {
+    border: 2px solid #A9CBE3;
+    border-radius: 40px;
+    padding: 10px 20px;
+    width: 100%;
+}
+
+input:focus {
+    border-color: var(--main-color);
+    outline : none;
+}
+
+.caution_buttons {
+    width: 82%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    justify-content: center;
+    color: var(--main-color);
+    margin: 0;
+    padding: 7% 0 12% 0;
+}
+
+.hyper_register {
+    color: #0B83D9;
+    font-weight: 300;
+    text-decoration-line: underline;
+    text-underline-offset: auto;
+    text-decoration-thickness: auto;
+    text-decoration-skip-ink: auto;
+}
+
+.result_page {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+@media screen and (max-width: 450px) {
+    .enter_sign {
+        width: 85%;
+        font-size: 20px;
+    }
+
+    .input_text {
+        font-size: 20px;
+    }
+}
