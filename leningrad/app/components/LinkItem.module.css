@@ -1,0 +1,26 @@
+.container {
+    text-align: center;
+    display: flex;
+  }
+  
+  .link {
+    color: #656565;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: color 0.3s ease;
+    display: flex;
+  }
+  
+  .link:hover {
+    color: #656565;
+  }
+  
+  .icon {
+    color: #656565;
+    margin-right: 10px;
+    width: 25px; /* Размер изображения */
+    height: 25px;
+    filter: invert(30%) sepia(10%) saturate(500%) hue-rotate(190deg); /* Перекрашиваем PNG */
+    transition: filter 0.3s ease;
+  }
+  

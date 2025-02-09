@@ -1,0 +1,21 @@
+.listContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .title {
+    color: #656565;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    display: flex;
+  }
+  
+  .linkList {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
