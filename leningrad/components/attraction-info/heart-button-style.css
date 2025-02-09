@@ -1,0 +1,21 @@
+.heart-button{
+    cursor: pointer;
+    background: transparent;
+    border: 0.1vw solid #0B83D9;
+    border-radius: 0.9vw;
+    width: 15.9vw;
+    height: 7.8vw;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    font-weight: 400;
+    font-size: 1.3vw;
+    line-height: 1.6vw;
+}
+
+.heart-button-image{
+    margin-left: 1.6vw;
+    margin-right: 1.1vw;
+    width: 3.5vw;
+    height: 3.6vw;
+}

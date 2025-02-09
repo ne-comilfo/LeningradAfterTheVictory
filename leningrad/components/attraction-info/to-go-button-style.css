@@ -1,0 +1,21 @@
+.to-go-button{
+    cursor: pointer;
+    background: transparent;
+    border: 0.1vw solid #0B83D9;
+    border-radius: 0.9vw;
+    width: 15.9vw;
+    height: 7.8vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 400;
+    font-size: 1.3vw;
+    line-height: 1.6vw;
+}
+
+.to-go-button-image{
+    margin-left: 1.8vw;
+    margin-right: 0.6vw;
+    width: 4.6vw;
+    height: 4.7vw;
+}

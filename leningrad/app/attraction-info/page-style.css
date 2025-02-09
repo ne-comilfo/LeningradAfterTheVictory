@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
+
+.attraction-title{
+    font-size: 2.5vw;
+    font-weight: 400;
+    line-height: 3.1vw;
+    margin-left: 18.7%;
+    margin-right: 18.7%;
+    text-align: justify;
+    white-space: pre-wrap;
+}
+
+.page-style{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    box-sizing: border-box;
+    margin: 0;
+    width: 100%;
+    padding: 5.5% 8.4% 7.8%;
+    font-family: Geologica, sans-serif;
+
+    @media (max-width: 768px) {
+        padding-top: 5%;
+        padding-bottom: 6.4%;
+    }
+}
+
+
+
+.main-image{
+    border-radius: 1.6vw;
+    margin-left: 5.5vw;
+    margin-right: 5.5vw;
+    margin-bottom: 1.8vw;
+    display: block;
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 72.4vw;
+    @media (max-width: 768px) {
+        margin-left: 1.3vw;
+        margin-right: 1.3vw;
+        margin-bottom: 2.6vw;
+        max-width: 97%;
+    }
+}
+
+.loading-or-error{
+    display: flex;
+    justify-content: center;
+    margin-top: 15%;
+    color: #0C6DB3;
+    font-size: 1.7vw;
+    font-weight: 500;
+}
