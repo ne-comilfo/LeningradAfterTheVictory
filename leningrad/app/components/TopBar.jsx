@@ -9,9 +9,10 @@ const TopBar = () => {
   const pathname = usePathname();
 
   const isActive = (path) => pathname === path;
+  const isHomePage = pathname === "/";
 
   return (
-    <div className="header">
+    <div className={`${"header"} ${isHomePage ? "homePage" : ""}`}>
       <div className="nav-bar">
         <Link href="/" className={`nav-link ${isActive("/") ? "active" : ""}`}>
           Главная
