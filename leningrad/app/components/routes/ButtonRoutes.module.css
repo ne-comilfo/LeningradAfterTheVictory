@@ -1,0 +1,40 @@
+/* Button.module.css */
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border: 2px solid #0066cc;
+    border-radius: 30px; /* Округлые углы */
+    background-color: transparent;
+    color: #000000;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+    margin-top: 16px;  /* Добавим отступ сверху, если нужно */
+  }
+  
+  .button:hover {
+    background-color: #0066cc;
+    color: white;
+  }
+  
+  .arrow {
+    margin-left: 10px;
+    font-size: 18px;
+  }
+
+
+
+/* Убедимся, что кнопка имеет достаточный размер на мобильных устройствах */
+@media (max-width: 768px) {
+  .button {
+    font-size: 13px; /* Меньший размер текста на мобильных */
+    padding: 10px 15px; /* Меньше отступов */
+    width: 100%; /* Кнопка будет растягиваться на весь доступный экран */
+  }
+}
+
+  
