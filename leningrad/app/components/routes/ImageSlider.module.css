@@ -1,0 +1,131 @@
+.sliderWrapper {
+  
+  margin-top: 20px;
+}
+
+/* Обновленные стили для прогресс-бара */
+.progressBar {
+  width: 100%;  /* Прогресс-бар теперь занимает всю доступную ширину */
+  height: 8px;
+  background-color: transparent;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.progressIndicator {
+  height: 1px;
+  background-color: #000000;
+  border-radius: 3px;
+  position: absolute;
+  transition: left 0.3s ease;
+}
+
+
+.sliderContainer {
+  display: flex;
+  justify-content: center; /* Центрируем картинки */
+  align-items: center;     /* Вертикальное выравнивание изображений */
+  gap: 10px;               /* Отступы между изображениями */
+  position: relative;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  gap: 10px;
+}
+
+.image {
+  width: 200px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+
+.tit {
+  
+  margin-left:  30px;
+  text-align: left;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  position: relative;
+}
+
+.button::before, .button::after {
+  content: '';
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: #ffffff; /* Цвет стрелки */
+  position: absolute;
+}
+
+.button::before {
+  transform: rotate(60deg);
+}
+
+.button::after {
+  transform: rotate(-60deg);
+  margin-top: 40px;
+}
+
+.buttonLeft {
+  left: -20px; /* Отступ стрелки слева */
+  transform: rotate(180deg);
+}
+
+.buttonRight {
+  right: -20px; /* Отступ стрелки справа */
+}
+
+
+/* ImageSlider.module.css */
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+  .sliderWrapper {
+    padding: 10px;
+  }
+
+  .sliderContainer {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;  /* Включаем горизонтальную прокрутку */
+    -webkit-overflow-scrolling: touch; /* Плавная прокрутка на мобильных устройствах */
+    scroll-snap-type: x mandatory; /* Чтобы при прокрутке изображения "снимались" по одному */
+    /* Чтобы при прокрутке изображения "снимались" по одному */
+  }
+
+  .imageContainer {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+  }
+
+  .image {
+    width: 150px; /* Уменьшаем размер изображений для мобильных */
+    height: 100px;
+    scroll-snap-align: start; /* Зафиксировать каждое изображение на экране */
+  }
+
+  .button {
+    display: none; /* Убираем кнопки на мобильных устройствах */
+  }
+}
+
