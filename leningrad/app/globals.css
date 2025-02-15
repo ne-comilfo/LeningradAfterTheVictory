@@ -9,17 +9,22 @@ body {
   background-color: rgba(208, 198, 167, 0.3);
 }
 
+
 .header {
   position: fixed;
   top: 0;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255);
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding: 10px 20px;
   z-index: 1000;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.homePage {
+  background-color: rgba(255, 255, 255, 0.1); /* Темный фон только для главной страницы */
 }
 
 .nav-bar {
