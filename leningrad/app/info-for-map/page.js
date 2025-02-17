@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import "./info-for-map-styles.css"; // Подключаем стили
+import "./info-for-map-styles.css";
 import HeartIcon from './HeartIcon';
 
 export default function Home() {
