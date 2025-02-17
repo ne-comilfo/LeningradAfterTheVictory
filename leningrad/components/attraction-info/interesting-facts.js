@@ -2,7 +2,7 @@ import "./interesting-facts-style.css"
 
 export default function InterestingFacts({ facts }) {
     return(
-        <section>
+        <section className="facts-container">
             <h2 className="facts-title">Интересные факты</h2>
             <ul className="facts-list">
                 {facts.map((fact, index) => (
