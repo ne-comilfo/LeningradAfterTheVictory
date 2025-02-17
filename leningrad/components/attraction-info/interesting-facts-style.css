@@ -1,14 +1,26 @@
+.facts-container {
+    background-color: transparent; /* Светло-голубой фон */
+    border: 2px solid #0B83D9; /* Синяя окантовка */
+    border-radius: 8px;
+    padding: 60px;
+    max-width: 100%;
+    margin: 20px auto; /* Центрируем блок */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Тень для эффекта */
+}
+
 .facts-title{
     display: inline-block;
-    border: 0.16vw solid #0C6DB3;
+   
     padding: 0.9% 1.9% 0.9% 1.9%;
     border-radius: 1vw;
     font-weight: 500;
-    font-size: 1.9vw;
+    font-size: 2.9vw;
+    font-weight: bold;
     line-height: 2.3vw;
     margin-top: 4.4%;
     margin-bottom: 5%;
-    margin-left: 14%;
+    margin-left: 2%;
+    
 }
 
 .facts-list{
