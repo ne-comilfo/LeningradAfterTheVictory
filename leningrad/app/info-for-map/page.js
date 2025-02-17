@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import "./styles.css"; // Подключаем стили
+import "./info-for-map-styles.css"; // Подключаем стили
 import HeartIcon from './HeartIcon';
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [routes, setRoutes] = useState([]); // Добавлено состояние для маршрутов
-
+  const [objectId, setObjectId] = useState(null);
   const routesRef = useRef(null);
 
   const handleScrollRoutes = (direction) => {
@@ -60,8 +60,8 @@ export default function Home() {
     };
   }, []);
 
-  // Старый API-запрос для загрузки данных объекта
-  useEffect(() => {
+  const loadData = () => {
+    // Загрузка данных объекта
     fetch(`first-page.json`) // Ваш старый API-эндпоинт
       .then((response) => response.json())
       .then((data) => {
@@ -72,10 +72,8 @@ export default function Home() {
         });
       })
       .catch((error) => console.error("Ошибка загрузки данных:", error));
-  }, []);
 
-  // Новый API-запрос для загрузки маршрутов
-  useEffect(() => {
+    // Загрузка маршрутов
     fetch(`routes.json`) // Новый API-эндпоинт для маршрутов
       .then((response) => response.json())
       .then((data) => {
@@ -87,7 +85,7 @@ export default function Home() {
         setRoutes(formattedRoutes);
       })
       .catch((error) => console.error("Ошибка загрузки маршрутов:", error));
-  }, []);
+  };
 
   if (!object) {
     return <div className='download'>Загрузка...</div>;
@@ -256,7 +254,7 @@ export default function Home() {
           )}
           <div className="main-content">
             <h1>Основная карта</h1>
-            <button onClick={() => { setIsOpen(true); setIsExpanded(false); }}>🔍 Показать объект</button>
+            <button onClick={() => { setIsOpen(true); setIsExpanded(false); loadData(); }}>🔍 Показать объект</button>
           </div>
         </div>
       )}
@@ -335,7 +333,7 @@ export default function Home() {
           </div>
           <div className="main-content">
             <h1>Основная карта</h1>
-            <button onClick={() => setIsOpen(true)}>🔍 Показать объект</button>
+            <button onClick={() => { setIsOpen(true); loadData(); }}>🔍 Показать объект</button>
           </div>
         </div>
       )}
