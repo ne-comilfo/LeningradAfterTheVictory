@@ -87,9 +87,7 @@ export default function Home() {
       .catch((error) => console.error("Ошибка загрузки маршрутов:", error));
   };
 
-  if (!object) {
-    return <div className='download'>Загрузка...</div>;
-  }
+  
 
   const handleSave = () => {
     setIsSaved(true);
@@ -134,7 +132,7 @@ export default function Home() {
         <div className="mobile-version">
           {isOpen && (
             <>
-              {isExpanded && view === "default" && (
+              {isExpanded && object && view === "default" && (
                 <img src={object.image} className="floating-image" />
               )}
               <div
@@ -145,14 +143,14 @@ export default function Home() {
                 onTouchEnd={handleTouchEnd}
               >
                 <div className={`grabber ${isExpanded ? "expanded" : "collapsed"}`}></div>
-                {view === "default" && (
+                {view === "default" && object && (
                   <>
                     <div className="window-header">
                       <h2>{object.title}</h2>
                     </div>
                     <div className="scrollable-content">
                       <div className="window-content">
-                        {isExpanded && (
+                        {isExpanded && object && (
                           <>
                             <p>{object.description}</p>
                             <a href='./attraction-info'>подробнее</a>
@@ -176,7 +174,7 @@ export default function Home() {
                     </div>
                   </>
                 )}
-                {view === "routes" && !selectedRoute && (
+                {view === "routes" && object && !selectedRoute && (
                   <>
                     <div className="window-header">
                       <h2>{object.title}</h2>
@@ -222,7 +220,7 @@ export default function Home() {
                     </div>
                   </>
                 )}
-                {selectedRoute && (
+                {selectedRoute && object && (
                   <>
                     <div className="window-header">
                       <h2>{object.title}</h2>
@@ -264,7 +262,7 @@ export default function Home() {
             <div className='button-to-exit'>
               <button onClick={() => setIsOpen(false)}>✕</button>
             </div>
-            {view === "default" && (
+            {view === "default" && object && (
               <>
                 <h2>{object.title}</h2>
                 <div className="image-container">
@@ -288,7 +286,7 @@ export default function Home() {
                 <a href='./attraction-info'>подробнее</a>
               </>
             )}
-            {view === "routes" && !selectedRoute && (
+            {view === "routes" && !selectedRoute && object && (
               <>
                 <h2>{object.title}</h2>
                 <div className="buttons-1 centered">
@@ -313,7 +311,7 @@ export default function Home() {
                 <a className="back-link" onClick={() => setView("default")}>⬅ Назад к описанию</a>
               </>
             )}
-            {selectedRoute && (
+            {selectedRoute && object && (
               <>
                 <h2>{object.title}</h2>
                 <div className="buttons-1 centered">
