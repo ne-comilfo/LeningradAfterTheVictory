@@ -500,6 +500,7 @@
   }
 
   .route-carousel {
+    position: relative;
     display: flex;
     align-items: center;
     width: 100%;
@@ -510,11 +511,20 @@
   .route-list-wrapper {
     overflow-x: auto;
     scroll-behavior: smooth;
-    max-width: 80%;
     white-space: nowrap;
     display: flex;
+    align-items: center;
+    width: 100%;
     scrollbar-width: none;
     -ms-overflow-style: none;
+  }
+
+  .carousel-btn.left {
+    left: 10px; /* Прижимает кнопку влево */
+  }
+  
+  .carousel-btn.right {
+    right: 0; /* Прижимает кнопку вправо */
   }
 
   .route-list-wrapper::-webkit-scrollbar {
@@ -536,7 +546,8 @@
   }
 
   .route-list li:last-child {
-    margin-right: 0; /* Убираем отступ у последней кнопки */
+    margin-right: 0;
+    /* Убираем отступ у последней кнопки */
   }
 
   .route-list button {
@@ -554,7 +565,8 @@
     /* Устанавливаем высоту */
     text-align: center;
     box-sizing: border-box;
-    overflow: hidden; /* Обрезает текст, если он не вмещается */
+    overflow: hidden;
+    /* Обрезает текст, если он не вмещается */
     text-overflow: ellipsis;
   }
 
