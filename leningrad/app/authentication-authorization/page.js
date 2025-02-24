@@ -1,4 +1,3 @@
-import React from 'react';
 import './authentication-authorization-style.css';
 
 const BackgroundTransition = () => (
