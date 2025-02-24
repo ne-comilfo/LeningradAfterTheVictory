@@ -171,7 +171,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
               )}
               <div
                 className={`mobile-info-window ${isExpanded ? "expanded" : ""}`}
-                style={{ transform: `translateY(${isExpanded ? 0 : Math.max(0, dragOffset)}px)` }}
+                style={{ transform: `translateY(${Math.max(0, Math.min(window.innerHeight, dragOffset))}px)`,}}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}

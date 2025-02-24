@@ -12,6 +12,7 @@
 }
 
 .info-window {
+  z-index: 1;
   position: fixed;
   top: 0;
   left: 0;
@@ -295,7 +296,7 @@
     padding: 10px;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 50px 50px 0 0;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease-in-out;
     z-index: 999999;
   }
 
@@ -350,7 +351,7 @@
     font-size: 22px;
     color: black;
     margin-top: 30px;
-    text-align: left;
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
