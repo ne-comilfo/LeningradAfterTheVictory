@@ -1,5 +1,5 @@
 import React from 'react';
-import './registration-style.css';
+import './authentication-authorization-style.css';
 
 const BackgroundTransition = () => (
     <div className="background-transition" />
