@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import styles from "./ImageSlider.module.css"; // Подключаем CSS
 
 const ImageSlider = ({ title, images, visibleCount, redirectTo }) => {
+  
   const [startIndex, setStartIndex] = useState(0);
   const router = useRouter();
 
@@ -23,9 +24,9 @@ const ImageSlider = ({ title, images, visibleCount, redirectTo }) => {
     }
   };
 
-  const handleImageClick = () => {
+  const handleImageClick = (id) => {
     if (redirectTo) {
-      router.push(redirectTo); // Переход по переданному пути
+      router.push(`${redirectTo}?id=${id}`); // Переход по переданному пути
     }
   };
 
@@ -40,6 +41,7 @@ const ImageSlider = ({ title, images, visibleCount, redirectTo }) => {
 
   return (
     <div className={styles.sliderWrapper}>
+      
       <h3 className={styles.tit}> {title} </h3>
       {/* Полоса прогресса */}
       <div className={styles.progressBar} onClick={handleProgressClick}>
@@ -61,8 +63,12 @@ const ImageSlider = ({ title, images, visibleCount, redirectTo }) => {
 
         <div className={styles.imageContainer}>
           {images.slice(startIndex, startIndex + visibleCount).map((image, index) => (
-            <img key={index} src={image.src} alt={image.alt} className={styles.image} onClick={handleImageClick} />
+            <img key={index} src={image.src} alt={image.alt} className={styles.image} 
+              onClick={() => {
+                handleImageClick(image.id);
+            }} />
           ))}
+          
         </div>
 
         <button className={`${styles.button} ${styles.buttonRight}`} onClick={handleNext}>

@@ -6,35 +6,38 @@ import ImageSlider from "../components/routes/ImageSlider"; // Слайдер д
 import styles from "../routes/routes.module.css";
 import ButtonRoutes from "../components/routes/ButtonRoutes.jsx";
 
-const API_URL = "http://194.87.252.234:8080/api/routes";
+const API_URL = "http://194.87.252.234:6060/api/categories";
 
 const images = [
-  { src: "/images/landmark1.png", alt: "Landmark 1" },
-  { src: "/images/landmark2.png", alt: "Landmark 2" },
-  { src: "/images/landmark3.png", alt: "Landmark 3" },
-  { src: "/images/landmark4.png", alt: "Landmark 4" },
-  { src: "/images/landmark5.png", alt: "Landmark 5" },
-  { src: "/images/landmark6.png", alt: "Landmark 6" },
-  { src: "/images/landmark7.png", alt: "Landmark 7" },
+  { id: 1, src: "/images/landmark1.png", alt: "Landmark 1" },
+  { id: 2, src: "/images/landmark2.png", alt: "Landmark 2" },
+  { id: 3, src: "/images/landmark3.png", alt: "Landmark 3" },
+  { id: 4, src: "/images/landmark4.png", alt: "Landmark 4" },
+  { id: 5, src: "/images/landmark5.png", alt: "Landmark 5" },
+  { id: 6, src: "/images/landmark6.png", alt: "Landmark 6" },
+  { id: 7, src: "/images/landmark7.png", alt: "Landmark 7" },
 ];
 
 const images2 = [
-  { src: "https://tse1.mm.bing.net/th?id=OIP.z-J0jBF5kZ_jNCERr8npOAHaE8&pid=Api", alt: "Landmark 1" },
-  { src: "https://tse4.mm.bing.net/th?id=OIP.Jwvp2GYz7XGJlWUu0iv1vAHaG8&pid=Api", alt: "Landmark 2" },
-  { src: "https://tse1.mm.bing.net/th?id=OIP.GXseP5xVv3QGkOixYgTEkgHaFj&pid=Api", alt: "Landmark 3" },
-  { src: "https://tse1.mm.bing.net/th?id=OIP.Cq1w5MftTJI0n4lITVlzdgHaFj&pid=Api", alt: "Landmark 4" },
-  { src: "https://tse4.mm.bing.net/th?id=OIP.2w81RJ4m5zC9fJn-H-dPXAHaE6&pid=Api", alt: "Landmark 5" },
-  { src: "https://tse2.mm.bing.net/th?id=OIP.lFEh5f8QDnlj2K6ToVR0sgHaE8&pid=Api", alt: "Landmark 6" },
-  { src: "https://tse4.mm.bing.net/th?id=OIP.0BUIg-eBEq9Qy7F9HrEHPAHaFN&pid=Api", alt: "Landmark 7" },
+  { id: 1, src: "https://tse1.mm.bing.net/th?id=OIP.z-J0jBF5kZ_jNCERr8npOAHaE8&pid=Api", alt: "Landmark 1" },
+  { id: 2, src: "https://tse4.mm.bing.net/th?id=OIP.Jwvp2GYz7XGJlWUu0iv1vAHaG8&pid=Api", alt: "Landmark 2" },
+  { id: 3, src: "https://tse1.mm.bing.net/th?id=OIP.GXseP5xVv3QGkOixYgTEkgHaFj&pid=Api", alt: "Landmark 3" },
+  { id: 4, src: "https://tse1.mm.bing.net/th?id=OIP.Cq1w5MftTJI0n4lITVlzdgHaFj&pid=Api", alt: "Landmark 4" },
+  { id: 5, src: "https://tse4.mm.bing.net/th?id=OIP.2w81RJ4m5zC9fJn-H-dPXAHaE6&pid=Api", alt: "Landmark 5" },
+  { id: 6, src: "https://tse2.mm.bing.net/th?id=OIP.lFEh5f8QDnlj2K6ToVR0sgHaE8&pid=Api", alt: "Landmark 6" },
+  { id: 7, src: "https://tse4.mm.bing.net/th?id=OIP.0BUIg-eBEq9Qy7F9HrEHPAHaFN&pid=Api", alt: "Landmark 7" },
 ];
 
 const redirectTo = "/map";
+const redirectTo2 = "/categories";
 
 const App = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
 
   useEffect(() => {
+
+    
     const fetchRoutes = async () => {
       try {
         const response = await fetch(API_URL);
@@ -42,7 +45,7 @@ const App = () => {
           throw new Error(`Ошибка запроса: ${response.status}`);
         }
         const data = await response.json();
-
+        console.log(data)
         const firstImage = data[0]?.linksPreview?.[0] || "";
         setImageSrc(firstImage);
       } catch (error) {
@@ -88,9 +91,9 @@ const App = () => {
       )}
 
       {isMobile ? (
-        <SwipeSlider title="Тематические" images={images2} visibleCount={3} redirectTo={redirectTo} />
+        <SwipeSlider title="Тематические" images={images2} visibleCount={3} redirectTo={redirectTo2} />
       ) : (
-        <ImageSlider title="Тематические" images={images2} visibleCount={6} redirectTo={redirectTo} />
+        <ImageSlider title="Тематические" images={images2} visibleCount={6} redirectTo={redirectTo2} />
       )}
 
       <div className={styles.button_container}>
