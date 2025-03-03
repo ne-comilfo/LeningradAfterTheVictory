@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import BuildingsGallery from "../components/categories/BuildingsGallery"; // Импортируем компонент
 
@@ -42,8 +42,7 @@ const mockBuildings = [
   },
 ];
 
-const CategoryPage = () => {
-  
+const CategoryPageContent = () => {
   const [routes, setRoutes] = useState([]);
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
@@ -52,7 +51,6 @@ const CategoryPage = () => {
 
   // Запрос всех маршрутов
   useEffect(() => {
-    
     const fetchRoutes = async () => {
       try {
         const response = await fetch(API_URL);
@@ -60,7 +58,7 @@ const CategoryPage = () => {
           throw new Error(`Ошибка запроса: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setRoutes(data); // Сохраняем все маршруты, если запрос успешен
         console.log(data[0].url);
       } catch (error) {
@@ -68,13 +66,21 @@ const CategoryPage = () => {
       }
     };
 
-    fetchRoutes(  );
-  }, []); // Запрос выполняется только один раз при загрузке
+    fetchRoutes();
+  }, [API_URL]); // Зависимость от API_URL, чтобы запрос выполнялся при изменении id
 
   return (
     <div>
       <BuildingsGallery buildings={mockBuildings} title="Восстание декабристов" />
     </div>
+  );
+};
+
+const CategoryPage = () => {
+  return (
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <CategoryPageContent />
+    </Suspense>
   );
 };
 
