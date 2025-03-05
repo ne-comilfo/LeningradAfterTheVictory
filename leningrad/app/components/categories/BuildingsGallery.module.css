@@ -1,0 +1,62 @@
+/* BuildingsGallery.module.css */
+.galleryContainer {
+    padding: 50px;
+    background: linear-gradient(to bottom, #ffffff, #E9E7E1); /* Градиент для фона */
+    min-height: 100vh; /* Растягиваем на всю высоту */
+    overflow-y: auto; /* Вертикальный скроллинг */
+    display: flex;
+    flex-direction: column;
+   
+    
+    margin: 0 auto; /* Центрируем сам контейнер */
+  }
+  
+  .header {
+    font-size: 36px;
+    margin-bottom: 20px;
+    width: 100%;
+    justify-items: center;
+    text-align: center; /* Центрируем заголовок */
+    padding-right: 350px;
+  }
+
+  @media (max-width: 768px) {
+    .header {
+      font-size: 24px; /* Smaller font size */
+      width: 100%;
+      justify-items: center;
+      padding-right: 0;
+    }
+  }
+  
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Сетка с автоматическим заполнением */
+    gap: 20px;
+    justify-items: center; /* Выравнивание элементов внутри сетки */
+    width: 100%; /* Для полной ширины контейнера */
+    max-width: 800px; /* Максимальная ширина, чтобы избежать растягивания на большом экране */
+    margin: 0 auto; /* Центрируем сетку на странице */
+  }
+  
+  .buildingCard {
+    text-align: center;
+    width: 100%; /* Полная ширина для карточки */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрируем изображение и название */
+  }
+  
+  .buildingImage {
+    width: 100%;
+    height: 150px; /* Фиксированная высота */
+    object-fit: cover; /* Показываем изображение без искажений */
+    border-radius: 40px;
+  }
+  
+  .buildingName {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
