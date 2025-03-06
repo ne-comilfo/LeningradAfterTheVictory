@@ -1,10 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
-
 :root {
     --main-color: #0D74BD;
 }
 
-html, body {
+html {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -25,13 +23,17 @@ body {
     align-items: center;
     justify-content: center;
     font-family: "Geologica";
+
+    height: 100%;
+    width: 100%;
+    margin: 0;
 }
 
 .enter_sign {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 38%;
+    width: 738px;
     margin: 0;
     font-size: 25px;
 }
@@ -99,6 +101,7 @@ body {
 .input_label {
     color: var(--main-color);
     margin: 0 0 5px 6%;
+    width: 100%;
 }
 
 .input_text {
@@ -106,6 +109,7 @@ body {
     border-radius: 40px;
     padding: 10px 20px;
     width: 100%;
+    font-size: 25px;
 }
 
 input:focus {
@@ -142,9 +146,24 @@ input:focus {
     margin: 0;
 }
 
-@media screen and (max-width: 450px) {
+.container {
+    width: 100%;
+}
+
+@media screen and ((max-width: 950px) or (max-height: 600px)) {
     .enter_sign {
-        width: 85%;
+        width: 500px;
+        font-size: 20px;
+    }
+
+    .input_text {
+        font-size: 20px;
+    }
+}
+
+@media screen and ((max-width: 450px) or (max-height: 450px)) {
+    .enter_sign {
+        width: 350px;
         font-size: 20px;
     }
 
