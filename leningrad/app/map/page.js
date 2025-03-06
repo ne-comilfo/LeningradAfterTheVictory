@@ -199,19 +199,16 @@ export default function Map() {
         });
     }, [filteredMarkers]);
 
-    const validateTokenStructure = (token) => {
-        const parts = token.split('.');
-        return parts.length === 3; // JWT должен состоять из 3 частей
-    };
+    
 
     useEffect(() => {
         const validateToken = async () => {
-            const token = 'dsaa.dada.afa'; // Получаем токен из локального хранилища
-            if (!token || !validateTokenStructure(token)) {
+            const token = 'eyJhbGciOiJSUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc0MTI4MDE3MCwiZXhwIjoxNzQxMzE2MTcwfQ.QDANrJiWF6809l_BTD3YVw4qUvrNzdv6YEsuYIZzlAgyzGOgCcJPc-ddJbHImDPc_CoC__BexDYBKTbYT02tYEnvwT0m07Q4O2zXJDYgVUU91vvbFWTTw3L8UqH1fD9GOBpjXK7RojO6Ln-Ezh7gwFjdzlbRjSJ85YfuHKMGE802JAtUnILtz_ND-yaaTut7050ZhrXyV1dR1fdDV_3gLcVHkru41BfgpsbpS1RW9XGsGaubB4ApLNAIC_2-doOpayoCLDM6F5RXfmNH6rFwKko2ceI5phTQMftIVbkPAfSZWRHAyOsQVPlx359m1m9MCoy31vr1gTK4HT86R_CL_g'; 
+            if (!token) {
                 setIsTokenValid(false);
                 setTimeout(() => router.push('/authorization'), 2000);
                 return;
-            }
+            }3
 
             // Декодируем токен и проверяем срок действия
             const decodedToken = decodeToken(token);
@@ -220,7 +217,6 @@ export default function Map() {
                 setTimeout(() => router.push('/authorization'), 2000);
                 return;
             }
-
             const currentTime = Math.floor(Date.now() / 1000);
             if (decodedToken.exp < currentTime) {
                 setIsTokenValid(false);
