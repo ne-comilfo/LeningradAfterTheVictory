@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
+
 .map-wrap {
     position: fixed;
     bottom: 0;
@@ -11,6 +13,16 @@
     height: 100%;
 }
 
+.reload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Geologica', sans-serif;
+    color: rgba(11, 131, 217, 1);
+    size: 40px;
+    margin-top: -2.78vh;
+}
 /* Стили для слайдера */
 .slider-container {
     position: fixed;

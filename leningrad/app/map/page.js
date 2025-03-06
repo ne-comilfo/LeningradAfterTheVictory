@@ -6,7 +6,25 @@ import 'rc-slider/assets/index.css';
 import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 import './/page-style.css';
+import { useRouter } from 'next/navigation';
 import InfoWindow from '../info-for-map/page';
+
+const decodeToken = (token) => {
+    try {
+        const base64Url = token.split('.')[1]; // Получаем payload
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+            atob(base64)
+                .split('')
+                .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                .join('')
+        );
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Ошибка при декодировании токена:', error);
+        return null;
+    }
+};
 
 export default function Map() {
     const [markers, setMarkers] = useState([]);
@@ -18,6 +36,9 @@ export default function Map() {
     const [selectedMarker, setSelectedMarker] = useState(null); // Выбранная метка
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false); // Открыто ли окно
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isCheckingToken, setIsCheckingToken] = useState(true);
+    const [isTokenValid, setIsTokenValid] = useState(false);
+    const router = useRouter();
 
     const drawRoute = (map, coordinates) => {
         // Проверяем, что карта и координаты существуют
@@ -90,26 +111,25 @@ export default function Map() {
     useEffect(() => {
         const fetchMarkers = async () => {
             try {
-                const response = await fetch('http://194.87.252.234:6060/api/attractions/get-all');
-
+                const response = await fetch("http://194.87.252.234:6060/api/attractions/get-all");
                 const data = await response.json();
-                setMarkers(data); // Обновляем состояние с метками
 
+                setMarkers(data); // Обновляем состояние с метками
 
                 // Определяем минимальный и максимальный год
                 const years = data.map(marker => marker.yearOfCreation);
                 setMinYear(Math.min(...years));
                 setMaxYear(Math.max(...years));
 
-                setFilteredMarkers(data); // Фильтруем метки (по умолчанию показываем все)
-
+                setFilteredMarkers(data);
             } catch (error) {
-                console.error('Ошибка при загрузке данных:', error);
+                console.error("Ошибка при загрузке данных:", error);
             }
         };
 
-        fetchMarkers();  // Загружаем метки при монтировании компонента
+        fetchMarkers();
     }, []);
+
 
     useEffect(() => {
         // Начальные значения слайдера
@@ -118,22 +138,22 @@ export default function Map() {
     }, [minYear, maxYear]);
 
     useEffect(() => {
-        if (map.current) return; // Не инициализировать повторно
+        if (!mapContainer.current || map.current) return; // Проверяем, что контейнер существует и карта не была инициализирована
 
         map.current = new maptilersdk.Map({
-            container: mapContainer.current,
+            container: mapContainer.current, // Теперь точно есть
             style: maptilersdk.MapStyle.STREETS,
             center: [spb.lng, spb.lat],
             zoom: zoom,
-            language: lang
+            language: lang,
         });
 
         return () => {
             if (map.current) {
                 map.current.remove();
+                map.current = null;
             }
-        };  // Очистка карты при размонтировании компонента
-
+        };
     }, []);
 
 
@@ -179,8 +199,64 @@ export default function Map() {
         });
     }, [filteredMarkers]);
 
+    const validateTokenStructure = (token) => {
+        const parts = token.split('.');
+        return parts.length === 3; // JWT должен состоять из 3 частей
+    };
+
+    useEffect(() => {
+        const validateToken = async () => {
+            const token = 'dsaa.dada.afa'; // Получаем токен из локального хранилища
+            if (!token || !validateTokenStructure(token)) {
+                setIsTokenValid(false);
+                setTimeout(() => router.push('/authorization'), 2000);
+                return;
+            }
+
+            // Декодируем токен и проверяем срок действия
+            const decodedToken = decodeToken(token);
+            if (!decodedToken || !decodedToken.exp) {
+                setIsTokenValid(false);
+                setTimeout(() => router.push('/authorization'), 2000);
+                return;
+            }
+
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decodedToken.exp < currentTime) {
+                setIsTokenValid(false);
+                setTimeout(() => router.push('/authorization'), 2000);
+                return;
+            }
+
+            // Проверяем токен на сервере
+            try {
+                const response = await fetch(`http://194.87.252.234:6060/api/authentication/validate?token=${token}`);
+                if (response.ok) {
+                    setIsTokenValid(true); // Токен валидный
+                } else {
+                    setIsTokenValid(false); // Токен невалидный
+                    setTimeout(() => router.push('/authorization'), 2000);
+                }
+            } catch (error) {
+                console.error('Ошибка при проверке токена:', error);
+                setIsTokenValid(false); // Ошибка при проверке
+                setTimeout(() => router.push('/authorization'), 2000);
+            } finally {
+                setIsCheckingToken(false); // Завершаем проверку токена
+            }
+        };
+
+        validateToken();
+    }, [router]);
 
 
+    if (isCheckingToken) {
+        return <div className="reload"><h2>Загрузка...</h2></div>;
+    }
+
+    if (!isTokenValid) {
+        return null;
+    }
 
     return (
         <div>
@@ -235,7 +311,7 @@ export default function Map() {
                 />
             )}
         </div>
-
     );
 }
+
 
