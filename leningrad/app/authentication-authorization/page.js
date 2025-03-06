@@ -101,11 +101,6 @@ const AuthenticationAuthorizationPage = () => {
             );
         }
     }, []);
-    
-    return (
-    <>
-        <AuthorizationBlockForms />
-    </>);
 }
 
 export default AuthenticationAuthorizationPage;
