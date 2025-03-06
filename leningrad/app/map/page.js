@@ -207,7 +207,7 @@ export default function Map() {
             if (!token) {
                 setIsTokenValid(false);
                 setTimeout(() => router.push('/authorization'), 2000);
-                return;
+                return <div className="reload"><h2>Загрузка...</h2></div>;;
             }3
 
             // Декодируем токен и проверяем срок действия
@@ -215,13 +215,13 @@ export default function Map() {
             if (!decodedToken || !decodedToken.exp) {
                 setIsTokenValid(false);
                 setTimeout(() => router.push('/authorization'), 2000);
-                return;
+                return <div className="reload"><h2>Загрузка...</h2></div>;;
             }
             const currentTime = Math.floor(Date.now() / 1000);
             if (decodedToken.exp < currentTime) {
                 setIsTokenValid(false);
                 setTimeout(() => router.push('/authorization'), 2000);
-                return;
+                return <div className="reload"><h2>Загрузка...</h2></div>;
             }
 
             // Проверяем токен на сервере
@@ -232,6 +232,7 @@ export default function Map() {
                 } else {
                     setIsTokenValid(false); // Токен невалидный
                     setTimeout(() => router.push('/authorization'), 2000);
+                    <div className="reload"><h2>Загрузка...</h2></div>;
                 }
             } catch (error) {
                 console.error('Ошибка при проверке токена:', error);
