@@ -24,7 +24,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     setView("default"); // Возвращаемся на начальную вкладку
     setSelectedRoute(null); // Сбрасываем выбранный маршрут
   }, [marker]);
-  
+
   useEffect(() => {
     if (marker) {
       // Загрузка данных объекта
@@ -41,35 +41,35 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
 
       // Загрузка маршрутов
       fetch("http://194.87.252.234:6060/api/routes") // Запрашиваем список маршрутов
-      .then((response) => response.json())
-      .then((routesList) => {
-        const routePromises = routesList.map((route) =>
-          fetch(`http://194.87.252.234:6060/api/routes/${route.id}`).then((res) =>
-            res.json()
-          )
-        );
-
-        Promise.all(routePromises)
-          .then((routes) => {
-            const matchedRoutes = routes
-              .filter((route) =>
-                route.attractions.some((attraction) => attraction.id === marker.id)
-              )
-              .map((route) => ({
-                id: route.id,
-                name: route.name,
-                details: route.description,
-              }));
-
-            setRoutes(matchedRoutes);
-          })
-          .catch((error) =>
-            console.error("Ошибка загрузки маршрутов:", error)
+        .then((response) => response.json())
+        .then((routesList) => {
+          const routePromises = routesList.map((route) =>
+            fetch(`http://194.87.252.234:6060/api/routes/${route.id}`).then((res) =>
+              res.json()
+            )
           );
-      })
-      .catch((error) => console.error("Ошибка загрузки списка маршрутов:", error));
-  }
-}, [marker]);
+
+          Promise.all(routePromises)
+            .then((routes) => {
+              const matchedRoutes = routes
+                .filter((route) =>
+                  route.attractions.some((attraction) => attraction.id === marker.id)
+                )
+                .map((route) => ({
+                  id: route.id,
+                  name: route.name,
+                  details: route.description,
+                }));
+
+              setRoutes(matchedRoutes);
+            })
+            .catch((error) =>
+              console.error("Ошибка загрузки маршрутов:", error)
+            );
+        })
+        .catch((error) => console.error("Ошибка загрузки списка маршрутов:", error));
+    }
+  }, [marker]);
 
   const handleClose = () => {
     setIsOpen(false); // Закрываем окно
@@ -131,11 +131,11 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
       .then((response) => response.json())
       .then((data) => {
         const coordinates = data.attractions.map(attraction => attraction.location.coordinates);
-        // Здесь будет запрос к API для получения маршрута, когда он будет готов
-        // fetch('URL_АПИ_ДЛЯ_ПОСТРОЕНИЯ_МАРШРУТА', { method: 'POST', body: JSON.stringify({ coordinates }) })
-        //   .then(res => res.json())
-        //   .then(routeData => drawRoute(routeData))
-        //   .catch(err => console.error("Ошибка получения маршрута:", err));
+
+        fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, { method: 'POST', body: JSON.stringify({ coordinates }) })
+          .then(res => res.json())
+          .then(routeData => drawRoute(routeData))
+          .catch(err => console.error("Ошибка получения маршрута:", err));
         drawRoute(coordinates);
       })
       .catch(error => console.error("Ошибка загрузки маршрута:", error));
@@ -171,7 +171,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
               )}
               <div
                 className={`mobile-info-window ${isExpanded ? "expanded" : ""}`}
-                style={{ transform: `translateY(${Math.max(0, Math.min(window.innerHeight, dragOffset))}px)`,}}
+                style={{ transform: `translateY(${Math.max(0, Math.min(window.innerHeight, dragOffset))}px)`, }}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
