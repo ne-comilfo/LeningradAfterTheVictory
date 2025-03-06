@@ -1,106 +1,78 @@
 'use client'
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import './authentication-authorization-style.css';
 
 const AuthenticationAuthorizationPage = () => {
+  const [isLoginMode, setIsLoginMode] = useState(false); // Состояние для режима (регистрация/вход)
 
-    useEffect(() => {
+  const BackgroundTransition = () => (
+    <div className="background-transition" />
+  );
 
-        const BackgroundTransition = () => (
-            <div className="background-transition" />
-        );
+  const InputField = ({ label, type, id, name }) => (
+    <div className="input-group">
+      <label htmlFor={id}><span className='qw'>{label}</span></label>
+      <input type={type} id={id} name={name} required />
+    </div>
+  );
 
-        const InputField = ({ label, type, id, name }) => (
-            <div className="input-group">
-                <label htmlFor={id}><span className='qw'>{label}</span></label>
-                <input type={type} id={id} name={name} required />
-            </div>
-        );
+  const FormHeader = ({ isLoginMode }) => (
+    <div className="box form">
+      <div className="text">
+        <p>
+          <span className={!isLoginMode ? "highlight" : ""} onClick={() => setIsLoginMode(false)}>Регистрация</span> / 
+          <span className={isLoginMode ? "highlight" : ""} onClick={() => setIsLoginMode(true)}>Вход</span>
+        </p>
+      </div>
+    </div>
+  );
 
-        const AuthenticationFormHeader = () => (
-            <div className="box form">
-                <div className="text">
-                    <p><span className="highlight">Регистрация</span> / <span className="switch" onClick={renderAuthorization}>Вход</span></p>
-                </div>
-            </div>
-        );
+  const FormLinks = ({ isLoginMode }) => (
+    <div className="form-links">
+      <a onClick={() => setIsLoginMode(!isLoginMode)}>
+        {isLoginMode ? "Ещё не зарегистрированы?" : "Уже зарегистрированы?"}
+      </a>
+      <a onClick={() => setIsLoginMode(!isLoginMode)}>
+        {isLoginMode ? "Регистрация" : "Вход"}
+      </a>
+    </div>
+  );
 
-        const AuthenticationFormLinks = () => (
-            <div className="form-links">
-                <a onClick={renderAuthorization}>Уже зарегистрированы?</a>
-                <a onClick={renderAuthorization}>Вход</a>
-            </div>
-        );
+  const RegistrationForm = () => (
+    <div className="box form-1">
+      <form className="form-content" action="path_to_your_processing_script" method="POST">
+        <InputField label="Почта" type="email" id="email" name="email" />
+        <InputField label="Логин" type="text" id="username" name="username" />
+        <InputField label="Пароль" type="password" id="password" name="password" />
+        <FormLinks isLoginMode={isLoginMode} />
+      </form>
+    </div>
+  );
 
-        const AuthenticationRegistrationForm = () => (
-            <div className="box form-1">
-                <form className="form-content" action="path_to_your_processing_script" method="POST">
-                    <InputField label="Почта" type="email" id="email" name="email" />
-                    <InputField label="Логин" type="text" id="username" name="username" />
-                    <InputField label="Пароль" type="password" id="password" name="password" />
-                    <AuthenticationFormLinks />
-                </form>
-            </div>
-        );
+  const LoginForm = () => (
+    <div className="box form-1">
+      <form className="form-content" action="path_to_your_processing_script" method="POST">
+        <InputField label="Логин / почта" type="text" id="email" name="email" />
+        <InputField label="Пароль" type="password" id="password" name="password" />
+        <FormLinks isLoginMode={isLoginMode} />
+      </form>
+    </div>
+  );
 
-        const AuthenticationBlockForms = () => (
-            <div className="block-of-forms">
-                <BackgroundTransition />
-                <AuthenticationFormHeader />
-                <AuthenticationRegistrationForm />
-            </div>
-        );
+  const BlockForms = ({ isLoginMode }) => (
+    <div className="block-of-forms">
+      <BackgroundTransition />
+      <FormHeader isLoginMode={isLoginMode} />
+      {isLoginMode ? <LoginForm /> : <RegistrationForm />}
+    </div>
+  );
 
-        const AuthorizationFormHeader = () => (
-            <div className="box form">
-                <div className="text">
-                    <p><span className="highlight">Вход</span> / <span className="switch" onClick={renderAuthentication}>Регистрация</span></p>
-                </div>
-            </div>
-        );
-
-        const AuthorizationFormLinks = () => (
-            <div className="form-links">
-                <a onClick={renderAuthentication}>Ещё не зарегистрированы?</a>
-                <a onClick={renderAuthentication}>Регистрация</a>
-            </div>
-        );
-
-        const AuthorizationRegistrationForm = () => (
-            <div className="box form-1">
-                <form className="form-content" action="path_to_your_processing_script" method="POST">
-                    <InputField label="Логин / почта" type="text" id="email" name="email" />
-                    <InputField label="Пароль" type="password" id="password" name="password" />
-                    <AuthorizationFormLinks />
-                </form>
-            </div>
-        );
-
-        const AuthorizationBlockForms = () => (
-            <div className="block-of-forms">
-                <BackgroundTransition />
-                <AuthorizationFormHeader />
-                <AuthorizationRegistrationForm />
-            </div>
-        );
-
-        function renderAuthentication() {
-            return (
-                <>
-                    <AuthenticationBlockForms />
-                </>
-            );
-        }
-
-        function renderAuthorization() {
-            return (
-                <>
-                    <AuthorizationBlockForms />
-                </>
-            );
-        }
-    }, []);
-}
+  return (
+    <div>
+      <BlockForms isLoginMode={isLoginMode} />
+    </div>
+  );
+};
 
 export default AuthenticationAuthorizationPage;
