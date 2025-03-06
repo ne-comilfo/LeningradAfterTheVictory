@@ -1,3 +1,4 @@
+import React from 'react';
 import './authentication-authorization-style.css';
 
 const BackgroundTransition = () => (
@@ -95,11 +96,8 @@ function renderAuthorization() {
 }
 
 export default function AuthenticationAuthorizationPage() {
-    const container = document.getElementById("container12");
-    const root = ReactDOM.createRoot(container);
     return (
-        <>
-            <AuthorizationBlockForms />
-        </>
-    );
+    <>
+        <AuthorizationBlockForms />
+    </>);
 }
