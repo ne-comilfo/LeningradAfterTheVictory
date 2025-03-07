@@ -1,5 +1,5 @@
 import React from 'react';
-import './registration-style.css';
+import './personal-account-style.css';
 
 const PersonalAccountPage = () => {
     let attractionsFav = [];
