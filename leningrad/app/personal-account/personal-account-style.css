@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #FFFFFF;
+  font-family: 'Geologica', sans-serif;
+}
+
+.highlight {
+  font-weight: 400px;
+  padding: 0;
+  margin: 0;
+}
+
+.switch {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.switch:hover {
+  text-decoration: underline;
+}
+
+.background-transition {
+  background: linear-gradient(#FFFFFF, #E9E7E1);
+  width: 100%;
+  height: 50%;
+  position: fixed;
+  top: 50%;
+  left: 0;
+  z-index: -1;
+}
+
+.profile {
+  position: absolute;
+  top: 70px;
+  left: 3vw;
+  width: clamp(240px, 21vw, 500px);
+  padding: 0.5vw 0 0.5vw 1vw;
+  min-height: 100px;
+  border-radius: 20px;
+  background-color: #0B83D94D;
+  display: flex;
+  align-items: center;
+}
+
+.profile .profile-icon {
+  width: clamp(70px, 25%, 500px);
+  height: auto;
+  margin-right: 15px
+}
+
+.profile .data-type {
+  margin: 10px 0px;
+  font-weight: 300;
+  font-size: clamp(5px, 1vw 500px);
+  color: #3B3939;
+  width: clamp(150px, 13vw, 500px);
+}
+
+.profile .data-type .data {
+  overflow-wrap: break-word;
+  width: 100%;
+  font-weight: 400;
+  font-size: clamp(5px, 1.2vw 500px);
+  color: #000000;
+}
+
+.action-buttons {
+  position: absolute;
+  top: clamp(250px, 35vh, 500px);
+  left: 4vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3vh;
+  font-size: clamp(20px, 1.7vw, 30px);
+}
+
+.switch-button {
+  background-color: white;
+  border: none;
+  border-radius: 10px;
+  color: #0D74BD;
+  text-align: center;
+  display: inline-block;
+  padding: 7px 10px;
+  font-weight: 500;
+}
+
+.selected-button {
+  background-color: white;
+  border: 3px solid #0C6DB3;
+  border-radius: 10px;
+  color: #0D74BD;
+  text-align: center;
+  display: inline-block;
+  padding: 7px 10px;
+  font-weight: 700;
+}
+
+.exit-button {
+  background-color: #0B83D9;
+  border-radius: 40px;
+  border: none;
+  color: white;
+  text-align: center;
+  display: inline-block;
+  padding: 7px 30px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/*.category .title {
+  margin-left: 10px;
+  font-size: 26px;
+  font-weight: 400;
+}*/
+
+.routes-header {
+  position: absolute;
+  top: 85px;
+  left: clamp(370px, 30vw, 1000px);
+  font-weight: 100;
+  font-size: 30px;
+}
+
+.scrollmenu-vis {
+  position: absolute;
+  top: 70px;
+  left: clamp(300px, 25vw, 1000px);
+  width: 65vw;
+  height: auto;
+  overflow: visible;
+  white-space: normal;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.scrollmenu-fav {
+  position: absolute;
+  top: 150px;
+  left: clamp(300px, 25vw, 1000px);
+  width: 65vw;
+  height: auto;
+  overflow: visible;
+  white-space: normal;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.destination {
+  display: inline-block;
+  margin: 10px 0;
+  margin-left: 3vw;
+  width: 17vw;
+}
+
+.destination .name {
+  width: 100%;
+  text-align: center;
+  font-weight: 300;
+  font-size: 19px;
+  margin-bottom: 10px;
+}
+
+.destination-photo {
+  width: 100%;
+  height: auto;
+  border: 2px solid #0B83D9;
+  border-radius: 2vw;
+}
+
+.destination .progress {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.destination .progress .bar {
+  background-color: #FFFFFF;
+  border: 2px solid #000000;
+  border-radius: 20px;
+  width: 100%;
+  height: 1.3vw;
+}
+
+.destination .progress .bar .bar-progress {
+  background-color: #0B83D9;
+  border-radius: 20px;
+  width: 30%;
+  height: 100%;
+}
+
+.destination .progress .percentage {
+  font-family: Inter;
+  font-size: 1.3vw;
+  font-weight: 400;
+}
+
+@media screen and (max-width: 1000px) {
+
+  .routes-header {
+    position: absolute;
+    top: 85px;
+    left: clamp(330px, 37vw, 1000px);
+  }
+
+  .scrollmenu-vis {
+    position: absolute;
+    top: 70px;
+    left: clamp(260px, 29vw, 1000px);
+    width: 65vw;
+    height: auto;
+    overflow: visible;
+    white-space: normal;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .scrollmenu-fav {
+    position: absolute;
+    top: 150px;
+    left: clamp(260px, 29vw, 1000px);
+    width: 65vw;
+    height: auto;
+    overflow: visible;
+    white-space: normal;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .destination {
+    display: inline-block;
+    margin: 10px 0;
+    margin-left: 5vw;
+    width: 25vw;
+  }
+
+  .destination .progress .bar {
+    height: 1.8vw;
+  }
+
+  .destination .progress .percentage {
+    font-size: 1.8vw;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .profile {
+    position: absolute;
+    top: 70px;
+    left: 4vw;
+    width: clamp(50px, 44vw, 500px);
+    border-radius: 10px;
+    padding: 0px 10px 10px 10px;
+  }
+
+  .profile .profile-icon {
+    width: 50px;
+    height: auto;
+    margin-right: 10px
+  }
+
+  .data-type {
+    margin: 0;
+    padding: 0;
+    font-weight: 300;
+    font-size: 10px;
+    color: #3B3939;
+    width: clamp(130px, 13vw, 500px);
+  }
+
+  .data-type .data {
+    overflow-wrap: break-word;
+    width: 100%;
+    font-weight: 400;
+    font-size: 12px;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+  }
+
+  .action-buttons {
+    position: absolute;
+    top: 100px;
+    left: 54vw;
+    width: 45vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2vw;
+    font-size: clamp(5px, 3vw, 25px);
+  }
+
+  .switch-button {
+    padding: 3px 5px;
+    border-radius: 20px;
+  }
+
+  .selected-button {
+    padding: 3px 5px;
+    border-radius: 20px;
+  }
+
+  .exit-button {
+    font-size: 12px;
+    padding: 4px 15px;
+  }
+
+  .scrollmenu-fav {
+    position: absolute;
+    top: 210px;
+    left: 0;
+    width: 100vw;
+    height: auto;
+  }
+
+  .scrollmenu-vis {
+    position: absolute;
+    top: 210px;
+    left: 0;
+    width: 100vw;
+    height: auto;
+  }
+
+  .destination {
+    display: inline-block;
+    margin: 10px clamp(10px, 5vw, 500px);
+    width: 40vw;
+  }
+
+  .destination .name {
+    width: 100%;
+    text-align: center;
+    font-weight: 300;
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+
+  .destination-photo {
+    border-radius: 30px;
+  }
+
+  .destination .progress {
+    gap: 4px;
+  }
+
+  .destination .progress .bar {
+    background-color: #FFFFFF;
+    border: 2px solid #000000;
+    border-radius: 20px;
+    width: 100%;
+    height: 3vw;
+  }
+
+  .destination .progress .bar .bar-progress {
+    border-radius: 20px;
+    width: 30%;
+    height: 100%;
+  }
+
+  .destination .progress .percentage {
+    font-family: Inter;
+    font-size: 3vw;
+    font-weight: 400;
+  }
+}
