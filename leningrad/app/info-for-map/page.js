@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import "./info-for-map-styles.css";
 import HeartIcon from './HeartIcon';
+import axios from 'axios';
 
-export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded, drawRoute }) {
+export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded, drawRoute, clearRoute }) {
   const [isOpen, setIsOpen] = useState(true); // Управление видимостью окна
   const [view, setView] = useState("default"); // Текущий вид (описание или маршруты)
   const [selectedRoute, setSelectedRoute] = useState(null); // Выбранный маршрут
@@ -28,7 +29,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   useEffect(() => {
     if (marker) {
       // Загрузка данных объекта
-      fetch(`http://194.87.252.234:6060/api/attractions/${marker.id}`)
+      fetch(`http://194.87.252.234:6060/api/attractions/attraction/${marker.id}`)
         .then((response) => response.json())
         .then((data) => {
           setObject({
@@ -40,11 +41,11 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
         .catch((error) => console.error("Ошибка загрузки данных:", error));
 
       // Загрузка маршрутов
-      fetch("http://194.87.252.234:6060/api/routes") // Запрашиваем список маршрутов
+      fetch("http://194.87.252.234:6060/api/routes/get-all") // Запрашиваем список маршрутов
         .then((response) => response.json())
         .then((routesList) => {
           const routePromises = routesList.map((route) =>
-            fetch(`http://194.87.252.234:6060/api/routes/${route.id}`).then((res) =>
+            fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`).then((res) =>
               res.json()
             )
           );
@@ -74,6 +75,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   const handleClose = () => {
     setIsOpen(false); // Закрываем окно
     onClose(); // Уведомляем Map.js о закрытии
+    clearRoute();
   };
 
   // Обработчик свайпа
@@ -126,20 +128,51 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const handleRouteClick = (route) => {
-    setSelectedRoute(route);
-    fetch(`http://194.87.252.234:6060/api/routes/${route.id}`)
+    setSelectedRoute(route); // Устанавливаем выбранный маршрут
+
+    fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`)
       .then((response) => response.json())
       .then((data) => {
         const coordinates = data.attractions.map(attraction => attraction.location.coordinates);
+        const formattedCoordinates = coordinates.map(([x, y]) => ({ x, y }));
 
-        fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, { method: 'POST', body: JSON.stringify({ coordinates }) })
-          .then(res => res.json())
-          .then(routeData => drawRoute(routeData))
-          .catch(err => console.error("Ошибка получения маршрута:", err));
-        drawRoute(coordinates);
+        const requestBody = {
+          "points": formattedCoordinates  // Оборачиваем массив координат в объект
+        };
+
+        fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),  // Отправляем массив координат
+        })
+          .then((response) => response.json())  // Обрабатываем ответ второго запроса
+          //.then(data => console.log(data))
+          .then((routeData) => {
+            if (routeData.geoJson.length > 0) {
+              try {
+                const geoJson = routeData.geoJson; // Парсим geoJson
+                const coordinates1 = geoJson; // Извлекаем координаты
+
+                drawRoute(coordinates1)  // Рисуем маршрут с координатами
+              } catch (error) {
+                console.error("Ошибка при парсинге geoJson:", error);
+              }
+            } else {
+              console.error("geoJson не найден или пустой");
+            }
+          })
+          .catch((error) => {
+            console.error("Ошибка второго запроса:", error);  // Ошибка обработки второго запроса
+          });
       })
-      .catch(error => console.error("Ошибка загрузки маршрута:", error));
+      .catch((error) => {
+        console.error("Ошибка загрузки маршрута:", error);  // Ошибка первого запроса
+      });
   };
+
+
 
 
   useEffect(() => {
@@ -237,7 +270,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 </button>
                               </div>
                             </div>
-                            <a className="back-link" onClick={() => setView("default")}>⬅ Назад к описанию</a>
+                            <a className="back-link" onClick={() => {setView("default")}}>⬅ Назад к описанию</a>
                             <div className="buttons-1 centered">
                               <button className="active">
                                 <img src="/ways.svg" className="routes" />
@@ -264,7 +297,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                         {isExpanded && (
                           <>
                             <p>{selectedRoute.details}</p>
-                            <a className="back-link" onClick={() => setSelectedRoute(null)}>⬅ Назад к маршрутам</a>
+                            <a className="back-link" onClick={() => {setSelectedRoute(null); clearRoute()}}>⬅ Назад к маршрутам</a>
                             <div className="buttons-1">
                               <button onClick={() => handleSaveRoute(selectedRoute.id)}>
                                 <HeartIcon filled={savedRoutes[selectedRoute.id]} />
@@ -355,7 +388,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   </button>
                 </div>
                 <p>{selectedRoute.details}</p>
-                <a className="back-link" onClick={() => setSelectedRoute(null)}>⬅ Назад к маршрутам</a>
+                <a className="back-link" onClick={() => {setSelectedRoute(null); clearRoute()}}>⬅ Назад к маршрутам</a>
               </>
             )}
           </div>

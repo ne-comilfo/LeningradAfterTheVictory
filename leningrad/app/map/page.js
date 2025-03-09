@@ -26,6 +26,7 @@ const decodeToken = (token) => {
     }
 };
 
+
 export default function Map() {
     const [markers, setMarkers] = useState([]);
     const [filteredMarkers, setFilteredMarkers] = useState([]);
@@ -40,39 +41,42 @@ export default function Map() {
     const [isTokenValid, setIsTokenValid] = useState(false);
     const router = useRouter();
 
-    const drawRoute = (map, coordinates) => {
-        // Проверяем, что карта и координаты существуют
-        if (!map || !coordinates || coordinates.length === 0) return;
-
-        // Удаляем предыдущий маршрут, если он был
-        if (map.getSource('route')) {
-            map.removeLayer('route');
-            map.removeSource('route');
+    const clearRoute = () => {
+        if (!map.current) return;
+    
+        // Удаляем слой и источник маршрута, если они существуют
+        if (map.current.getLayer('route')) {
+            map.current.removeLayer('route');
+            map.current.removeSource('route');
         }
+    };
 
+    const drawRoute = (coordinates) => {
+        if (!map.current || !coordinates || coordinates.length === 0) return;
+    
+        // Удаляем предыдущий маршрут, если он был
+        if (map.current.getLayer('route')) {
+            map.current.removeLayer('route');
+            map.current.removeSource('route');
+        }
+    
         // Создаем GeoJSON объект для маршрута
         const geojson = {
-            type: 'FeatureCollection',
-            features: [
-                {
-                    type: 'Feature',
-                    properties: {},
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: coordinates, // Координаты точек маршрута
-                    },
-                },
-            ],
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: coordinates,
+            },
         };
-
-        // Добавляем источник данных для маршрута
-        map.addSource('route', {
+    
+        // Добавляем источник и слой для маршрута
+        map.current.addSource('route', {
             type: 'geojson',
             data: geojson,
         });
-
-        // Добавляем слой для отрисовки линии маршрута
-        map.addLayer({
+    
+        map.current.addLayer({
             id: 'route',
             type: 'line',
             source: 'route',
@@ -81,19 +85,18 @@ export default function Map() {
                 'line-cap': 'round',
             },
             paint: {
-                'line-color': '#3887be',
-                'line-width': 5,
+                'line-color': '#3b82f6',
+                'line-width': 4,
             },
         });
-
-        // Приближаем карту к маршруту
+    
+        // Масштабируем карту так, чтобы маршрут был виден
         const bounds = coordinates.reduce((bounds, coord) => {
             return bounds.extend(coord);
         }, new maptilersdk.LngLatBounds(coordinates[0], coordinates[0]));
-
-        map.fitBounds(bounds, {
-            padding: 50, // Отступы от краев карты
-            maxZoom: 15, // Максимальное приближение
+    
+        map.current.fitBounds(bounds, {
+            padding: 50,
         });
     };
 
@@ -107,13 +110,11 @@ export default function Map() {
 
     //  Ссылки на метки для отображения
     const markerElements = useRef([]);
-
     useEffect(() => {
         const fetchMarkers = async () => {
             try {
                 const response = await fetch("http://194.87.252.234:6060/api/attractions/get-all");
                 const data = await response.json();
-
                 setMarkers(data); // Обновляем состояние с метками
 
                 // Определяем минимальный и максимальный год
@@ -138,23 +139,26 @@ export default function Map() {
     }, [minYear, maxYear]);
 
     useEffect(() => {
-        if (!mapContainer.current || map.current) return; // Проверяем, что контейнер существует и карта не была инициализирована
-
-        map.current = new maptilersdk.Map({
-            container: mapContainer.current, // Теперь точно есть
-            style: maptilersdk.MapStyle.STREETS,
-            center: [spb.lng, spb.lat],
-            zoom: zoom,
-            language: lang,
-        });
-
+        if (!mapContainer.current || map.current || isCheckingToken) return; 
+    
+        if (isTokenValid) {
+            map.current = new maptilersdk.Map({
+                container: mapContainer.current,
+                style: maptilersdk.MapStyle.STREETS,
+                center: [spb.lng, spb.lat],
+                zoom: zoom,
+                language: lang,
+            });
+        }
+    
         return () => {
             if (map.current) {
                 map.current.remove();
                 map.current = null;
             }
         };
-    }, []);
+    }, [isCheckingToken, isTokenValid]); 
+    
 
 
     useEffect(() => {
@@ -180,33 +184,36 @@ export default function Map() {
     };
 
     useEffect(() => {
+        if (!map.current) return; // Проверяем, что карта была инициализирована
+    
         // Очистка текущих меток, добавленных на карту
         markerElements.current.forEach(marker => marker.remove());
         markerElements.current = [];
-
+    
         // Добавление новых меток на карту
         filteredMarkers.forEach(marker => {
-            const markerElement = new maptilersdk.Marker()
-                .setLngLat(marker.location.coordinates)
-                .addTo(map.current)
-            markerElement.getElement().addEventListener('click', () => {
-                setSelectedMarker(marker); // Устанавливаем выбранную метку
-                setIsInfoWindowOpen(true); // Открываем InfoWindow
-                setIsExpanded(false);
-            });
-
-            markerElements.current.push(markerElement);
+            if (marker?.location?.coordinates) { // Проверяем, что координаты существуют
+                const markerElement = new maptilersdk.Marker()
+                    .setLngLat(marker.location.coordinates)
+                    .addTo(map.current);
+    
+                markerElement.getElement().addEventListener('click', () => {
+                    setSelectedMarker(marker);
+                    setIsInfoWindowOpen(true);
+                    setIsExpanded(false);
+                });
+    
+                markerElements.current.push(markerElement);
+            }
         });
     }, [filteredMarkers]);
 
-    
-
     useEffect(() => {
         const validateToken = async () => {
-            const token = 'eyJhbGciOiJSUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc0MTI4MDE3MCwiZXhwIjoxNzQxMzE2MTcwfQ.QDANrJiWF6809l_BTD3YVw4qUvrNzdv6YEsuYIZzlAgyzGOgCcJPc-ddJbHImDPc_CoC__BexDYBKTbYT02tYEnvwT0m07Q4O2zXJDYgVUU91vvbFWTTw3L8UqH1fD9GOBpjXK7RojO6Ln-Ezh7gwFjdzlbRjSJ85YfuHKMGE802JAtUnILtz_ND-yaaTut7050ZhrXyV1dR1fdDV_3gLcVHkru41BfgpsbpS1RW9XGsGaubB4ApLNAIC_2-doOpayoCLDM6F5RXfmNH6rFwKko2ceI5phTQMftIVbkPAfSZWRHAyOsQVPlx359m1m9MCoy31vr1gTK4HT86R_CL_g'; 
+            const token = 'eyJhbGciOiJSUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc0MTUxNzAzMCwiZXhwIjoxNzQxNTUzMDMwfQ.N1vDTt9to6GrAeX1rAtOCPVl958xOdfLLalPTZhLzhAXBHlPqVilj3y30LygvCOxuK7GUsnVaDtMpRiXJ675xxHBOMYaFyXX2hOe2KucNQx1DXhsBNMNw9NdDqxXiilgX388fuefcBaPrJ_HX9kxm_lBYNTa5LuB714_iT1kxuv3rI6wl-dzhv9tItO54enJ6ROEiZBZN26V3t-YTLw4YJU2aNYcUpFkyRzd4c_nDsb38ImJoBmpcFC_SgB9udv7ij4EHckwDVqa-UgEcxy2CuKP19CiEZWNYGsl9FYUY7nwk1GsxCkEYdmkgiK781mJ85tfGMuGvB3ihF-kEiqxMw';
             if (!token) {
                 setIsTokenValid(false);
-                setTimeout(() => router.push('/authorization'), 2000);
+                setTimeout(() => router.push('/authentication-authorization'), 2000);
                 return <div className="reload"><h2>Загрузка...</h2></div>;;
             }3
 
@@ -214,13 +221,13 @@ export default function Map() {
             const decodedToken = decodeToken(token);
             if (!decodedToken || !decodedToken.exp) {
                 setIsTokenValid(false);
-                setTimeout(() => router.push('/authorization'), 2000);
+                setTimeout(() => router.push('/authentication-authorization'), 2000);
                 return <div className="reload"><h2>Загрузка...</h2></div>;;
             }
             const currentTime = Math.floor(Date.now() / 1000);
             if (decodedToken.exp < currentTime) {
                 setIsTokenValid(false);
-                setTimeout(() => router.push('/authorization'), 2000);
+                setTimeout(() => router.push('//authentication-authorization'), 2000);
                 return <div className="reload"><h2>Загрузка...</h2></div>;
             }
 
@@ -231,13 +238,13 @@ export default function Map() {
                     setIsTokenValid(true); // Токен валидный
                 } else {
                     setIsTokenValid(false); // Токен невалидный
-                    setTimeout(() => router.push('/authorization'), 2000);
+                    setTimeout(() => router.push('/authentication-authorization'), 2000);
                     <div className="reload"><h2>Загрузка...</h2></div>;
                 }
             } catch (error) {
                 console.error('Ошибка при проверке токена:', error);
                 setIsTokenValid(false); // Ошибка при проверке
-                setTimeout(() => router.push('/authorization'), 2000);
+                setTimeout(() => router.push('//authentication-authorization'), 2000);
             } finally {
                 setIsCheckingToken(false); // Завершаем проверку токена
             }
@@ -305,10 +312,13 @@ export default function Map() {
                     isExpanded={isExpanded} // Передаем состояние свернуто/развернуто
                     setIsExpanded={setIsExpanded} // Передаем функцию для управления состоянием
                     drawRoute={drawRoute}
+                    clearRoute={clearRoute}
                 />
             )}
         </div>
+
     );
+
 }
 
 
