@@ -6,6 +6,7 @@ import 'rc-slider/assets/index.css';
 import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 import './/page-style.css';
+
 import { useRouter } from 'next/navigation';
 import InfoWindow from '../info-for-map/page';
 
@@ -100,6 +101,7 @@ export default function Map() {
         });
     };
 
+
     const mapContainer = useRef(null);
     const map = useRef(null);
     const spb = { lng: 30.3148, lat: 59.9343 };
@@ -114,6 +116,7 @@ export default function Map() {
         const fetchMarkers = async () => {
             try {
                 const response = await fetch("http://194.87.252.234:6060/api/attractions/get-all");
+
                 const data = await response.json();
                 setMarkers(data); // Обновляем состояние с метками
 
@@ -132,6 +135,7 @@ export default function Map() {
     }, []);
 
 
+
     useEffect(() => {
         // Начальные значения слайдера
         setStartYear(minYear);
@@ -139,6 +143,7 @@ export default function Map() {
     }, [minYear, maxYear]);
 
     useEffect(() => {
+
         if (!mapContainer.current || map.current || isCheckingToken) return; 
     
         if (isTokenValid) {
@@ -320,5 +325,6 @@ export default function Map() {
     );
 
 }
+
 
 
