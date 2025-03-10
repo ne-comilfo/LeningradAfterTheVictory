@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./info-for-map-styles.css";
 import HeartIcon from './HeartIcon';
-import axios from 'axios';
 
 export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded, drawRoute, clearRoute }) {
   const [isOpen, setIsOpen] = useState(true); // Управление видимостью окна
