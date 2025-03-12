@@ -1,3 +1,4 @@
+
 .map-wrap {
     position: fixed;
     bottom: 0;
@@ -9,6 +10,17 @@
     position: absolute;
     width: 100%;
     height: 100%;
+}
+
+.reload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Geologica', sans-serif;
+    color: rgba(11, 131, 217, 1);
+    size: 40px;
+    margin-top: -2.78vh;
 }
 
 /* Стили для слайдера */

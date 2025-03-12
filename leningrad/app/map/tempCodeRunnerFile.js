@@ -6,10 +6,7 @@ import 'rc-slider/assets/index.css';
 import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 import './/page-style.css';
-import { useRouter } from 'next/navigation';
 import InfoWindow from '../info-for-map/page';
-
-
 
 export default function Map() {
     const [markers, setMarkers] = useState([]);
@@ -20,68 +17,6 @@ export default function Map() {
     const [minYear, setMinYear] = useState(null);
     const [selectedMarker, setSelectedMarker] = useState(null); // Выбранная метка
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false); // Открыто ли окно
-    const [isExpanded, setIsExpanded] = useState(false);
-    const router = useRouter();
-
-    const clearRoute = () => {
-        if (!map.current) return;
-
-        // Удаляем слой и источник маршрута, если они существуют
-        if (map.current.getLayer('route')) {
-            map.current.removeLayer('route');
-            map.current.removeSource('route');
-        }
-    };
-
-    const drawRoute = (coordinates) => {
-        if (!map.current || !coordinates || coordinates.length === 0) return;
-
-        // Удаляем предыдущий маршрут, если он был
-        if (map.current.getLayer('route')) {
-            map.current.removeLayer('route');
-            map.current.removeSource('route');
-        }
-
-        // Создаем GeoJSON объект для маршрута
-        const geojson = {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-                type: 'LineString',
-                coordinates: coordinates,
-            },
-        };
-
-        // Добавляем источник и слой для маршрута
-        map.current.addSource('route', {
-            type: 'geojson',
-            data: geojson,
-        });
-
-        map.current.addLayer({
-            id: 'route',
-            type: 'line',
-            source: 'route',
-            layout: {
-                'line-join': 'round',
-                'line-cap': 'round',
-            },
-            paint: {
-                'line-color': '#3b82f6',
-                'line-width': 4,
-            },
-        });
-
-        // Масштабируем карту так, чтобы маршрут был виден
-        const bounds = coordinates.reduce((bounds, coord) => {
-            return bounds.extend(coord);
-        }, new maptilersdk.LngLatBounds(coordinates[0], coordinates[0]));
-
-        map.current.fitBounds(bounds, {
-            padding: 50,
-        });
-    };
-
 
     const mapContainer = useRef(null);
     const map = useRef(null);
@@ -93,10 +28,11 @@ export default function Map() {
 
     //  Ссылки на метки для отображения
     const markerElements = useRef([]);
+
     useEffect(() => {
         const fetchMarkers = async () => {
             try {
-                const response = await fetch("http://194.87.252.234:6060/api/attractions/get-all");
+                const response = await fetch('http://194.87.252.234:8080/api/attractions/get-all');
 
                 const data = await response.json();
                 setMarkers(data); // Обновляем состояние с метками
@@ -106,16 +42,15 @@ export default function Map() {
                 setMinYear(Math.min(...years));
                 setMaxYear(Math.max(...years));
 
-                setFilteredMarkers(data);
+                setFilteredMarkers(data); // Фильтруем метки (по умолчанию показываем все)
+
             } catch (error) {
-                console.error("Ошибка при загрузке данных:", error);
+                console.error('Ошибка при загрузке данных:', error);
             }
         };
 
-        fetchMarkers();
+        fetchMarkers();  // Загружаем метки при монтировании компонента
     }, []);
-
-
 
     useEffect(() => {
         // Начальные значения слайдера
@@ -124,27 +59,23 @@ export default function Map() {
     }, [minYear, maxYear]);
 
     useEffect(() => {
-
-        if (!mapContainer.current || map.current) return;
-
+        if (map.current) return; // Не инициализировать повторно
 
         map.current = new maptilersdk.Map({
             container: mapContainer.current,
             style: maptilersdk.MapStyle.STREETS,
             center: [spb.lng, spb.lat],
             zoom: zoom,
-            language: lang,
+            language: lang
         });
-
 
         return () => {
             if (map.current) {
                 map.current.remove();
-                map.current = null;
             }
-        };
-    }, []);
+        };  // Очистка карты при размонтировании компонента
 
+    }, []);
 
 
     useEffect(() => {
@@ -170,29 +101,39 @@ export default function Map() {
     };
 
     useEffect(() => {
-        if (!map.current) return; // Проверяем, что карта была инициализирована
-
         // Очистка текущих меток, добавленных на карту
         markerElements.current.forEach(marker => marker.remove());
         markerElements.current = [];
-
+    
         // Добавление новых меток на карту
         filteredMarkers.forEach(marker => {
-            if (marker?.location?.coordinates) { // Проверяем, что координаты существуют
-                const markerElement = new maptilersdk.Marker()
-                    .setLngLat(marker.location.coordinates)
-                    .addTo(map.current);
-
-                markerElement.getElement().addEventListener('click', () => {
-                    setSelectedMarker(marker);
-                    setIsInfoWindowOpen(true);
-                    setIsExpanded(false);
-                });
-
-                markerElements.current.push(markerElement);
-            }
+            const markerElement = new maptilersdk.Marker()
+                .setLngLat(marker.location.coordinates)
+                .addTo(map.current);
+    
+            // Создаем popup
+            const popup = new maptilersdk.Popup({ offset: 25 })
+                .setHTML(`
+                    <div>
+                        <h3>${marker.name}</h3>
+                        <p>Нажмите, чтобы узнать больше</p>
+                    </div>
+                `);
+    
+            // Привязываем popup к маркеру
+            markerElement.setPopup(popup);
+    
+            // Добавляем обработчик клика на маркер
+            markerElement.getElement().addEventListener('click', () => {
+                setSelectedMarker(marker); // Устанавливаем выбранную метку
+                setIsInfoWindowOpen(true); // Открываем InfoWindow
+            });
+    
+            // Сохраняем маркер в ref
+            markerElements.current.push(markerElement);
         });
     }, [filteredMarkers]);
+
 
 
 
@@ -239,21 +180,7 @@ export default function Map() {
                     </span>
                 </div>
             </div>
-            {isInfoWindowOpen && (
-                <InfoWindow
-                    marker={selectedMarker} // Передаем выбранную метку
-                    onClose={() => setIsInfoWindowOpen(false)} // Закрываем окно
-                    isExpanded={isExpanded} // Передаем состояние свернуто/развернуто
-                    setIsExpanded={setIsExpanded} // Передаем функцию для управления состоянием
-                    drawRoute={drawRoute}
-                    clearRoute={clearRoute}
-                />
-            )}
         </div>
-
     );
-
 }
-
-
 

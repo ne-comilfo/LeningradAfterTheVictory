@@ -1,0 +1,54 @@
+{
+    "id": 1,
+    "name": "Маршрут по Эрмитажу",
+    "description": "Маршрут для посещения Эрмитажа",
+    "url": "http://example.com/route1",
+    "attractions": [
+        {
+            "id": 2,
+            "name": "Петропавловская крепость 7",
+            "smallDescription": "Историческая крепость на Заячьем острове",
+            "descriptionBefore": "Около крепости много кафе",
+            "descriptionIn": "Экскурсии внутри крепости",
+            "descriptionAfter": "Сувенирные лавки вокруг",
+            "interestingFacts": "Основана в 1703 году",
+            "yearOfCreation": 1703,
+            "location": {
+                "type": "Point",
+                "coordinates": [
+                    30.31981,
+                    59.95041
+                ]
+            },
+            "linksPreview": [
+                "http://example.com/preview2.jpg"
+            ],
+            "linksBefore": [],
+            "linksIn": [],
+            "linksAfter": []
+        },
+        {
+            "id": 3,
+            "name": "Дворцовая площадь",
+            "smallDescription": "Историческая крепость на Заячьем острове",
+            "descriptionBefore": "Около крепости много кафе",
+            "descriptionIn": "Экскурсии внутри крепости",
+            "descriptionAfter": "Сувенирные лавки вокруг",
+            "interestingFacts": "Основана в 1703 году",
+            "yearOfCreation": 1789,
+            "location": {
+                "type": "Point",
+                "coordinates": [
+                    30.31413,
+                    59.93909
+                ]
+            },
+            "linksPreview": [
+                "http://example.com/preview2.jpg"
+            ],
+            "linksBefore": [],
+            "linksIn": [],
+            "linksAfter": []
+        }
+    ]
+}
