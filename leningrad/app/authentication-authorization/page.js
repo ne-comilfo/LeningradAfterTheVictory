@@ -5,7 +5,7 @@ import './authentication-authorization-style.css';
 import { Eye, EyeOff } from "lucide-react";
 
 const AuthenticationAuthorizationPage = () => {
-  const [isLoginMode, setIsLoginMode] = useState(false);
+  const [isLoginMode, setIsLoginMode] = useState(true);
 
   const BackgroundTransition = () => (
     <div className="background-transition" />
