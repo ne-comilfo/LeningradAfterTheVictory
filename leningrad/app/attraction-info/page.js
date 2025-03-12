@@ -17,7 +17,7 @@ export default function AttractionInfoPage({id}) {
         useEffect(() => {
             const fetchBuilding = async () => {
                 try {
-                    const response = await fetch(`/trial-building-data.json` /*запрос на сервер*/);
+                    const response = await fetch(`http://194.87.252.234:6060/api/attractions/${id}`);
 
                     if (!response.ok) {
                         throw new Error('Не удалось загрузить данные');

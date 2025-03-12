@@ -6,6 +6,10 @@ import './authentication-authorization-style.css';
 const AuthenticationAuthorizationPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(false); // Состояние для режима (регистрация/вход)
 
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
   const BackgroundTransition = () => (
     <div className="background-transition" />
   );
