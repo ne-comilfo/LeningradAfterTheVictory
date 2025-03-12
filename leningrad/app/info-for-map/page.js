@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import "./info-for-map-styles.css";
 import HeartIcon from './HeartIcon';
+import Link from 'next/link';
 
 export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded, drawRoute, clearRoute }) {
   const [isOpen, setIsOpen] = useState(true); // Управление видимостью окна
@@ -219,7 +220,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                         {isExpanded && object && (
                           <>
                             <p>{object.description}</p>
-                            <a href='./attraction-info'>подробнее</a>
+                              <Link href={`/attraction-info?id=${String(marker.id)}`}>
+                                <span>подробнее</span>
+                              </Link>
                             <div className="buttons centered">
                               <button onClick={handleSave}>
                                 <HeartIcon filled={isSaved} />
@@ -345,11 +348,13 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   </button>
                 </div>
                 <p>{object.description}</p>
-                <a href='./attraction-info'>подробнее</a>
+                  <Link href={`/attraction-info?id=${marker.id}`}>
+                    <span>подробнее</span>
+                  </Link>
               </>
             )}
             {view === "routes" && !selectedRoute && object && (
-              <>
+                <>
                 <h2>{object.title}</h2>
                 <div className="buttons-1 centered">
                   <button className="active">
