@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import './authentication-authorization-style.css';
-import { Eye, EyeOff } from "lucide-react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const AuthenticationAuthorizationPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -35,7 +35,7 @@ const AuthenticationAuthorizationPage = () => {
         />
         {type === "password" && isPasswordVisible && (
           <span className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+            {showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
           </span>
         )}
       </div>
