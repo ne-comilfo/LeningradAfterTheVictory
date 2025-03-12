@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePathname, useRouter } from 'next/navigation';
 import SwipeSlider from "../components/routes/SwipeSlider"; // Мобильный слайдер
 import ImageSlider from "../components/routes/ImageSlider"; // Слайдер для десктопа
 import styles from "../routes/routes.module.css";
 import ButtonRoutes from "../components/routes/ButtonRoutes.jsx";
 
-const API_URL = "http://194.87.252.234:6060/api/categories";
+const API_URL = "http://194.87.252.234:6060/api/categories/get-all";
 
 const images = [
   { id: 1, src: "/images/landmark1.png", alt: "Landmark 1" },
@@ -35,16 +36,22 @@ const App = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
 
-  useEffect(() => {
 
+  const router = useRouter();
+  const navigateToAuth = () => {
+    router.push('/authentication-authorization');
+  };
+
+  useEffect(() => {
     
     const fetchRoutes = async () => {
       try {
+        
         const response = await fetch(API_URL);
         if (!response.ok) {
           throw new Error(`Ошибка запроса: ${response.status}`);
         }
-        const data = await response.json();
+        const data = await response.text();
         console.log(data)
         const firstImage = data[0]?.linksPreview?.[0] || "";
         setImageSrc(firstImage);
@@ -97,7 +104,7 @@ const App = () => {
       )}
 
       <div className={styles.button_container}>
-        <ButtonRoutes text="Перейти к посещённым маршрутам" onClick={() => alert("Кнопка нажата!")} />
+        <ButtonRoutes text="Перейти к посещённым маршрутам" onClick={navigateToAuth} />
       </div>
     </div>
   );
