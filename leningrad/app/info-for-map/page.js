@@ -18,6 +18,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   const [routes, setRoutes] = useState([]); // Список маршрутов
   const routesRef = useRef(null); // Ссылка на список маршрутов
 
+  
   // Загрузка данных объекта и маршрутов
   useEffect(() => {
     // Сброс состояния вкладки и маршрута при изменении объекта
