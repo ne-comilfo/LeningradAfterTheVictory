@@ -27,7 +27,7 @@ const TopBar = () => {
       <Link href="/authentication-authorization">
         <div className="profile-icon">
           <Image
-            src="/images/log_account_picture.png"
+            src="/svg/account_icon.svg"
             alt="Account Icon"
             width={60}
             height={60}

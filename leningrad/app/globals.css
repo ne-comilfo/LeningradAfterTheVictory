@@ -56,6 +56,7 @@ body {
 }
 
 .hero-content {
+  transition: all 1.5s ease;
   position: absolute;
   top: 20%;
   left: 10%;
@@ -76,11 +77,13 @@ body {
 
 .big-text {
   font-size: 120px;
+  transition: all 1.5s ease;
   display: block;
 }
 
 .small-text {
   font-size: 60px;
+  transition: all 1.5s ease;
   display: block;
 }
 
@@ -193,6 +196,7 @@ body {
 
 .hero-content p {
   font-size: 18px;
+  transition: all 1.5s ease;
 }
 
 
@@ -306,15 +310,82 @@ body {
 }
 
 
+@media (max-width: 1700px) {
+  .big-text {
+    font-size: 90px;
+    transition: all 1.5s ease;
+    line-height: 0.5;
+    margin-top: 3.5rem;
+  }
 
+  .small-text {
+    font-size: 45px;
+    transition: all 1.5s ease;
+    
+  }
+
+  .bottom-left-text {
+    left: -50px;
+    top: 300px;
+    font-size: 20px;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 1520px) {
+  .big-text {
+    font-size: 60px;
+    transition: all 1.5s ease;
+    line-height: 0.5;
+    margin-top: 20.5rem;
+  }
+
+  .small-text {
+    font-size: 30px;
+    transition: all 1.5s ease;
+    
+  }
+
+  .bottom-left-text {
+    left: -50px;
+    top: 500px;
+   
+    max-width: 300px;
+    font-size: 20px;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+}
 
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
   
+  .page-container {
+    height: 100dvh;
+    
+  }
+  
+  .section-container {
+   
+    width: 100%;
+    height: 100dvh;
+    
+  }
+  
+  .section {
+    height: 100dvh;
+    
+  }
+
   .hero {
     flex-direction: column;
     text-align: center;
-    height: 100vh;
+    height: 100dvh;
     padding: 10px;
   }
 
@@ -322,6 +393,7 @@ body {
     position: static;
     max-width: 100%;
     text-align: center;
+    height: auto;
   }
 
   .big-text {
@@ -333,7 +405,7 @@ body {
 
   .small-text {
     font-size: 1.5rem;
-    line-height: 0.2;
+    line-height: 2.0;
     margin-right: 5rem;
     display: block;
   }
@@ -353,7 +425,7 @@ body {
 
   .hero-image img {
     width: 130%; /* Увеличиваем изображение, чтобы можно было обрезать */
-    height: 100vh;
+    height: 100dvh;
     object-position: center; /* Центрируем изображение */
   
   
@@ -502,6 +574,8 @@ body {
   margin: 0;
 }
 
+
+
 @media (max-width: 768px) {
   .about-content {
     padding: 20px;
@@ -522,7 +596,7 @@ body {
     flex-direction: flex; /* Располагаем элементы в столбик */
     align-items: flex-start; /* Выравниваем текст слева */
     margin-bottom: 15px; /* Уменьшаем отступ между пунктами */
-    font-size: 14px;
+    font-size: 0.8rem;
   }
 
   .checkbox {
