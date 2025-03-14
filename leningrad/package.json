@@ -2,12 +2,14 @@
   "name": "leningrad",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
+  
   "dependencies": {
     "@maptiler/sdk": "^3.0.1",
     "leaflet": "^1.9.4",
