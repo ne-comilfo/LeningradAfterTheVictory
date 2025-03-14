@@ -5,7 +5,6 @@ import './authentication-authorization-style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const AuthenticationAuthorizationPage = () => {
-
   const [isLoginMode, setIsLoginMode] = useState(true);
 
   const BackgroundTransition = () => (
@@ -41,43 +40,42 @@ const AuthenticationAuthorizationPage = () => {
         )}
       </div>
     </div>
-
-  );
-
-
+    );
+  };
+    
   const FormHeader = ({ isLoginMode }) => (
     <div className="box form">
       <div className="text">
         <p>
-          <span className={isLoginMode ? "highlight" : ""} onClick={() => setIsLoginMode(true)}>Вход</span> / 
-          <span className={!isLoginMode ? "highlight" : ""} onClick={() => setIsLoginMode(false)}>Регистрация</span>
+          <span className={!isLoginMode ? "highlight" : ""} onClick={() => setIsLoginMode(false)}>Регистрация</span> / 
+          <span className={isLoginMode ? "highlight" : ""} onClick={() => setIsLoginMode(true)}>Вход</span>
         </p>
       </div>
     </div>
   );
 
-  // Обновили текст ссылок
   const FormLinks = ({ isLoginMode }) => (
     <div className="form-links">
       <a onClick={() => setIsLoginMode(!isLoginMode)}>
         {isLoginMode ? "Ещё не зарегистрированы?" : "Уже зарегистрированы?"}
       </a>
       <a onClick={() => setIsLoginMode(!isLoginMode)}>
-        {isLoginMode ? "Создать аккаунт" : "Войти в аккаунт"}
+        {isLoginMode ? "Регистрация" : "Вход"}
       </a>
     </div>
   );
 
-  // Поменяли порядок рендеринга форм
-  const BlockForms = ({ isLoginMode }) => (
-    <div className="block-of-forms">
-      <BackgroundTransition />
-      <FormHeader isLoginMode={isLoginMode} />
-      {isLoginMode ? <LoginForm /> : <RegistrationForm />}
+  const RegistrationForm = () => (
+    <div className="box form-1">
+      <form className="form-content" action="path_to_your_processing_script" method="POST">
+        <InputField label="Почта" type="email" id="email" name="email" />
+        <InputField label="Логин" type="text" id="username" name="username" />
+        <InputField label="Пароль" type="password" id="password" name="password" />
+        <FormLinks isLoginMode={isLoginMode} />
+      </form>
     </div>
   );
 
-  // Форма входа
   const LoginForm = () => (
     <div className="box form-1">
       <form className="form-content" action="path_to_your_processing_script" method="POST">
@@ -88,15 +86,11 @@ const AuthenticationAuthorizationPage = () => {
     </div>
   );
 
-  // Форма регистрации
-  const RegistrationForm = () => (
-    <div className="box form-1">
-      <form className="form-content" action="path_to_your_processing_script" method="POST">
-        <InputField label="Почта" type="email" id="email" name="email" />
-        <InputField label="Логин" type="text" id="username" name="username" />
-        <InputField label="Пароль" type="password" id="password" name="password" />
-        <FormLinks isLoginMode={isLoginMode} />
-      </form>
+  const BlockForms = ({ isLoginMode }) => (
+    <div className="block-of-forms">
+      <BackgroundTransition />
+      <FormHeader isLoginMode={isLoginMode} />
+      {isLoginMode ? <LoginForm /> : <RegistrationForm />}
     </div>
   );
 
