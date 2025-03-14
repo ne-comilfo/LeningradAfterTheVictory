@@ -2,21 +2,47 @@
 
 import React, { useState } from "react";
 import './authentication-authorization-style.css';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const AuthenticationAuthorizationPage = () => {
-  const [isLoginMode, setIsLoginMode] = useState(false); // Состояние для режима (регистрация/вход)
+  const [isLoginMode, setIsLoginMode] = useState(true);
 
   const BackgroundTransition = () => (
     <div className="background-transition" />
   );
 
-  const InputField = ({ label, type, id, name }) => (
+  const InputField = ({ label, type, id, name }) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  
+    const handleInputChange = (e) => {
+      if (type === "password") {
+        setIsPasswordVisible(e.target.value.length > 0);
+      }
+    };
+  
+    return (
     <div className="input-group">
       <label htmlFor={id}><span className='qw'>{label}</span></label>
-      <input type={type} id={id} name={name} required />
+      
+      <div className="input-wrapper">
+        <input 
+          type={type === "password" && showPassword ? "text" : type} 
+          id={id} 
+          name={name} 
+          required 
+          onChange={handleInputChange} 
+        />
+        {type === "password" && isPasswordVisible && (
+          <span className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
+          </span>
+        )}
+      </div>
     </div>
-  );
-
+    );
+  };
+    
   const FormHeader = ({ isLoginMode }) => (
     <div className="box form">
       <div className="text">

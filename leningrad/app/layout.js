@@ -1,5 +1,5 @@
 import './globals.css';
-import TopBar from "./TopBar.js";
+import TopBar from "./components/TopBar.jsx";
 
 export const metadata = {
   title: 'Create Next App',

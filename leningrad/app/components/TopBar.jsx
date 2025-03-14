@@ -24,7 +24,7 @@ const TopBar = () => {
           Маршруты
         </Link>
       </div>
-      <Link href="/profile">
+      <Link href="/authentication-authorization">
         <div className="profile-icon">
           <Image
             src="/images/log_account_picture.png"
