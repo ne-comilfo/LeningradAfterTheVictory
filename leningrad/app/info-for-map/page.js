@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import "./info-for-map-styles.css";
 import HeartIcon from './HeartIcon';
+
 import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 
@@ -30,7 +31,6 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     setView("default"); // Возвращаемся на начальную вкладку
     setSelectedRoute(null); // Сбрасываем выбранный маршрут
   }, [marker]);
-
 
   useEffect(() => {
     if (marker) {
@@ -281,6 +281,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     }
   }
 
+
   // Обработчик свайпа
   const handleTouchStart = (e) => {
     setStartY(e.touches[0].clientY);
@@ -353,10 +354,12 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
           .then((response) => response.json())  // Обрабатываем ответ второго запроса
           .then((routeData) => {
             
+
             if (routeData.geoJson.length > 0) {
               try {
                 const geoJson = routeData.geoJson; // Парсим geoJson
                 const coordinates1 = geoJson; // Извлекаем координаты
+
 
                 drawRoute(coordinates1)
                 setIsExpanded(false);
@@ -432,7 +435,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 <img src="/ways.svg" className="routes" />
                                 Маршруты
                               </button>
+
                               <button onClick={handleStartRoute}>
+                              
                                 <img src="/route.svg" className="in-the-route" />
                                 В путь
                               </button>
@@ -472,13 +477,17 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 </button>
                               </div>
                             </div>
+
                             <a className="back-link" onClick={() => { setView("default"); clearRoute(); clearMarker() }}>⬅ Назад к описанию</a>
+
                             <div className="buttons-1 centered">
                               <button className="active">
                                 <img src="/ways.svg" className="routes" />
                                 Маршруты
                               </button>
+
                               <button onClick={handleStartRoute}>
+
                                 <img src="/route.svg" className="in-the-route" />
                                 В путь
                               </button>
@@ -499,13 +508,17 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                         {isExpanded && (
                           <>
                             <p>{selectedRoute.details}</p>
+
                             <a className="back-link" onClick={() => { setSelectedRoute(null); clearRoute(); clearMarker() }}>⬅ Назад к маршрутам</a>
+
                             <div className="buttons-1">
                               <button onClick={() => handleSaveRoute(selectedRoute.id)}>
                                 <HeartIcon filled={savedRoutes[selectedRoute.id]} />
                                 {savedRoutes[selectedRoute.id] ? "Сохранено" : "Сохранить"}
                               </button>
+
                               <button onClick={() => handleStartRoute(selectedRoute)}>
+
                                 <img src="/route.svg" className="in-the-route" />
                                 В путь
                               </button>
@@ -525,7 +538,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
         <div className="pc-version">
           <div className={`info-window ${isOpen ? "open" : ""}`}>
             <div className='button-to-exit'>
+
               <button onClick={() => { handleClose(); clearMarker() }}>✕</button>
+
             </div>
             {view === "default" && object && (
               <>
@@ -542,7 +557,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     <img src="/ways.svg" className="routes" />
                     Маршруты
                   </button>
+
                   <button onClick={handleStartRoute}>
+
                     <img src="/route.svg" className="in-the-route" />
                     В путь
                   </button>
@@ -559,7 +576,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     <img src="/ways.svg" className="routes" />
                     Маршруты
                   </button>
+
                   <button onClick={handleStartRoute}>
+
                     <img src="/route.svg" className="in-the-route" />
                     В путь
                   </button>
@@ -573,7 +592,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     ))}
                   </ul>
                 </div>
+
                 <a className="back-link" onClick={() => { setView("default"); clearRoute(); clearMarker() }}>⬅ Назад к описанию</a>
+
               </>
             )}
             {selectedRoute && object && (
@@ -584,13 +605,17 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     <HeartIcon filled={savedRoutes[selectedRoute.id]} />
                     {savedRoutes[selectedRoute.id] ? "Сохранено" : "Сохранить"}
                   </button>
+
                   <button onClick={() => handleStartRoute(selectedRoute)}>
+
                     <img src="/route.svg" className="in-the-route" />
                     В путь
                   </button>
                 </div>
                 <p>{selectedRoute.details}</p>
+
                 <a className="back-link" onClick={() => { setSelectedRoute(null); clearRoute(); clearMarker() }}>⬅ Назад к маршрутам</a>
+
               </>
             )}
           </div>

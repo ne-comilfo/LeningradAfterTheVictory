@@ -97,7 +97,6 @@ export default function Map() {
         const fetchMarkers = async () => {
             try {
                 const response = await fetch("http://194.87.252.234:6060/api/attractions/get-all");
-                
                 const data = await response.json();
                 setMarkers(data); // Обновляем состояние с метками
 
@@ -257,6 +256,7 @@ export default function Map() {
                     drawRoute={drawRoute}
                     clearRoute={clearRoute}
                     map={map}
+
                 />
             )}
         </div>
