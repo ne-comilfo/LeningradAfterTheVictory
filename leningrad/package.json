@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
+  
   "dependencies": {
     "@maptiler/sdk": "^3.0.1",
     "leaflet": "^1.9.4",

@@ -97,7 +97,6 @@ export default function Map() {
         const fetchMarkers = async () => {
             try {
                 const response = await fetch("http://194.87.252.234:6060/api/attractions/get-all");
-
                 const data = await response.json();
                 setMarkers(data); // Обновляем состояние с метками
 
@@ -127,7 +126,7 @@ export default function Map() {
 
         if (!mapContainer.current || map.current) return;
 
-
+        
         map.current = new maptilersdk.Map({
             container: mapContainer.current,
             style: maptilersdk.MapStyle.STREETS,
@@ -136,6 +135,15 @@ export default function Map() {
             language: lang,
         });
 
+        const bounds = [
+            [29.8, 59.7], // Юго-западная граница (нижний левый угол)
+            [30.8, 60.1], // Северо-восточная граница (верхний правый угол)
+        ];
+        map.current.setMaxBounds(bounds);
+    
+        // Устанавливаем минимальный и максимальный уровень масштабирования
+        map.current.setMinZoom(10); // Минимальный уровень масштабирования
+        map.current.setMaxZoom(14);
 
         return () => {
             if (map.current) {
@@ -247,6 +255,8 @@ export default function Map() {
                     setIsExpanded={setIsExpanded} // Передаем функцию для управления состоянием
                     drawRoute={drawRoute}
                     clearRoute={clearRoute}
+                    map={map}
+
                 />
             )}
         </div>
