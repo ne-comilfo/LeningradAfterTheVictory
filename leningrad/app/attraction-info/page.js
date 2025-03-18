@@ -4,12 +4,12 @@ import "./page-style.css";
 import TimePeriodSection from "@/components/attraction-info/time-period-section";
 import "../../components/attraction-info/interesting-facts"
 import "../../components/attraction-info/button-panel"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import InterestingFacts from "@/components/attraction-info/interesting-facts";
 import ButtonPanel from "@/components/attraction-info/button-panel";
 import { useSearchParams } from 'next/navigation';
 
-export default function AttractionInfoPage() {
+const AttractionInfoComponent = () => {
 
         const searchParams = useSearchParams();
         const id = searchParams.get('id');
@@ -65,5 +65,13 @@ export default function AttractionInfoPage() {
                 <InterestingFacts facts={building.interestingFacts} />
             ) : null}
         </div>
+    );
+}
+
+export default function AttractionInfoPage () {
+    return (
+        <Suspense fallback={<div className="loading-or-error">Загрузка...</div>}>
+        <AttractionInfoComponent />
+        </Suspense>
     );
 }
