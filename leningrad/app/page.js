@@ -5,6 +5,7 @@ import StatBox from "./components/StatBox";
 import LinkList from "./components/LinkList";
 import globalStyles from "./App.module.css";
 
+
 const HomePage = () => {
   const links = [
     {
@@ -24,7 +25,6 @@ const HomePage = () => {
   useEffect(() => {
     const sections = document.querySelectorAll(".section");
     let isScrolling = false;
-    let currentSection = 0;
 
     function scrollToSection(index) {
       if (isScrolling || index < 0 || index >= sections.length) return;
@@ -35,12 +35,39 @@ const HomePage = () => {
       setTimeout(() => (isScrolling = false), 1000); // Блокируем быстрый повторный скролл
     }
 
+    // IntersectionObserver для отслеживания видимой секции
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const sectionId = entry.target.id; // Получаем ID секции (hero или about)
+            // Отправляем событие с текущей секцией
+            const sectionIndex = sectionId === "hero" ? 0 : 1;
+            window.dispatchEvent(
+              new CustomEvent("sectionChange", { detail: { sectionIndex } })
+            );
+          }
+        });
+      },
+      {
+        root: null, // Отслеживаем относительно viewport
+        threshold: 0.5, // Секция считается видимой, если 50% её площади в viewport
+      }
+    );
+
+    // Наблюдаем за секциями
+    sections.forEach((section) => observer.observe(section));
+
+    // Обработчики событий для скролла
+    let currentSection = 0;
+
     document.addEventListener("wheel", (event) => {
       if (event.deltaY > 0) {
         scrollToSection(++currentSection);
       } else {
         scrollToSection(--currentSection);
       }
+      
     });
 
     document.addEventListener("keydown", (event) => {
@@ -49,6 +76,7 @@ const HomePage = () => {
       } else if (event.key === "ArrowUp") {
         scrollToSection(--currentSection);
       }
+
     });
 
     return () => {
@@ -60,7 +88,7 @@ const HomePage = () => {
   return (
     <div className="page-container">
       {/* Первая секция: Главная */}
-      <section className="section hero">
+      <section id="hero" className="section hero">
         <div className="hero-content">
           <h1>
             <span className="big-text">Ленинград</span> 
@@ -80,7 +108,7 @@ const HomePage = () => {
       </section>
 
       {/* Вторая секция: О проекте */}
-      <section className="section about">
+      <section id="about" className="section about">
         <div className="about-content">
           <h2 className="about-title">О проекте</h2>
           <ul className="about-list">

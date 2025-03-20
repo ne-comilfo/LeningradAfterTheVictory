@@ -11,13 +11,14 @@ body {
 
 
 .header {
+  display: flex; /* Горизонтальное расположение элементов */
+  justify-content: space-between; /* Логотип слева, навигация справа */
+  align-items: center; /* Выравнивание по центру вертикали */
   position: fixed;
   top: 0;
   width: 100%;
   background-color: rgba(255, 255, 255);
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  
   padding: 10px 20px;
   z-index: 1000;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -27,22 +28,119 @@ body {
   background-color: rgba(255, 255, 255, 0.1); /* Темный фон только для главной страницы */
 }
 
+.logo-bar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center; 
+}
+
+.logo-bar img{
+  width: 80px; 
+  height: 35px;
+}
+
 .nav-bar {
   display: flex;
-  gap: 30px;
+  justify-content: flex-end;
   align-items: center;
+  gap: 70px;
+}
+
+.nav-bar img {
+  width: 50px; 
+  height: 35px;
+ 
+  border-radius: 50%; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-bar img:hover {
+  transform: scale(1.05); /* Лёгкое увеличение иконки при наведении */
+  box-shadow: 0 2px 4px rgba(26, 12, 120, 0.205); /* Тень при наведении */
 }
 
 .nav-link {
-  font-family: "Geologica", sans-serif;
   text-decoration: none;
   color: black;
-  font-size: 1rem;
+  font-size: 1.3rem;
   transition: color 0.3s ease;
 }
 
 .nav-link.active {
   color: #0D74BD;
+  position: relative;
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  top: -5px; /* Расположение полоски под текстом */
+  left: -25%;
+  width: 150%;
+  height: 3px; /* Толщина полоски */
+  background-color: #0D74BD; /* Синий цвет полоски */
+}
+
+.nav-bar .nav-link:hover {
+  color: gray; /* Цвет при наведении */
+}
+
+.nav-bar .nav-link:last-child {
+  margin-right: 0; /* Убираем отступ у последнего элемента */
+}
+
+.profile-icon {
+  width: 45px; /* Длина контейнера */
+  height: 35px; /* Высота контейнера */
+  display: flex;
+  justify-content: center;
+  
+  border-radius: 50px; /* Скруглённые углы */
+  overflow: hidden; /* Убираем лишнее изображение за границей */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-icon img {
+  width: auto; /* Автоматическая ширина */
+  height: 100%; /* Полностью вписать в высоту контейнера */
+  object-fit: contain; /* Сохранение пропорций изображения */
+}
+
+.profile-icon:hover {
+  transform: scale(1.04); /* Небольшое увеличение при наведении */
+  box-shadow: 0 2px 4px rgba(26, 12, 120, 0.205); /* Лёгкая тень */
+}
+
+
+.page-container {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  scroll-snap-type: y mandatory; /* Принудительное прилипание */
+  overflow-y: scroll; /* Включаем скроллинг */
+  scroll-behavior: smooth; /* Плавная прокрутка */
+  transition: scroll-behavior 1.2s ease-in-out;
+}
+
+.section-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.section {
+  scroll-snap-align: start;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 20px;
+  text-align: center;
 }
 
 .hero {
@@ -53,6 +151,16 @@ body {
   height: 100vh;
   padding: 0 5%;
   background: linear-gradient(to right, #E9E7E1 50%, transparent 70%);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
 }
 
 .hero-content {
@@ -66,7 +174,7 @@ body {
 }
 
 .hero-content h1 {
-  font-style: normal;
+  font-style: bold;
   font-weight: 400;
   line-height: 100px;
   text-align: right;
@@ -75,18 +183,10 @@ body {
   align-items: flex-end;
 }
 
-.big-text {
-  font-size: 120px;
+.hero-content p {
+  font-size: 18px;
   transition: all 1.5s ease;
-  display: block;
 }
-
-.small-text {
-  font-size: 60px;
-  transition: all 1.5s ease;
-  display: block;
-}
-
 
 .hero-image {
   position: absolute;
@@ -107,98 +207,26 @@ body {
   mask-image: 
     radial-gradient(ellipse 100% 80% at 30% 50%, rgb(208, 198, 167, 1) 50%, rgba(208, 198, 167, 0) 80%),
     radial-gradient(ellipse 80% 80% at 65% 40%, rgba(208, 198, 167, 1) 50%, rgba(208, 198, 167, 0) 80%);
-  mask-composite: intersect; /* или add */
+  mask-composite: intersect; 
   -webkit-mask-image: 
     radial-gradient(ellipse 100% 80% at 30% 50%, rgba(208, 198, 167, 1) 50%, rgba(208, 198, 167, 0) 80%),
     radial-gradient(ellipse 80% 80% at 65% 40%, rgba(208, 198, 167, 1) 50%, rgba(208, 198, 167, 0) 80%);
-  -webkit-mask-composite: intersect; /* или add */
+  -webkit-mask-composite: intersect; 
 
 }
 
-.nav-bar img {
-  width: 40px; /* Увеличенный размер для удобства */
-  height: 40px;
-  margin-left: 20px; /* Отступ от последней ссылки */
-  border-radius: 50%; /* Скругление для круглой иконки */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
 
-.nav-bar img:hover {
-  transform: scale(1.2); /* Лёгкое увеличение иконки при наведении */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень при наведении */
-}
-
-.page-container {
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.section-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.5s ease-in-out;
-}
-
-.section {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  padding: 20px;
-  text-align: center;
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-}
-
-
-.hero {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 100vh;
-  padding: 0 5%;
-  background: linear-gradient(to right, #E9E7E1 50%, transparent 70%);
-}
-
-.hero-content {
-  position: absolute;
-  top: 20%;
-  left: 10%;
-  z-index: 2;
-  max-width: 40%;
-  color: black;
-}
-
-.hero-content h1 {
-  font-style: normal;
-  font-weight: 400;
-  line-height: 100px;
-  text-align: right;
-
-  display: flex;  
-  flex-direction: column; 
-  align-items: flex-end;
-}
-
-.hero-content p {
-  font-size: 18px;
+.big-text {
+  font-size: 120px;
   transition: all 1.5s ease;
+  display: block;
 }
 
+.small-text {
+  font-size: 60px;
+  transition: all 1.5s ease;
+  display: block;
+}
 
 .bottom-left-text {
   position: absolute;
@@ -219,43 +247,6 @@ body {
   margin-bottom: 10px;
 }
 
-
-
-/* Дополнительные стили для навигации */
-.nav-bar .nav-link:hover {
-  color: gray; /* Цвет при наведении */
-}
-
-.nav-bar .nav-link:last-child {
-  margin-right: 0; /* Убираем отступ у последнего элемента */
-}
-
-.nav-bar img:last-child {
-  margin-left: 30px; /* Отступ для иконки пользователя */
-}
-
-.profile-icon {
-  width: 75px; /* Длина контейнера */
-  height: 35px; /* Высота контейнера */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 20px; /* Отступ от навигации */
-  border-radius: 20px; /* Скруглённые углы */
-  overflow: hidden; /* Убираем лишнее изображение за границей */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.profile-icon img {
-  width: auto; /* Автоматическая ширина */
-  height: 100%; /* Полностью вписать в высоту контейнера */
-  object-fit: contain; /* Сохранение пропорций изображения */
-}
-
-.profile-icon:hover {
-  transform: scale(1.05); /* Небольшое увеличение при наведении */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Лёгкая тень */
-}
 
 .scroll-down {
   position: absolute;
@@ -308,6 +299,7 @@ body {
 .scroll-down {
   animation: bounce 1.5s infinite;
 }
+
 
 
 @media (max-width: 1700px) {
@@ -367,19 +359,15 @@ body {
   
   .page-container {
     height: 100dvh;
-    
   }
   
   .section-container {
-   
     width: 100%;
     height: 100dvh;
-    
   }
   
   .section {
     height: 100dvh;
-    
   }
 
   .hero {
@@ -396,6 +384,10 @@ body {
     height: auto;
   }
 
+  .hero-content p {
+    font-size: 1rem;
+  }
+
   .big-text {
     font-size: 3rem;
     margin-top: 50%;
@@ -408,10 +400,6 @@ body {
     line-height: 2.0;
     margin-right: 5rem;
     display: block;
-  }
-
-  .hero-content p {
-    font-size: 1rem;
   }
 
   .bottom-left-text {
@@ -428,7 +416,6 @@ body {
     height: 100dvh;
     object-position: center; /* Центрируем изображение */
   
-  
     mask-image: 
       radial-gradient(ellipse 100% 80% at 30% 50%, rgb(208, 198, 167, 1) 50%, rgba(208, 198, 167, 0) 80%),
       radial-gradient(ellipse 80% 50% at 65% 40%, rgba(208, 198, 167, 1) 50%, rgba(208, 198, 167, 0) 80%);
@@ -441,16 +428,6 @@ body {
   }
 }
 
-
-
-
-
-.about {
-  position: relative;
-  overflow: hidden;
-  background: radial-gradient(ellipse at center, rgba(255, 254, 250, 0.9) 30%, transparent 50%);
-
-}
 
 .team {
   position: relative;
@@ -468,39 +445,12 @@ body {
   z-index: -1;
 }
 
-.page-container {
-  scroll-snap-type: y mandatory; /* Принудительное прилипание */
-  overflow-y: scroll; /* Включаем скроллинг */
-  height: 100vh;
-  scroll-behavior: smooth; /* Плавная прокрутка */
-  transition: scroll-behavior 1.2s ease-in-out;
+.about {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at center, rgba(255, 254, 250, 0.9) 30%, transparent 50%);
+
 }
-
-.section {
-  scroll-snap-align: start; /* Фиксируем каждую секцию */
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .about-content {
   padding: 40px;
@@ -528,6 +478,17 @@ body {
   text-align: justify;
 }
 
+.about-list p {
+  text-align: left; 
+  margin: 0;
+}
+
+.about-stats {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
 .checkbox {
   width: 20px;
   height: 20px;
@@ -536,12 +497,6 @@ body {
   background-color: white; /* Белый фон */
   margin-right: 15px;
   flex-shrink: 0;
-}
-
-.about-stats {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
 }
 
 .stat-box {
@@ -569,11 +524,6 @@ body {
   text-align: center; /* Выравнивание текста в плашках по центру */
 }
 
-.about-list p {
-  text-align: left; /* Выравнивание текста описания слева */
-  margin: 0;
-}
-
 
 
 @media (max-width: 768px) {
@@ -599,17 +549,17 @@ body {
     font-size: 0.8rem;
   }
 
-  .checkbox {
-    width: 15px; /* Уменьшаем размер чекбокса */
-    height: 15px;
-    margin-right: 10px;
-  }
-
   .about-stats {
     gap: 15px; /* Уменьшаем промежутки между элементами */
     justify-content: space-around; /* Центрируем содержимое */
     align-items: center; /* Выравниваем элементы по центру */
 
+  }
+
+  .checkbox {
+    width: 15px; /* Уменьшаем размер чекбокса */
+    height: 15px;
+    margin-right: 10px;
   }
 
   .stat-box {
