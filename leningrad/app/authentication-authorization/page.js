@@ -13,6 +13,11 @@ const AuthenticationAuthorizationPage = () => {
   const isFormValidRef = useRef(false);
   const buttonRef = useRef(null);
 
+  const handleModeSwitch = (mode) => {
+    setIsLoginMode(mode);
+    setErrorMessage(""); // Очищаем ошибку при переключении формы
+  };
+  
 
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -86,7 +91,6 @@ const AuthenticationAuthorizationPage = () => {
       if (isFormValidRef.current !== isValid) {
         isFormValidRef.current = isValid;
 
-        // 🚀 ОБНОВЛЯЕМ ТОЛЬКО КНОПКУ (никакого ререндера формы)
         if (buttonRef.current) {
           buttonRef.current.classList.toggle("active", isValid);
         }
@@ -125,11 +129,21 @@ const AuthenticationAuthorizationPage = () => {
   const FormHeader = ({ isLoginMode, setIsLoginMode }) => (
     <div className="text">
       <p>
-        <span className={isLoginMode ? "highlight" : ""} onClick={() => setIsLoginMode(true)}>Вход</span> /
-        <span className={!isLoginMode ? "highlight" : ""} onClick={() => setIsLoginMode(false)}> Регистрация</span>
+        <span 
+          className={isLoginMode ? "highlight" : ""} 
+          onClick={() => handleModeSwitch(true)} // Вызываем с очисткой ошибки
+        >
+          Вход 
+        </span> / <span 
+          className={!isLoginMode ? "highlight" : ""} 
+          onClick={() => handleModeSwitch(false)} // Вызываем с очисткой ошибки
+        >
+          Регистрация
+        </span>
       </p>
     </div>
   );
+  
 
   const RegistrationForm = ({ isLoginMode, setIsLoginMode, emailRef, usernameRef, passwordRef, handleFormSubmit }) => (
     <div className="box form-1">
