@@ -173,7 +173,6 @@ const AuthenticationAuthorizationPage = () => {
       <form className="form-content login" method="POST" onSubmit={handleFormSubmit}>
         <InputField label="Логин/Почта" type="text" id="email" ref={emailRef} isLoginMode={isLoginMode} />
         <InputField label="Пароль" type="password" id="password" ref={passwordRef} isLoginMode={isLoginMode} />
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <a
           className='forgot-password'
           href="#"
@@ -184,6 +183,7 @@ const AuthenticationAuthorizationPage = () => {
         >
           Забыли пароль?
         </a>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button
           ref={buttonRef}  // Добавляем реф
           className={`button ${isLoginMode ? "login" : "registration"}`}
