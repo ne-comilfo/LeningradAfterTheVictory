@@ -7,6 +7,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 const AuthenticationAuthorizationPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
 
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
   const BackgroundTransition = () => (
     <div className="background-transition" />
   );

@@ -19,6 +19,7 @@ main {
   font-size: clamp(16px, 2.5vh, 25px);
   color: rgba(112, 111, 109, 1);
   font-family: 'Geologica', sans-serif;
+  cursor: pointer;
 }
 
 .highlight {
@@ -27,6 +28,7 @@ main {
   font-weight: bold;
   padding: 0;
   margin: 0;
+  cursor: default;
 }
 
 .switch {
