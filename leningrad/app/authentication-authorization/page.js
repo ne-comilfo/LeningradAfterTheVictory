@@ -12,6 +12,7 @@ const AuthenticationAuthorizationPage = () => {
   const [forgotPassword, setForgotPassword] = useState(false);
   const isFormValidRef = useRef(false);
   const buttonRef = useRef(null);
+  const passwordErrorRef = useRef(null);
 
   const handleModeSwitch = (mode) => {
     setIsLoginMode(mode);
@@ -84,21 +85,24 @@ const AuthenticationAuthorizationPage = () => {
     const handleChange = () => {
       const emailFilled = emailRef.current?.value.trim().length > 0;
       const usernameFilled = isLoginMode ? true : usernameRef.current?.value.trim().length > 0;
-      const passwordFilled = passwordRef.current?.value.trim().length > 0;
-
-      const isValid = emailFilled && usernameFilled && passwordFilled;
-
+      const passwordValue = passwordRef.current?.value.trim();
+      const passwordFilled = passwordValue.length > 0;
+    
+      // Обновляем текст ошибки через ref (без ререндера)
+      if (passwordErrorRef.current) {
+        passwordErrorRef.current.textContent = 
+          passwordFilled && passwordValue.length < 8 ? "Пароль должен содержать не менее 8 символов" : "";
+      }
+    
+      const isValid = emailFilled && usernameFilled && passwordFilled && passwordValue.length >= 8;
       if (isFormValidRef.current !== isValid) {
         isFormValidRef.current = isValid;
-
         if (buttonRef.current) {
           buttonRef.current.classList.toggle("active", isValid);
         }
       }
     };
-
-
-
+    
     return (
 
       <div className="input-group">
@@ -152,6 +156,7 @@ const AuthenticationAuthorizationPage = () => {
         <InputField label="Почта" type="email" id="email" ref={emailRef} isLoginMode={isLoginMode} />
         <InputField label="Логин" type="text" id="username" ref={usernameRef} isLoginMode={isLoginMode} />
         <InputField label="Пароль" type="password" id="password" ref={passwordRef} isLoginMode={isLoginMode} />
+        <p ref={passwordErrorRef} className="error-message"></p>
 
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button
