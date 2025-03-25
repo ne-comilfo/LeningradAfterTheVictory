@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import './authentication-authorization-style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const AuthenticationAuthorizationPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -18,35 +19,30 @@ const AuthenticationAuthorizationPage = () => {
     setIsLoginMode(mode);
     setErrorMessage(""); // Очищаем ошибку при переключении формы
   };
-  
 
+
+  const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/personal-account";
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
-
     let url = "http://194.87.252.234:6060/api/authentication/token";
-    let formData = {
-      username: emailRef.current.value,
-      password: passwordRef.current.value,
-    };
+    let formData = { username: emailRef.current.value, password: passwordRef.current.value };
 
     if (!isLoginMode) {
       url = "http://194.87.252.234:6060/api/authentication/register";
-      formData = {
-        name: usernameRef.current.value,
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      };
+      formData = { name: usernameRef.current.value, email: emailRef.current.value, password: passwordRef.current.value };
     }
+
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
         credentials: "include",
       });
@@ -56,17 +52,12 @@ const AuthenticationAuthorizationPage = () => {
         return;
       }
 
-      if (!response.ok) {
-        throw new Error("Ошибка при отправке данных на сервер");
-      }
-
-      window.location.href = "/personal-account"; // Перенаправление при успехе
+      if (!response.ok) throw new Error("Ошибка при отправке данных на сервер");
+      router.push(redirectPath);
     } catch (error) {
       setErrorMessage("Ошибка соединения с сервером. Попробуйте позже.");
-      console.error("Ошибка:", error);
     }
   };
-
 
   const BackgroundTransition = () => (
     <div className="background-transition" />
@@ -87,13 +78,13 @@ const AuthenticationAuthorizationPage = () => {
       const usernameFilled = isLoginMode ? true : usernameRef.current?.value.trim().length > 0;
       const passwordValue = passwordRef.current?.value.trim();
       const passwordFilled = passwordValue.length > 0;
-    
+
       // Обновляем текст ошибки через ref (без ререндера)
       if (passwordErrorRef.current) {
-        passwordErrorRef.current.textContent = 
+        passwordErrorRef.current.textContent =
           passwordFilled && passwordValue.length < 8 ? "Пароль должен содержать не менее 8 символов" : "";
       }
-    
+
       const isValid = emailFilled && usernameFilled && passwordFilled && passwordValue.length >= 8;
       if (isFormValidRef.current !== isValid) {
         isFormValidRef.current = isValid;
@@ -102,7 +93,7 @@ const AuthenticationAuthorizationPage = () => {
         }
       }
     };
-    
+
     return (
 
       <div className="input-group">
@@ -133,13 +124,13 @@ const AuthenticationAuthorizationPage = () => {
   const FormHeader = ({ isLoginMode, setIsLoginMode }) => (
     <div className="text">
       <p>
-        <span 
-          className={isLoginMode ? "highlight" : ""} 
+        <span
+          className={isLoginMode ? "highlight" : ""}
           onClick={() => handleModeSwitch(true)} // Вызываем с очисткой ошибки
         >
-          Вход 
-        </span> / <span 
-          className={!isLoginMode ? "highlight" : ""} 
+          Вход
+        </span> / <span
+          className={!isLoginMode ? "highlight" : ""}
           onClick={() => handleModeSwitch(false)} // Вызываем с очисткой ошибки
         >
           Регистрация
@@ -147,7 +138,7 @@ const AuthenticationAuthorizationPage = () => {
       </p>
     </div>
   );
-  
+
 
   const RegistrationForm = ({ isLoginMode, setIsLoginMode, emailRef, usernameRef, passwordRef, handleFormSubmit }) => (
     <div className="box form-1">

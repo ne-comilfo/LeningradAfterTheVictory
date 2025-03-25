@@ -39,7 +39,8 @@ const App = () => {
 
   const router = useRouter();
   const navigateToAuth = () => {
-    router.push('/authentication-authorization');
+    const currentUrl = window.location.pathname;
+    router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
   };
 
   useEffect(() => {
@@ -47,7 +48,10 @@ const App = () => {
     const fetchRoutes = async () => {
       try {
         
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL, {
+          credentials: "include",
+          mode: "cors",
+        });
         if (!response.ok) {
           throw new Error(`Ошибка запроса: ${response.status}`);
         }
