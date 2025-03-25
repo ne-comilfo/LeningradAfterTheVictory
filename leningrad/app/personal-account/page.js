@@ -1,12 +1,16 @@
 'use client'
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './personal-account-style.css';
+
+const API_URL = "http://194.87.252.234:6060/api/attractions/get-all";
 
 const PersonalAccountPage = () => {
     let attractionsFav = [];
     let attractionsVis = [];
     const [isFavMode, setIsFavMode] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const [imageSrc, setImageSrc] = useState("");
 
     const BackgroundTransition = () => (
         <div className="background-transition" />
@@ -18,7 +22,7 @@ const PersonalAccountPage = () => {
 
     const Profile = () => (
         <div className="profile">
-            <img src="icon.png" className="profile-icon"></img>
+            <img src="personal-account/icon.svg" className="profile-icon"></img>
             <div>
                 <div className="data-type">
                     <div>Логин</div>
@@ -34,7 +38,7 @@ const PersonalAccountPage = () => {
 
     const MobileProfile = () => (
         <div className="profile">
-            <img src="icon.png" className="profile-icon"></img>
+            <img src="personal-account/icon.svg" className="profile-icon"></img>
             <div>
                 <div className="data-type">
                     <div>Логин</div>
@@ -87,7 +91,7 @@ const PersonalAccountPage = () => {
         </div>
     );
 
-    const VisLaptopButtons = () => (
+    const VisLaptopButtons = ({ isFavMode }) => (
         <div className="action-buttons">
             <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранное</div>
             <div className="selected-button">Посещенное</div>
@@ -95,7 +99,7 @@ const PersonalAccountPage = () => {
         </div>
     );
 
-    const FavLaptopButtons = () => (
+    const FavLaptopButtons = ({ isFavMode }) => (
         <div className="action-buttons">
             <div className="selected-button">Избранное</div>
             <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Посещенное</div>
@@ -103,93 +107,104 @@ const PersonalAccountPage = () => {
         </div>
     );
 
-    const VisMobileButtons = () => (
+    const VisMobileButtons = ({ isFavMode }) => (
         <div className="action-buttons">
             <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранное</div>
             <div className="selected-button">Посещенное</div>
         </div>
     );
 
-    const FavMobileButtons = () => (
+    const FavMobileButtons = ({ isFavMode }) => (
         <div className="action-buttons">
             <div className="selected-button">Избранное</div>
             <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Посещенное</div>
         </div>
     );
 
-    function renderFavLaptop() {
-        return (
-            <>
-                <BackgroundTransition />
-                <Profile />
-                <RoutesHeader />
-                <FavLaptopButtons />
-                <FavScrollMenu />
-            </>
-        );
-    }
+    const LaptopView = ({ isFavMode }) => (
+        <>
+            <BackgroundTransition />
+            <Profile />
+            <RoutesHeader />
+            {isFavMode ? <FavLaptopButtons isFavMode={isFavMode} /> : <VisLaptopButtons isFavMode={isFavMode} />}
+            {isFavMode ? <FavScrollMenu /> : <VisScrollMenu />}
+        </>
+    );
 
-    function renderVisLaptop() {
-        return (
-            <>
-                <BackgroundTransition />
-                <Profile />
-                <VisLaptopButtons />
-                <VisScrollMenu />
-            </>
-        );
-    }
+    const MobileView = ({ isFavMode }) => (
+        <>
+            <BackgroundTransition />
+            <MobileProfile />
+            {isFavMode ? <FavMobileButtons isFavMode={isFavMode} /> : <VisMobileButtons isFavMode={isFavMode} />}
+            {isFavMode ? <FavScrollMenu /> : <VisScrollMenu />}
+        </>
+    );
 
-    function renderFavMobile() {
-        return (
-            <>
-                <BackgroundTransition />
-                <MobileProfile />
-                <FavMobileButtons />
-                <FavScrollMenu />
-            </>
-        );
-    }
-
-    function renderVisMobile() {
-        return (
-            <>
-                <BackgroundTransition />
-                <MobileProfile />
-                <VisMobileButtons />
-                <VisScrollMenu />
-            </>
-        );
-    }
-
-    function renderFav() {
-        if (window.screen.width > 750) {
-            return renderFavLaptop();
-        } else {
-            return renderFavMobile();
-        }
-    }
-
-    function renderVis() {
-        if (window.screen.width > 750) {
-            return renderVisLaptop();
-        } else {
-            return renderVisMobile();
-        }
-    }
-
-    async function getData() {
+    async function fetchData() {
         try {
-            const requestURL = "http://194.87.252.234:8080/api/attractions/get-all";
+            const requestURL = API_URL;
             const requestVis = new Request(requestURL);
             const responseVis = await fetch(requestVis);
             attractionsVis = await responseVis.json();
             const responseFav = await fetch(requestVis);
             attractionsFav = await responseFav.json();
+            console.log("done!!");
         } catch (error) {
             console.log('error >> ', error.message);
         }
     }
+
+    useEffect(() => {
+    
+        const fetchDestinations = async () => {
+          try {
+            
+            const response = await fetch(API_URL);
+            if (!response.ok) {
+              throw new Error(`Ошибка запроса: ${response.status}`);
+            }
+            const data = await response.text();
+            console.log(data)
+            attractionsVis = await data.json();
+            attractionsFav = await data.json();
+          } catch (error) {
+            console.error("Ошибка загрузки данных:", error);
+          }
+        };
+
+        /*async function fetchData() {
+            try {
+                const requestURL = API_URL;
+                const requestVis = new Request(requestURL);
+                const responseVis = await fetch(requestVis);
+                attractionsVis = await responseVis.json();
+                const responseFav = await fetch(requestVis);
+                attractionsFav = await responseFav.json();
+                console.log("done!!");
+            } catch (error) {
+                console.log('error >> ', error.message);
+            }
+        }*/
+    
+        fetchDestinations();
+    
+        const checkMobile = () => {
+          if (window.innerWidth <= 768) {
+            setIsMobile(true);
+          } else {
+            setIsMobile(false);
+          }
+        };
+    
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+    
+        return () => {
+          window.removeEventListener("resize", checkMobile);
+        };
+      }, []);
+
+    return( isMobile ? ( <MobileView isFavMode={isFavMode} /> ) : ( <LaptopView isFavMode={isFavMode} /> ));
 }
 
 export default PersonalAccountPage;
