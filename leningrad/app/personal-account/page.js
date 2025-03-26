@@ -11,6 +11,8 @@ const PersonalAccountPage = () => {
     const [isMobile, setIsMobile] = useState(false);
     const [attractionsFav, setAttractionsFav] = useState([]); // Состояние для избранных
     const [attractionsVis, setAttractionsVis] = useState([]); // Состояние для посещенных
+    const [userName, setUserName] = useState("");  // Состояние для логина
+    const [userEmail, setUserEmail] = useState(""); 
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
@@ -22,6 +24,9 @@ const PersonalAccountPage = () => {
             });
 
             if (response.status === 200) {
+                const data = await response.json();
+                setUserName(data.name); // Сохраняем логин
+                setUserEmail(data.mail);
                 setLoading(false); 
             } else if (response.status === 422) {
                 setTimeout(() => {
@@ -82,11 +87,11 @@ const PersonalAccountPage = () => {
             <div>
                 <div className="data-type">
                     <div>Логин</div>
-                    <div className="data">Shurochic</div>
+                    <div className="data">{userName}</div>
                 </div>
                 <div className="data-type">
                     <div>Почта</div>
-                    <div className="data">Shurochic@yandex.ru</div>
+                    <div className="data">{userEmail}</div>
                 </div>
             </div>
         </div>
@@ -98,13 +103,13 @@ const PersonalAccountPage = () => {
             <div>
                 <div className="data-type">
                     <div>Логин</div>
-                    <div className="data">Shurochic</div>
+                    <div className="data">{userName}</div>
                 </div>
                 <div className="data-type">
                     <div>Почта</div>
-                    <div className="data">Shurochic@yandex.ru</div>
+                    <div className="data">{userEmail}</div>
                 </div>
-                <a href="../authentication-authorization/index2.html" className="exit-button">Выйти</a>
+                <a href="../authentication-authorization" className="exit-button">Выйти</a>
             </div>
         </div>
     );
