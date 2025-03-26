@@ -9,109 +9,6 @@ body {
   background-color: rgba(208, 198, 167, 0.3);
 }
 
-
-.header {
-  display: flex; /* Горизонтальное расположение элементов */
-  justify-content: space-between; /* Логотип слева, навигация справа */
-  align-items: center; /* Выравнивание по центру вертикали */
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: rgba(255, 255, 255);
-  
-  padding: 10px 20px;
-  z-index: 1000;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-}
-
-.homePage {
-  background-color: rgba(255, 255, 255, 0.1); /* Темный фон только для главной страницы */
-}
-
-.logo-bar {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center; 
-}
-
-.logo-bar img{
-  width: 80px; 
-  height: 35px;
-}
-
-.nav-bar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 70px;
-}
-
-.nav-bar img {
-  width: 50px; 
-  height: 35px;
- 
-  border-radius: 50%; 
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.nav-bar img:hover {
-  transform: scale(1.05); /* Лёгкое увеличение иконки при наведении */
-  box-shadow: 0 2px 4px rgba(26, 12, 120, 0.205); /* Тень при наведении */
-}
-
-.nav-link {
-  text-decoration: none;
-  color: black;
-  font-size: 1.3rem;
-  transition: color 0.3s ease;
-}
-
-.nav-link.active {
-  color: #0D74BD;
-  position: relative;
-}
-
-.nav-link.active::after {
-  content: "";
-  position: absolute;
-  top: -5px; /* Расположение полоски под текстом */
-  left: -25%;
-  width: 150%;
-  height: 3px; /* Толщина полоски */
-  background-color: #0D74BD; /* Синий цвет полоски */
-}
-
-.nav-bar .nav-link:hover {
-  color: gray; /* Цвет при наведении */
-}
-
-.nav-bar .nav-link:last-child {
-  margin-right: 0; /* Убираем отступ у последнего элемента */
-}
-
-.profile-icon {
-  width: 45px; /* Длина контейнера */
-  height: 35px; /* Высота контейнера */
-  display: flex;
-  justify-content: center;
-  
-  border-radius: 50px; /* Скруглённые углы */
-  overflow: hidden; /* Убираем лишнее изображение за границей */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.profile-icon img {
-  width: auto; /* Автоматическая ширина */
-  height: 100%; /* Полностью вписать в высоту контейнера */
-  object-fit: contain; /* Сохранение пропорций изображения */
-}
-
-.profile-icon:hover {
-  transform: scale(1.04); /* Небольшое увеличение при наведении */
-  box-shadow: 0 2px 4px rgba(26, 12, 120, 0.205); /* Лёгкая тень */
-}
-
-
 .page-container {
   height: 100vh;
   overflow: hidden;
@@ -390,7 +287,7 @@ body {
 
   .big-text {
     font-size: 3rem;
-    margin-top: 50%;
+    margin-top: 490px;
     margin-right: 5rem;
     display: block;
   }

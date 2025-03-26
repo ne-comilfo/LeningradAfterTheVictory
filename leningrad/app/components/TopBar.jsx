@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import style from "./TopBar.module.css"
 
 
 const TopBar = () => {
@@ -31,46 +32,45 @@ const TopBar = () => {
   const isHomePage = pathname === "/";
 
   return (
-    <div className={`${"header"} ${isHomePage ? "homePage" : ""}`}>
+    <div className={`${style.header} ${isHomePage ? style.homePage : ""}`}>
 
-      <div className="logo-bar">
-        <Link href="/#hero" className={`nav-link ${isActive("/#hero") && currentSection ? "active" : ""}`}>
+      <div className={style.logoBar}>
+        <Link href="/#hero" className={`${style.navLink} ${isActive("/#hero") && currentSection ? style.active : ""}`}>
             <img
               src="/svg/logo_icon.svg"
               alt="logo icon"
             />
         </Link>
-        <Link href="/#hero" className={`nav-link ${isActive("/") && !currentSection ? "active" : ""}`}>
+        <Link href="/#hero" className={`${style.navLink} ${isActive("/") && !currentSection ? style.active : ""}`}>
           Главная
         </Link>
       </div>
 
-      <div className="nav-bar">
-        <Link href="/map" className={`nav-link ${isActive("/map") ? "active" : ""}`}>
+      <div className={style.navBar}>
+        <Link href="/map" className={`${style.navLink} ${isActive("/map") ? style.active : ""}`}>
           Карта
         </Link>
-        <Link href="/objects" className={`nav-link ${isActive("/objects") ? "active" : ""}`}>
+        <Link href="/objects" className={`${style.navLink} ${isActive("/objects") ? style.active : ""}`}>
           Объекты
         </Link>
-        <Link href="/routes" className={`nav-link ${isActive("/routes") ? "active" : ""}`}>
+        <Link href="/routes" className={`${style.navLink} ${isActive("/routes") ? style.active : ""}`}>
           Маршруты
         </Link>
-        <Link href="/video" className={`nav-link ${isActive("/video") ? "active" : ""}`}>
+        <Link href="/video" className={`${style.navLink} ${isActive("/video") ? style.active : ""}`}>
           Видео
         </Link>
-        <Link href="/#about" className={`nav-link ${isActive("/") && currentSection ? "active" : ""}`}>
+        <Link href="/#about" className={`${style.navLink} ${isActive("/") && currentSection ? style.active : ""}`}>
           О проекте
         </Link>
 
-        <Link href="/authentication-authorization">
-          <div className="profile-icon">
+        <Link href="/personal-account">
+          <div className={style.profileIcon}>
             <img
               src="/svg/account_icon.svg"
               alt="Account Icon"
             />
           </div>
         </Link>
-
       </div>
       
     </div>

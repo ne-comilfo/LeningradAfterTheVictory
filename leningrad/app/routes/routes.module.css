@@ -1,76 +1,279 @@
 @import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
 
-
 .container {
   font-family: 'Geologica', sans-serif;
-  background: linear-gradient(to bottom, #ffffff, #E9E7E1); /* Градиент от белого к бежевому */
-  height: 100vh;
+  background: linear-gradient(to bottom, #ffffff, #E9E7E1);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
+  padding: 50px;
+  max-width: 100%;
+  margin: 0 auto;
 }
-
-
-.button_container {
-  display: flex;
-  justify-content: center;
-  
- 
-}
-
-.button_container .button {
-  margin: 0 auto; 
-  background-color: transparent;
-}
-
 
 .textWithImage {
-  position: relative; /* Позволяет располагать элементы внутри относительно друг друга */
-}
-
-.svg_image {
-  position: absolute;
-  top: 60px;
-  left: -140px;
-  width: 1000px;
-  height: 200px;
-  z-index: 9; /* SVG в фоне */
+  position: relative;
 }
 
 .header {
-  font-size: 70px;
-  margin-top: 100px;
+  font-family: "Geologica", sans-serif;
+  font-size: 130px;
+  margin-top: 50px;
   margin-left: 110px;
   position: relative;
-  z-index: 10; /* Текст поверх SVG */
+  z-index: 10;
 }
 
-/* Мобильные стили */
-@media (max-width: 768px) {
-  .container {
-    padding: 10px; /* Уменьшаем отступы на мобильных */
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -10px; /* Располагаем черту чуть ниже текста */
+  left: -160px; /* Выравниваем с началом текста */
+  width: 1000px; /* Фиксированная длина черты (можно настроить) */
+  height: 1px; /* Толщина черты */
+  background-color: #000; /* Цвет черты */
+  display: inline-block;
+}
+
+/* Стили для кнопок категорий (фильтров) */
+.categories {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  margin-left: 40px; /* Смещаем кнопки влево, чтобы выровнять с карточками */
+  justify-content: left;
+}
+
+.svgImage {
+  position: absolute; /* Абсолютное позиционирование для наложения */
+  top: 55%; /* Центрируем по вертикали */
+  left: 80px; /* Смещаем влево, чтобы соответствовать тексту */
+  transform: translateY(-50%); /* Корректируем позицию */
+  width: 600px; /* Растягиваем на всю ширину контейнера */
+  height: auto; /* Сохраняем пропорции */
+  z-index: 1; /* Изображение позади текста */
+}
+
+.categoryButton {
+  padding: 10px 20px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 50px;
+  background-color: #f0f0f0;
+  color: #000;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.categoryButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background-color: #e0e0e0;
+}
+
+.categoryButton.active {
+  background-color: #3B3939;
+  color: #fff;
+}
+
+/* Стили для карточек маршрутов */
+.routesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+}
+
+.routeCard {
+  position: relative;
+  border-radius: 40px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 400px; /* Ограничиваем максимальную ширину карточки */
+  margin: 0 auto; /* Центрируем карточку */
+}
+
+.routeCard:hover {
+  transform: scale(1.10);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Внутренний контейнер для свайпа */
+.cardInner {
+  display: flex;
+  width: 200%; /* Два состояния: картинка и описание */
+  transition: transform 0.3s ease;
+}
+
+.imageWrapper,
+.descriptionWrapper {
+  width: 100%; /* Каждый контейнер занимает половину */
+}
+
+.imageWrapper {
+  position: relative;
+}
+
+.cardImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  aspect-ratio: 16 / 9; /* Предотвращаем растяжку */
+}
+
+.cardContent {
+  padding: 15px;
+}
+
+.cardContent h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Описание на ПК (появляется при наведении) */
+.cardDescription {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.routeCard:hover .cardDescription {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cardDescription p {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Описание для мобильной версии (свайп) */
+.descriptionWrapper {
+  background: #f0f0f0;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.descriptionWrapper p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Стрелка для свайпа */
+.arrow {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showDescription {
+  transform: translateX(-50%); /* Сдвигаем влево, чтобы показать описание */
+}
+
+/* Медиа-запросы */
+
+/* Для ПК */
+@media (min-width: 769px) {
+  .descriptionWrapper {
+    display: none; /* Скрываем боковое описание на ПК */
   }
 
-  .svg_image {
-    width: 300px; /* SVG занимает всю ширину на мобильных */
-    height: 100px;
-    top: 80px; /* Подвигаем SVG, чтобы он не мешал */
-    left: 0;
+  .cardInner {
+    width: 100%; /* На ПК только изображение */
+  }
+
+  .arrow {
+    display: none; /* Скрываем стрелку на ПК */
+  }
+}
+
+/* Для мобильных */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
   }
 
   .header {
-    font-size: 8vw; /* Размер шрифта зависит от ширины экрана */
+    font-size: 8vw;
     margin-left: 40px;
-    text-align: left; /* Центрируем текст */
+    text-align: left;
+    margin-top: 70px;
   }
 
-  /* Для ImageSlider */
-  .imageContainer {
-    flex-direction: column; /* Слайды вертикально на мобильных */
+  .header::after {
+    content: "";
+    position: absolute;
+    bottom: -10px; /* Располагаем черту чуть ниже текста */
+    left: -160px; /* Выравниваем с началом текста */
+    width: 100px; /* Фиксированная длина черты (можно настроить) */
+    height: 1px; /* Толщина черты */
+    background-color: #000; /* Цвет черты */
+    display: inline-block;
   }
 
-  .image {
-    width: 100%; /* Слайдеры занимают 90% ширины экрана */
-    margin-bottom: 10px;
+  .svgImage {
+    position: absolute; /* Абсолютное позиционирование для наложения */
+    top: 85%; /* Центрируем по вертикали */
+    left: 40px; /* Смещаем влево, чтобы соответствовать тексту */
+    transform: translateY(-50%); /* Корректируем позицию */
+    width: 200px; /* Растягиваем на всю ширину контейнера */
+    height: auto; /* Сохраняем пропорции */
+    z-index: 1; /* Изображение позади текста */
+  }
+
+  .categories {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .categoryButton {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .routesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardImage {
+    height: 150px;
+  }
+
+  .cardContent h3 {
+    font-size: 16px;
+  }
+
+  .cardDescription {
+    display: none; /* Скрываем описание для наведения на мобильных */
   }
 }
