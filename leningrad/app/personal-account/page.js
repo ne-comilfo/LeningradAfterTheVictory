@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import './personal-account-style.css';
+import AuthChecker from "../AuthChecker";
 
 const API_URL = "http://194.87.252.234:6060/api/attractions/get-all";
 
@@ -10,65 +10,14 @@ const PersonalAccountPage = () => {
     let attractionsFav = [];
     let attractionsVis = [];
     const [isFavMode, setIsFavMode] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [isMobile, setIsMobile] = useState(false);
-    const router = useRouter();
     const [imageSrc, setImageSrc] = useState("");
 
-    const handleAuth = async () => {
-        try {
-            const response = await fetch('http://194.87.252.234:6060/api/user/getUser', {
-                method: "GET",
-                credentials: "include", 
-            });
+    const [isAuthChecked, setIsAuthChecked] = useState(false);
 
-            if (response.status === 200) {
-                setLoading(false); 
-            } else if (response.status === 422) {
-                setTimeout(() => {
-                    const currentUrl = window.location.pathname;
-                    router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
-                }, 2000);
-            } else {
-                console.error(`Ошибка авторизации: ${response.status}`);
-            }
-        } catch (error) {
-            console.error("Ошибка при проверке авторизации:", error);
-        }
-    };
-
-    useEffect(() => {
-        handleAuth(); // Проверяем токен на сервере
-
-        const fetchDestinations = async () => {
-            try {
-                const response = await fetch(API_URL);
-                if (!response.ok) {
-                    throw new Error(`Ошибка запроса: ${response.status}`);
-                }
-                const data = await response.json();
-                attractionsVis = data;
-                attractionsFav = data;
-            } catch (error) {
-                console.error("Ошибка загрузки данных:", error);
-            }
-        };
-
-        fetchDestinations();
-
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-
-        checkMobile();
-        window.addEventListener("resize", checkMobile);
-        return () => window.removeEventListener("resize", checkMobile);
-    }, []);
-
-    if (loading) {
-        return <div className="download">Загрузка...</div>;
+    if (!isAuthChecked) {
+        return <AuthChecker onAuthComplete={() => setIsAuthChecked(true)} />;
     }
-
 
     const BackgroundTransition = () => (
         <div className="background-transition" />
@@ -222,7 +171,6 @@ const PersonalAccountPage = () => {
                     throw new Error(`Ошибка запроса: ${response.status}`);
                 }
                 const data = await response.text();
-                console.log(data)
                 attractionsVis = await data.json();
                 attractionsFav = await data.json();
             } catch (error) {
@@ -262,7 +210,11 @@ const PersonalAccountPage = () => {
         };
     }, []);
 
-    return (isMobile ? (<MobileView isFavMode={isFavMode} />) : (<LaptopView isFavMode={isFavMode} />));
+    return (
+        <>
+            isMobile ? (<MobileView isFavMode={isFavMode} />) : (<LaptopView isFavMode={isFavMode} />)
+        </>
+    );
 }
 
 export default PersonalAccountPage;
