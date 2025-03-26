@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import './personal-account-style.css';
-import AuthChecker from "../AuthChecker";
 
 const API_URL = "http://194.87.252.234:6060/api/attractions/get-all";
 
@@ -12,12 +12,62 @@ const PersonalAccountPage = () => {
     const [isFavMode, setIsFavMode] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [imageSrc, setImageSrc] = useState("");
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+    const handleAuth = async () => {
+        try {
+            const response = await fetch('http://194.87.252.234:6060/api/user/getUser', {
+                method: "GET",
+                credentials: "include", 
+            });
 
-    const [isAuthChecked, setIsAuthChecked] = useState(false);
+            if (response.status === 200) {
+                setLoading(false); 
+            } else if (response.status === 422) {
+                setTimeout(() => {
+                    const currentUrl = window.location.pathname;
+                    router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
+                }, 2000);
+            } else {
+                console.error(`Ошибка авторизации: ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Ошибка при проверке авторизации:", error);
+        }
+    };
 
-    if (!isAuthChecked) {
-        return <AuthChecker onAuthComplete={() => setIsAuthChecked(true)} />;
+    useEffect(() => {
+        handleAuth(); // Проверяем токен на сервере
+
+        const fetchDestinations = async () => {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    throw new Error(`Ошибка запроса: ${response.status}`);
+                }
+                const data = await response.json();
+                attractionsVis = data;
+                attractionsFav = data;
+            } catch (error) {
+                console.error("Ошибка загрузки данных:", error);
+            }
+        };
+
+        fetchDestinations();
+
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    if (loading) {
+        return <div className="download">Загрузка...</div>;
     }
+
 
     const BackgroundTransition = () => (
         <div className="background-transition" />
@@ -161,60 +211,9 @@ const PersonalAccountPage = () => {
         }
     }
 
-    useEffect(() => {
+    
 
-        const fetchDestinations = async () => {
-            try {
-
-                const response = await fetch(API_URL);
-                if (!response.ok) {
-                    throw new Error(`Ошибка запроса: ${response.status}`);
-                }
-                const data = await response.text();
-                attractionsVis = await data.json();
-                attractionsFav = await data.json();
-            } catch (error) {
-                console.error("Ошибка загрузки данных:", error);
-            }
-        };
-
-        /*async function fetchData() {
-            try {
-                const requestURL = API_URL;
-                const requestVis = new Request(requestURL);
-                const responseVis = await fetch(requestVis);
-                attractionsVis = await responseVis.json();
-                const responseFav = await fetch(requestVis);
-                attractionsFav = await responseFav.json();
-                console.log("done!!");
-            } catch (error) {
-                console.log('error >> ', error.message);
-            }
-        }*/
-
-        fetchDestinations();
-
-        const checkMobile = () => {
-            if (window.innerWidth <= 768) {
-                setIsMobile(true);
-            } else {
-                setIsMobile(false);
-            }
-        };
-
-        checkMobile();
-        window.addEventListener("resize", checkMobile);
-
-        return () => {
-            window.removeEventListener("resize", checkMobile);
-        };
-    }, []);
-
-    return (
-        <>
-            isMobile ? (<MobileView isFavMode={isFavMode} />) : (<LaptopView isFavMode={isFavMode} />)
-        </>
-    );
+    return (isMobile ? (<MobileView isFavMode={isFavMode} />) : (<LaptopView isFavMode={isFavMode} />));
 }
 
 export default PersonalAccountPage;
