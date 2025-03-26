@@ -46,14 +46,20 @@ const AuthenticationAuthorizationPage = () => {
         body: JSON.stringify(formData),
         credentials: "include",
       });
-
       if (response.status === 422) {
         setErrorMessage(isLoginMode ? "Неправильные логин или пароль" : "Логин или почта уже используются");
         return;
       }
-
+      
       if (!response.ok) throw new Error("Ошибка при отправке данных на сервер");
-      router.push(redirectPath);
+
+      if (!isLoginMode) {
+      setIsLoginMode(true);
+      setErrorMessage("");
+    } else {
+      // Если это вход, перенаправляем на целевую страницу
+      router.push(redirectPath);  // redirectPath может быть /personal-account или любой другой путь
+    }
     } catch (error) {
       setErrorMessage("Ошибка соединения с сервером. Попробуйте позже.");
     }
@@ -90,6 +96,7 @@ const AuthenticationAuthorizationPage = () => {
         isFormValidRef.current = isValid;
         if (buttonRef.current) {
           buttonRef.current.classList.toggle("active", isValid);
+          buttonRef.current.disabled = !isValid;
         }
       }
     };
@@ -148,12 +155,12 @@ const AuthenticationAuthorizationPage = () => {
         <InputField label="Логин" type="text" id="username" ref={usernameRef} isLoginMode={isLoginMode} />
         <InputField label="Пароль" type="password" id="password" ref={passwordRef} isLoginMode={isLoginMode} />
         <p ref={passwordErrorRef} className="error-message"></p>
-
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button
           ref={buttonRef}  // Добавляем реф
           className={`button ${isLoginMode ? "login" : "registration"}`}
           type="submit"
+          disabled={!isFormValidRef.current}
         >
           {isLoginMode ? "Войти" : "Зарегистрироваться"}
         </button>
@@ -184,6 +191,7 @@ const AuthenticationAuthorizationPage = () => {
           ref={buttonRef}  // Добавляем реф
           className={`button ${isLoginMode ? "login" : "registration"}`}
           type="submit"
+          disabled={!isFormValidRef.current}
         >
           {isLoginMode ? "Войти" : "Зарегистрироваться"}
         </button>

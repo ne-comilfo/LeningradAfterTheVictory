@@ -16,6 +16,14 @@ body {
   margin: 0;
 }
 
+.download {
+  color: #0D74BD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50vh;
+  font-size: clamp(25px, 2.5vh, 45px);
+}
 .switch {
   cursor: pointer;
   text-decoration: none;
@@ -51,7 +59,8 @@ body {
 .profile .profile-icon {
   width: clamp(70px, 25%, 500px);
   height: auto;
-  margin-right: 15px
+  margin-right: 15px;
+  margin-left: 0;
 }
 
 .profile .data-type {
@@ -255,11 +264,13 @@ body {
   }
 }
 
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 768px) {
   .profile {
     position: absolute;
     top: 70px;
     left: 4vw;
+    display: flex;
+    flex-direction: row;
     width: clamp(50px, 44vw, 500px);
     border-radius: 10px;
     padding: 0px 10px 10px 10px;
@@ -268,7 +279,8 @@ body {
   .profile .profile-icon {
     width: 50px;
     height: auto;
-    margin-right: 10px
+    margin-right: 10px;
+    margin-left: 0;
   }
 
   .data-type {
