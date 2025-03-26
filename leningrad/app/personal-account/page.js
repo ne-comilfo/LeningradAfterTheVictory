@@ -7,22 +7,22 @@ import './personal-account-style.css';
 const API_URL = "http://194.87.252.234:6060/api/attractions/get-all";
 
 const PersonalAccountPage = () => {
-    const [attractionsFav, setAttractionsFav] = useState([]);
-    const [attractionsVis, setAttractionsVis] = useState([]);
     const [isFavMode, setIsFavMode] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [imageSrc, setImageSrc] = useState("");
+    const [attractionsFav, setAttractionsFav] = useState([]); // Состояние для избранных
+    const [attractionsVis, setAttractionsVis] = useState([]); // Состояние для посещенных
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+
     const handleAuth = async () => {
         try {
             const response = await fetch('http://194.87.252.234:6060/api/user/getUser', {
                 method: "GET",
-                credentials: "include",
+                credentials: "include", 
             });
 
             if (response.status === 200) {
-                setLoading(false);
+                setLoading(false); 
             } else if (response.status === 422) {
                 setTimeout(() => {
                     const currentUrl = window.location.pathname;
@@ -31,7 +31,6 @@ const PersonalAccountPage = () => {
             } else {
                 console.error(`Ошибка авторизации: ${response.status}`);
             }
-
         } catch (error) {
             console.error("Ошибка при проверке авторизации:", error);
         }
@@ -47,8 +46,8 @@ const PersonalAccountPage = () => {
                     throw new Error(`Ошибка запроса: ${response.status}`);
                 }
                 const data = await response.json();
-                attractionsVis = data;
-                attractionsFav = data;
+                setAttractionsVis(data);  // Сохраняем данные в состоянии
+                setAttractionsFav(data);  // Сохраняем данные в состоянии
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error);
             }
@@ -68,7 +67,6 @@ const PersonalAccountPage = () => {
     if (loading) {
         return <div className="download">Загрузка...</div>;
     }
-
 
     const BackgroundTransition = () => (
         <div className="background-transition" />
@@ -111,7 +109,7 @@ const PersonalAccountPage = () => {
         </div>
     );
 
-    const VisDestination = ({ id, name, photoURL }) => (
+    const VisDestination = (id, name, photoURL) => (
         <span key={id} className="destination">
             <div className="name">{name}</div>
             <img src={photoURL} className="destination-photo"></img>
@@ -132,14 +130,10 @@ const PersonalAccountPage = () => {
         </span>
     );
 
-
     const VisScrollMenu = () => (
         <div className="scrollmenu-vis">
             {
-                attractionsVis.map(item => (
-                    <VisDestination key={item.id} id={item.id} name={item.name} photoURL="./photo2.png" />
-                ))
-                
+                attractionsVis.map(item => VisDestination(item.id, item.name, "./photo2.png"))
             }
         </div>
     );
@@ -147,10 +141,7 @@ const PersonalAccountPage = () => {
     const FavScrollMenu = () => (
         <div className="scrollmenu-fav">
             {
-                attractionsVis.map(item => (
-                    <VisDestination key={item.id} id={item.id} name={item.name} photoURL="./photo2.png" />
-                ))
-                
+                attractionsFav.map(item => FavDestination(item.id, item.name, "./photo2.png"))
             }
         </div>
     );
@@ -203,57 +194,6 @@ const PersonalAccountPage = () => {
             {isFavMode ? <FavScrollMenu /> : <VisScrollMenu />}
         </>
     );
-
-
-    useEffect(() => {
-
-        const fetchDestinations = async () => {
-            try {
-
-                const response = await fetch(API_URL);
-                if (!response.ok) {
-                    throw new Error(`Ошибка запроса: ${response.status}`);
-                }
-                const data = await response.json();
-                setAttractionsVis(data);
-                setAttractionsFav(data);
-
-            } catch (error) {
-                console.error("Ошибка загрузки данных:", error);
-            }
-        };
-
-        /*async function fetchData() {
-            try {
-                const requestURL = API_URL;
-                const requestVis = new Request(requestURL);
-                const responseVis = await fetch(requestVis);
-                attractionsVis = await responseVis.json();
-                const responseFav = await fetch(requestVis);
-                attractionsFav = await responseFav.json();
-                console.log("done!!");
-            } catch (error) {
-                console.log('error >> ', error.message);
-            }
-        }*/
-
-        fetchDestinations();
-
-        const checkMobile = () => {
-            if (window.innerWidth <= 768) {
-                setIsMobile(true);
-            } else {
-                setIsMobile(false);
-            }
-        };
-
-        checkMobile();
-        window.addEventListener("resize", checkMobile);
-
-        return () => {
-            window.removeEventListener("resize", checkMobile);
-        };
-    }, []);
 
     return (isMobile ? (<MobileView isFavMode={isFavMode} />) : (<LaptopView isFavMode={isFavMode} />));
 }
