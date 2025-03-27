@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import './authentication-authorization-style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const AuthenticationAuthorizationPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -25,8 +26,13 @@ const AuthenticationAuthorizationPage = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const searchParams = useSearchParams();
-  const redirectPath = searchParams.get("redirect") || "/personal-account";
+  const SearchParamsWrapper = ({ setRedirectPath }) => {
+    const searchParams = useSearchParams();
+    const redirectPath = searchParams.get("redirect") || "/personal-account";
+
+    setRedirectPath(redirectPath);
+    return null;
+  };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -50,24 +56,24 @@ const AuthenticationAuthorizationPage = () => {
         setErrorMessage(isLoginMode ? "Неправильные логин или пароль" : "Логин или почта уже используются");
         return;
       }
-      
+
       if (!response.ok) throw new Error("Ошибка при отправке данных на сервер");
 
       if (!isLoginMode) {
-      setIsLoginMode(true);
-      setErrorMessage("");
-    } else {
-      // Если это вход, перенаправляем на целевую страницу
-      router.push(redirectPath);  // redirectPath может быть /personal-account или любой другой путь
-    }
+        setIsLoginMode(true);
+        setErrorMessage("");
+      } else {
+        // Если это вход, перенаправляем на целевую страницу
+        router.push(redirectPath);  // redirectPath может быть /personal-account или любой другой путь
+      }
     } catch (error) {
       setErrorMessage("Ошибка соединения с сервером. Попробуйте позже.");
     }
   };
 
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const BackgroundTransition = () => (
     <div className="background-transition" />
@@ -240,6 +246,9 @@ const AuthenticationAuthorizationPage = () => {
 
   return (
     <div>
+      <Suspense fallback={<div>Загрузка...</div>}>
+        <SearchParamsWrapper setRedirectPath={setRedirectPath} />
+      </Suspense>
       <BlockForms
         isLoginMode={isLoginMode}
         setIsLoginMode={setIsLoginMode}
