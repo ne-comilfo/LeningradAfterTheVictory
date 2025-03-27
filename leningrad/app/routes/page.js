@@ -1,50 +1,141 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { usePathname, useRouter } from 'next/navigation';
-import SwipeSlider from "../components/routes/SwipeSlider"; // Мобильный слайдер
-import ImageSlider from "../components/routes/ImageSlider"; // Слайдер для десктопа
+import Link from "next/link"; // Импортируем Link для кликабельных изображений
 import styles from "../routes/routes.module.css";
-import ButtonRoutes from "../components/routes/ButtonRoutes.jsx";
 
 const API_URL = "http://194.87.252.234:6060/api/categories/get-all";
 
-const images = [
-  { id: 1, src: "/images/landmark1.png", alt: "Landmark 1" },
-  { id: 2, src: "/images/landmark2.png", alt: "Landmark 2" },
-  { id: 3, src: "/images/landmark3.png", alt: "Landmark 3" },
-  { id: 4, src: "/images/landmark4.png", alt: "Landmark 4" },
-  { id: 5, src: "/images/landmark5.png", alt: "Landmark 5" },
-  { id: 6, src: "/images/landmark6.png", alt: "Landmark 6" },
-  { id: 7, src: "/images/landmark7.png", alt: "Landmark 7" },
+// Данные маршрутов
+const routes = [
+  {
+    id: 1,
+    category: "Категория 1",
+    title: "Восточные навигаторы",
+    description:
+      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
+    image: "https://storage.yandexcloud.net/social-network-media/e5e0c275-da4f-4d90-b142-39f97d1fbdbc_temp857219656945222913.tmp",
+  },
+  {
+    id: 2,
+    category: "Категория 2",
+    title: "Восточные навигаторы",
+    description:
+      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
+    image: "https://tse4.mm.bing.net/th?id=OIP.Jwvp2GYz7XGJlWUu0iv1vAHaG8&pid=Api",
+  },
+  {
+    id: 3,
+    category: "Длина категории 3",
+    title: "Восточные навигаторы",
+    description:
+      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
+    image: "https://tse1.mm.bing.net/th?id=OIP.GXseP5xVv3QGkOixYgTEkgHaFj&pid=Api",
+  },
+  {
+    id: 4,
+    category: "Категория 4",
+    title: "Восточные навигаторы",
+    description:
+      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
+    image: "https://tse1.mm.bing.net/th?id=OIP.Cq1w5MftTJI0n4lITVlzdgHaFj&pid=Api",
+  },
+  {
+    id: 5,
+    category: "Категория 5",
+    title: "Восточные навигаторы",
+    description:
+      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
+    image: "https://tse1.mm.bing.net/th?id=OIP.Cq1w5MftTJI0n4lITVlzdgHaFj&pid=Api",
+  },
+  {
+    id: 6,
+    category: "Категория 6",
+    title: "Восточные навигаторы",
+    description:
+      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
+    image: "https://tse1.mm.bing.net/th?id=OIP.Cq1w5MftTJI0n4lITVlzdgHaFj&pid=Api",
+  },
 ];
 
-const images2 = [
-  { id: 1, src: "https://tse1.mm.bing.net/th?id=OIP.z-J0jBF5kZ_jNCERr8npOAHaE8&pid=Api", alt: "Landmark 1" },
-  { id: 2, src: "https://tse4.mm.bing.net/th?id=OIP.Jwvp2GYz7XGJlWUu0iv1vAHaG8&pid=Api", alt: "Landmark 2" },
-  { id: 3, src: "https://tse1.mm.bing.net/th?id=OIP.GXseP5xVv3QGkOixYgTEkgHaFj&pid=Api", alt: "Landmark 3" },
-  { id: 4, src: "https://tse1.mm.bing.net/th?id=OIP.Cq1w5MftTJI0n4lITVlzdgHaFj&pid=Api", alt: "Landmark 4" },
-  { id: 5, src: "https://tse4.mm.bing.net/th?id=OIP.2w81RJ4m5zC9fJn-H-dPXAHaE6&pid=Api", alt: "Landmark 5" },
-  { id: 6, src: "https://tse2.mm.bing.net/th?id=OIP.lFEh5f8QDnlj2K6ToVR0sgHaE8&pid=Api", alt: "Landmark 6" },
-  { id: 7, src: "https://tse4.mm.bing.net/th?id=OIP.0BUIg-eBEq9Qy7F9HrEHPAHaFN&pid=Api", alt: "Landmark 7" },
-];
+// Компонент для карточки маршрута
+const RouteCard = ({ route }) => {
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
-const redirectTo = "/map";
-const redirectTo2 = "/categories";
+  // Обработчики для свайпов
+  const handleTouchStart = (e) => {
+    const touchStartX = e.touches[0].clientX;
+    const handleTouchMove = (moveEvent) => {
+      const touchEndX = moveEvent.touches[0].clientX;
+      const diffX = touchStartX - touchEndX;
 
-const App = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [imageSrc, setImageSrc] = useState("");
+      // Свайп вправо (закрываем описание)
+      if (diffX < -50) {
+        setIsDescriptionOpen(false);
+      }
+      // Свайп влево (открываем описание)
+      if (diffX > 50) {
+        setIsDescriptionOpen(true);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
+    };
 
 
   const router = useRouter();
   const navigateToAuth = () => {
     const currentUrl = window.location.pathname;
     router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("touchend", handleTouchEnd);
   };
 
+  return (
+    <div className={styles.routeCard} onTouchStart={handleTouchStart}>
+      <div className={`${styles.cardInner} ${isDescriptionOpen ? styles.showDescription : ""}`}>
+        {/* Контейнер с изображением */}
+        <div className={styles.imageWrapper}>
+          <Link href={`/route/${route.id}`}>
+            <img src={route.image} alt={route.title} className={styles.cardImage} />
+          </Link>
+          <div className={styles.cardDescription}>
+            <p>{route.description}</p>
+          </div>
+          <div className={styles.arrow}>
+            <span>{isDescriptionOpen ? "→" : "←"}</span>
+          </div>
+        </div>
+        {/* Контейнер с описанием для мобильной версии */}
+        <div className={styles.descriptionWrapper}>
+          <p>{route.description}</p>
+        </div>
+      </div>
+      <div className={styles.cardContent}>
+        <h3>{route.title}</h3>
+      </div>
+    </div>
+  );
+};
+
+// Основной компонент
+const App = () => {
+  const [selectedCategory, setSelectedCategory] = useState("Все");
+  const [filteredRoutes, setFilteredRoutes] = useState(routes);
+
+  const categories = ["Все", "Категория 1", "Категория 2", "Длина категории 3", "Категория 4"];
+
   useEffect(() => {
-    
+    if (selectedCategory === "Все") {
+      setFilteredRoutes(routes);
+    } else {
+      setFilteredRoutes(routes.filter((route) => route.category === selectedCategory));
+    }
+  }, [selectedCategory]);
+
+  useEffect(() => {
     const fetchRoutes = async () => {
       try {
         
@@ -52,63 +143,47 @@ const App = () => {
           credentials: "include",
           mode: "cors",
         });
+
         if (!response.ok) {
           throw new Error(`Ошибка запроса: ${response.status}`);
         }
         const data = await response.text();
-        console.log(data)
-        const firstImage = data[0]?.linksPreview?.[0] || "";
-        setImageSrc(firstImage);
+        console.log(data);
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
       }
     };
 
     fetchRoutes();
-
-    const checkMobile = () => {
-      if (window.innerWidth <= 768) {
-        setIsMobile(true);
-      } else {
-        setIsMobile(false);
-      }
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
   }, []);
 
   return (
     <div className={styles.container}>
       <div className={styles.textWithImage}>
-        <svg className={styles.svg_image} viewBox="10 10 320 266" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g opacity="0.9">
-            <path d="M487.898 191.367C476.844 123.998 481.778 -99.5001 296 136C110.222 371.5 264.999 -106.5 13.4993 49" stroke="#0B83D9" strokeWidth="4" />
-            <ellipse cx="12.9411" cy="46.958" rx="11.5584" ry="9.48762" transform="rotate(177.627 12.9411 46.958)" fill="#0B83D9" />
-            <ellipse cx="487.744" cy="195.961" rx="11.5584" ry="9.48762" transform="rotate(177.627 487.744 195.961)" fill="#0B83D9" />
-          </g>
-        </svg>
         <h1 className={styles.header}>Маршруты</h1>
+        <img src="/svg/routes_line_design.svg" alt="line" className={styles.svgImage} />
       </div>
 
-      {isMobile ? (
-        <SwipeSlider title="Популярные" images={images} visibleCount={3} redirectTo={redirectTo} />
-      ) : (
-        <ImageSlider title="Популярные" images={images} visibleCount={6} redirectTo={redirectTo} />
-      )}
+      {/* Кнопки категорий (фильтры) */}
+      <div className={styles.categories}>
+        {categories.map((category) => (
+          <button
+            key={category}
+            className={`${styles.categoryButton} ${
+              selectedCategory === category ? styles.active : ""
+            }`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
 
-      {isMobile ? (
-        <SwipeSlider title="Тематические" images={images2} visibleCount={3} redirectTo={redirectTo2} />
-      ) : (
-        <ImageSlider title="Тематические" images={images2} visibleCount={6} redirectTo={redirectTo2} />
-      )}
-
-      <div className={styles.button_container}>
-        <ButtonRoutes text="Перейти к посещённым маршрутам" onClick={navigateToAuth} />
+      {/* Список маршрутов */}
+      <div className={styles.routesGrid}>
+        {filteredRoutes.map((route) => (
+          <RouteCard key={route.id} route={route} />
+        ))}
       </div>
     </div>
   );

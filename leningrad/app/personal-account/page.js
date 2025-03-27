@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+
 import './personal-account-style.css';
 
 const API_URL = "http://194.87.252.234:6060/api/attractions/get-all";
@@ -15,6 +16,7 @@ const PersonalAccountPage = () => {
     const [userEmail, setUserEmail] = useState(""); 
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const [imageSrc, setImageSrc] = useState("");
 
     const handleAuth = async () => {
         try {
@@ -201,6 +203,7 @@ const PersonalAccountPage = () => {
     );
 
     return (isMobile ? (<MobileView isFavMode={isFavMode} />) : (<LaptopView isFavMode={isFavMode} />));
+
 }
 
 export default PersonalAccountPage;
