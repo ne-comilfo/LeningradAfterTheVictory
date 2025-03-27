@@ -1,0 +1,157 @@
+
+    /* Стили для бургер-меню */
+  .burgerMenu {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1004; /* Ещё выше, чтобы кнопка была кликабельной */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+  }
+  
+  .menuIcon {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
+  }
+  
+  .burgerMenu:hover .menuIcon {
+    transform: scale(1.1);
+  }
+  
+  /* Стили для боковой панели */
+  .sidebar {
+    position: fixed;
+    top: 0px; /* Устанавливаем отступ сверху, чтобы sidebar начинался ниже header */
+    left: 0;
+    width: 100%;
+    height: calc(100%); /* Уменьшаем высоту, чтобы учесть высоту header */
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1002; /* Оставляем ниже header */
+    padding: 60px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .sidebar.open {
+    transform: translateY(0);
+  }
+  
+  /* Затемнение фона, когда боковая панель открыта */
+  .sidebarOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1001; /* Ниже header и sidebar */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .sidebarOverlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .navBar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center; 
+    gap: 15px;
+}
+  
+  .navLinks {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 20px;
+    align-items: center;
+  }
+  
+  .navLinks .navLink {
+    font-size: 1.6rem;
+    color: #000;
+    text-decoration: none;
+    text-align: center;
+    transition: color 0.3s ease;
+  }
+  
+  .navLinks .navLink:hover {
+    color: #0D74BD;
+  }
+  
+  .navLinks .navLink.active {
+    color: #0D74BD;
+  }
+  
+  .socialLinks {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  
+  .socialLinks a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    transition: background 0.3s ease;
+  }
+  
+  .socialLinks a:hover {
+    background: #e0e0e0;
+  }
+  
+  .socialLinks img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Стили для мобильной версии */
+  @media (max-width: 768px) {
+    .header {
+      padding: 10px;
+    }
+
+    .logoBar {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center; 
+    }
+  
+    .logoBar img {
+      width: 60px;
+      height: 25px;
+    }
+  
+    .navBar {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center; 
+        gap: 15px;
+    }
+  
+    .profileIcon {
+      width: 35px;
+      height: 35px;
+    }
+  
+    .navLink {
+      display: none;
+    }
+  }

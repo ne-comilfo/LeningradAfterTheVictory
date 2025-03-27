@@ -1,0 +1,24 @@
+.headerWrapper {
+    position: relative;
+    width: 100%;
+}
+  
+/* Стили для TopBar (ПК-версия) */
+.topBarDesktop {
+display: block;
+}
+
+.topBarMobile {
+display: none; 
+}
+
+/* Стили для TopBarMobile (мобильная версия) */
+@media (max-width: 1080px) {
+.topBarDesktop {
+    display: none; 
+}
+
+.topBarMobile {
+    display: block; 
+}
+}
