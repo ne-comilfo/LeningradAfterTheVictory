@@ -11,6 +11,7 @@ const ObjectsPage = () => {
       try {
         const res = await fetch('http://194.87.252.234:6060/api/attractions/get-all');
         const data = await res.json();
+        console.log(data)
         setObjects(data);
       } catch (error) {
         console.error("Не удалось загрузить объекты:", error);
