@@ -4,7 +4,6 @@ import React, { useState, useRef } from "react";
 import './authentication-authorization-style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 
 const AuthenticationAuthorizationPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -16,22 +15,17 @@ const AuthenticationAuthorizationPage = () => {
   const buttonRef = useRef(null);
   const passwordErrorRef = useRef(null);
 
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const router = useRouter();
+  const searchParams = useSearchParams(); // получаем search параметры из URL
+
+  // Используем searchParams для получения redirect
+  const redirectPath = searchParams.get("redirect") || "/personal-account";
+
   const handleModeSwitch = (mode) => {
     setIsLoginMode(mode);
     setErrorMessage(""); // Очищаем ошибку при переключении формы
-  };
-
-
-  const router = useRouter();
-
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const SearchParamsWrapper = ({ setRedirectPath }) => {
-    const searchParams = useSearchParams();
-    const redirectPath = searchParams.get("redirect") || "/personal-account";
-
-    setRedirectPath(redirectPath);
-    return null;
   };
 
   const handleFormSubmit = async (e) => {
@@ -52,6 +46,7 @@ const AuthenticationAuthorizationPage = () => {
         body: JSON.stringify(formData),
         credentials: "include",
       });
+
       if (response.status === 422) {
         setErrorMessage(isLoginMode ? "Неправильные логин или пароль" : "Логин или почта уже используются");
         return;
@@ -63,8 +58,8 @@ const AuthenticationAuthorizationPage = () => {
         setIsLoginMode(true);
         setErrorMessage("");
       } else {
-        // Если это вход, перенаправляем на целевую страницу
-        router.push(redirectPath);  // redirectPath может быть /personal-account или любой другой путь
+        // После успешного входа, редиректируем на целевую страницу
+        router.push(redirectPath);
       }
     } catch (error) {
       setErrorMessage("Ошибка соединения с сервером. Попробуйте позже.");
@@ -88,14 +83,12 @@ const AuthenticationAuthorizationPage = () => {
       handleChange();
     };
 
-
     const handleChange = () => {
       const emailFilled = emailRef.current?.value.trim().length > 0;
       const usernameFilled = isLoginMode ? true : usernameRef.current?.value.trim().length > 0;
       const passwordValue = passwordRef.current?.value.trim();
       const passwordFilled = passwordValue.length > 0;
 
-      // Обновляем текст ошибки через ref (без ререндера)
       if (passwordErrorRef.current) {
         passwordErrorRef.current.textContent =
           passwordFilled && passwordValue.length < 8 ? "Пароль должен содержать не менее 8 символов" : "";
@@ -112,7 +105,6 @@ const AuthenticationAuthorizationPage = () => {
     };
 
     return (
-
       <div className="input-group">
         <div className="input-wrapper">
           <label htmlFor={id}><span className='qw'>{label}</span></label>
@@ -134,7 +126,6 @@ const AuthenticationAuthorizationPage = () => {
 
         </div>
       </div>
-
     );
   };
 
@@ -143,19 +134,18 @@ const AuthenticationAuthorizationPage = () => {
       <p>
         <span
           className={isLoginMode ? "highlight" : ""}
-          onClick={() => handleModeSwitch(true)} // Вызываем с очисткой ошибки
+          onClick={() => handleModeSwitch(true)}
         >
           Вход
         </span> / <span
           className={!isLoginMode ? "highlight" : ""}
-          onClick={() => handleModeSwitch(false)} // Вызываем с очисткой ошибки
+          onClick={() => handleModeSwitch(false)}
         >
           Регистрация
         </span>
       </p>
     </div>
   );
-
 
   const RegistrationForm = ({ isLoginMode, setIsLoginMode, emailRef, usernameRef, passwordRef, handleFormSubmit }) => (
     <div className="box form-1">
@@ -167,15 +157,13 @@ const AuthenticationAuthorizationPage = () => {
         <p ref={passwordErrorRef} className="error-message"></p>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button
-          ref={buttonRef}  // Добавляем реф
+          ref={buttonRef}
           className={`button ${isLoginMode ? "login" : "registration"}`}
           type="submit"
           disabled={!isFormValidRef.current}
         >
           {isLoginMode ? "Войти" : "Зарегистрироваться"}
         </button>
-
-
       </form>
     </div>
   );
@@ -198,14 +186,13 @@ const AuthenticationAuthorizationPage = () => {
         </a>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button
-          ref={buttonRef}  // Добавляем реф
+          ref={buttonRef}
           className={`button ${isLoginMode ? "login" : "registration"}`}
           type="submit"
           disabled={!isFormValidRef.current}
         >
           {isLoginMode ? "Войти" : "Зарегистрироваться"}
         </button>
-
       </form>
     </div>
   );
@@ -246,9 +233,6 @@ const AuthenticationAuthorizationPage = () => {
 
   return (
     <div>
-      <Suspense fallback={<div>Загрузка...</div>}>
-        <SearchParamsWrapper setRedirectPath={setRedirectPath} />
-      </Suspense>
       <BlockForms
         isLoginMode={isLoginMode}
         setIsLoginMode={setIsLoginMode}
