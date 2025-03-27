@@ -15,18 +15,18 @@ const AuthenticationAuthorizationPage = () => {
   const buttonRef = useRef(null);
   const passwordErrorRef = useRef(null);
 
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const router = useRouter();
-  const searchParams = useSearchParams(); // получаем search параметры из URL
-
-  // Используем searchParams для получения redirect
-  const redirectPath = searchParams.get("redirect") || "/personal-account";
-
   const handleModeSwitch = (mode) => {
     setIsLoginMode(mode);
     setErrorMessage(""); // Очищаем ошибку при переключении формы
   };
+
+
+  const router = useRouter();
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/personal-account";
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -46,29 +46,28 @@ const AuthenticationAuthorizationPage = () => {
         body: JSON.stringify(formData),
         credentials: "include",
       });
-
       if (response.status === 422) {
         setErrorMessage(isLoginMode ? "Неправильные логин или пароль" : "Логин или почта уже используются");
         return;
       }
-
+      
       if (!response.ok) throw new Error("Ошибка при отправке данных на сервер");
 
       if (!isLoginMode) {
-        setIsLoginMode(true);
-        setErrorMessage("");
-      } else {
-        // После успешного входа, редиректируем на целевую страницу
-        router.push(redirectPath);
-      }
+      setIsLoginMode(true);
+      setErrorMessage("");
+    } else {
+      // Если это вход, перенаправляем на целевую страницу
+      router.push(redirectPath);  // redirectPath может быть /personal-account или любой другой путь
+    }
     } catch (error) {
       setErrorMessage("Ошибка соединения с сервером. Попробуйте позже.");
     }
   };
 
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
   const BackgroundTransition = () => (
     <div className="background-transition" />
@@ -83,12 +82,14 @@ const AuthenticationAuthorizationPage = () => {
       handleChange();
     };
 
+
     const handleChange = () => {
       const emailFilled = emailRef.current?.value.trim().length > 0;
       const usernameFilled = isLoginMode ? true : usernameRef.current?.value.trim().length > 0;
       const passwordValue = passwordRef.current?.value.trim();
       const passwordFilled = passwordValue.length > 0;
 
+      // Обновляем текст ошибки через ref (без ререндера)
       if (passwordErrorRef.current) {
         passwordErrorRef.current.textContent =
           passwordFilled && passwordValue.length < 8 ? "Пароль должен содержать не менее 8 символов" : "";
@@ -105,6 +106,7 @@ const AuthenticationAuthorizationPage = () => {
     };
 
     return (
+
       <div className="input-group">
         <div className="input-wrapper">
           <label htmlFor={id}><span className='qw'>{label}</span></label>
@@ -126,6 +128,7 @@ const AuthenticationAuthorizationPage = () => {
 
         </div>
       </div>
+
     );
   };
 
@@ -134,18 +137,19 @@ const AuthenticationAuthorizationPage = () => {
       <p>
         <span
           className={isLoginMode ? "highlight" : ""}
-          onClick={() => handleModeSwitch(true)}
+          onClick={() => handleModeSwitch(true)} // Вызываем с очисткой ошибки
         >
           Вход
         </span> / <span
           className={!isLoginMode ? "highlight" : ""}
-          onClick={() => handleModeSwitch(false)}
+          onClick={() => handleModeSwitch(false)} // Вызываем с очисткой ошибки
         >
           Регистрация
         </span>
       </p>
     </div>
   );
+
 
   const RegistrationForm = ({ isLoginMode, setIsLoginMode, emailRef, usernameRef, passwordRef, handleFormSubmit }) => (
     <div className="box form-1">
@@ -157,13 +161,15 @@ const AuthenticationAuthorizationPage = () => {
         <p ref={passwordErrorRef} className="error-message"></p>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button
-          ref={buttonRef}
+          ref={buttonRef}  // Добавляем реф
           className={`button ${isLoginMode ? "login" : "registration"}`}
           type="submit"
           disabled={!isFormValidRef.current}
         >
           {isLoginMode ? "Войти" : "Зарегистрироваться"}
         </button>
+
+
       </form>
     </div>
   );
@@ -186,13 +192,14 @@ const AuthenticationAuthorizationPage = () => {
         </a>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button
-          ref={buttonRef}
+          ref={buttonRef}  // Добавляем реф
           className={`button ${isLoginMode ? "login" : "registration"}`}
           type="submit"
           disabled={!isFormValidRef.current}
         >
           {isLoginMode ? "Войти" : "Зарегистрироваться"}
         </button>
+
       </form>
     </div>
   );
