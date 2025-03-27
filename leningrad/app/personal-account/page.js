@@ -28,7 +28,7 @@ const PersonalAccountPage = () => {
                 setUserName(data.name); // Сохраняем логин
                 setUserEmail(data.mail);
                 setLoading(false); 
-            } else if (response.status === 422) {
+            } else if (response.status === 422 || response.status === 500) {
                 setTimeout(() => {
                     const currentUrl = window.location.pathname;
                     router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);

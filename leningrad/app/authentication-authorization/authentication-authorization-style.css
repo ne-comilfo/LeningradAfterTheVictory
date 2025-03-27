@@ -167,7 +167,7 @@ main {
 .eye-icon {
   position: absolute;
   right: 2.5rem;
-  top: 60%;
+  top: 58.2%;
   transform: translateY(-50%);
   cursor: pointer;
   color: #0D74BD;
@@ -203,13 +203,13 @@ main {
   text-align: center;
   font-family: 'Geologica', sans-serif;
   border-radius: 40px;
-  padding: 3px;
+  padding: 5.5px;
   cursor: pointer;
   background-color: gray;
   font-size: 25px;
   color: white;
   margin-top: 50px;
-  height: 6.5vh;
+  height: 60px;
   width: 163px;
   cursor: pointer;
   margin-left: -0.5vw;
@@ -241,13 +241,13 @@ input, textarea, button {
 
 .button.registration {
   width: 360px;
-  height: 6vh;
+  height: 50px;
   margin-top: 30px;
 }
 
 .button.login {
   width: 163px;
-  height: 5.5vh;
+  height: 50px;
   margin-top: 50px;
 }
 
@@ -341,7 +341,7 @@ input, textarea, button {
 
   .eye-icon {
     right: 0.7rem;
-    top: 57%;
+    top: 54%;
   }
 }
 
