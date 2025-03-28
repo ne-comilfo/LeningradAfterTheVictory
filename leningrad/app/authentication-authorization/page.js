@@ -50,24 +50,24 @@ const AuthenticationAuthorizationPage = () => {
         setErrorMessage(isLoginMode ? "Неправильные логин или пароль" : "Логин или почта уже используются");
         return;
       }
-      
+
       if (!response.ok) throw new Error("Ошибка при отправке данных на сервер");
 
       if (!isLoginMode) {
-      setIsLoginMode(true);
-      setErrorMessage("");
-    } else {
-      // Если это вход, перенаправляем на целевую страницу
-      router.push(redirectPath);  // redirectPath может быть /personal-account или любой другой путь
-    }
+        setIsLoginMode(true);
+        setErrorMessage("");
+      } else {
+        // Если это вход, перенаправляем на целевую страницу
+        router.push(redirectPath);  // redirectPath может быть /personal-account или любой другой путь
+      }
     } catch (error) {
       setErrorMessage("Ошибка соединения с сервером. Попробуйте позже.");
     }
   };
 
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const BackgroundTransition = () => (
     <div className="background-transition" />
@@ -239,16 +239,18 @@ const AuthenticationAuthorizationPage = () => {
   }
 
   return (
-    <div>
-      <BlockForms
-        isLoginMode={isLoginMode}
-        setIsLoginMode={setIsLoginMode}
-        emailRef={emailRef}
-        usernameRef={usernameRef}
-        passwordRef={passwordRef}
-        handleFormSubmit={handleFormSubmit}
-      />
-    </div>
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <div>
+        <BlockForms
+          isLoginMode={isLoginMode}
+          setIsLoginMode={setIsLoginMode}
+          emailRef={emailRef}
+          usernameRef={usernameRef}
+          passwordRef={passwordRef}
+          handleFormSubmit={handleFormSubmit}
+        />
+      </div>
+    </Suspense>
   );
 };
 
