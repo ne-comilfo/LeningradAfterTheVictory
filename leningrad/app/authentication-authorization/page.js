@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import './authentication-authorization-style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const AuthenticationAuthorizationPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
