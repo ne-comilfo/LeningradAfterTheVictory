@@ -4,8 +4,9 @@ import React, { useState, useRef } from "react";
 import './authentication-authorization-style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from 'react';
 
-const AuthenticationAuthorizationPage = () => {
+const AuthPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const emailRef = useRef(null);
   const usernameRef = useRef(null);
@@ -50,24 +51,24 @@ const AuthenticationAuthorizationPage = () => {
         setErrorMessage(isLoginMode ? "Неправильные логин или пароль" : "Логин или почта уже используются");
         return;
       }
-
+      
       if (!response.ok) throw new Error("Ошибка при отправке данных на сервер");
 
       if (!isLoginMode) {
-        setIsLoginMode(true);
-        setErrorMessage("");
-      } else {
-        // Если это вход, перенаправляем на целевую страницу
-        router.push(redirectPath);  // redirectPath может быть /personal-account или любой другой путь
-      }
+      setIsLoginMode(true);
+      setErrorMessage("");
+    } else {
+      // Если это вход, перенаправляем на целевую страницу
+      router.push(redirectPath);  // redirectPath может быть /personal-account или любой другой путь
+    }
     } catch (error) {
       setErrorMessage("Ошибка соединения с сервером. Попробуйте позже.");
     }
   };
 
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
   const BackgroundTransition = () => (
     <div className="background-transition" />
@@ -239,19 +240,25 @@ const AuthenticationAuthorizationPage = () => {
   }
 
   return (
-    <Suspense fallback={<div>Загрузка...</div>}>
-      <div>
-        <BlockForms
-          isLoginMode={isLoginMode}
-          setIsLoginMode={setIsLoginMode}
-          emailRef={emailRef}
-          usernameRef={usernameRef}
-          passwordRef={passwordRef}
-          handleFormSubmit={handleFormSubmit}
-        />
-      </div>
-    </Suspense>
+    <div>
+      <BlockForms
+        isLoginMode={isLoginMode}
+        setIsLoginMode={setIsLoginMode}
+        emailRef={emailRef}
+        usernameRef={usernameRef}
+        passwordRef={passwordRef}
+        handleFormSubmit={handleFormSubmit}
+      />
+    </div>
   );
 };
+
+const AuthenticationAuthorizationPage = () => {
+  return (
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <AuthPage />
+    </Suspense>
+  );
+}
 
 export default AuthenticationAuthorizationPage;
