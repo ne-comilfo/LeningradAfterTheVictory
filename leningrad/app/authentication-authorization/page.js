@@ -4,9 +4,8 @@ import React, { useState, useRef } from "react";
 import './authentication-authorization-style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from 'react';
 
-const AuthPage = () => {
+const AuthenticationAuthorizationPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const emailRef = useRef(null);
   const usernameRef = useRef(null);
@@ -26,8 +25,13 @@ const AuthPage = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const searchParams = useSearchParams();
-  const redirectPath = searchParams.get("redirect") || "/personal-account";
+  const getRedirectPath = () => {
+    if (typeof window === 'undefined') return '/personal-account';
+    const params = new URLSearchParams(window.location.search);
+    return params.get('redirect') || '/personal-account';
+  };
+
+  const redirectPath = getRedirectPath();
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -252,13 +256,5 @@ const AuthPage = () => {
     </div>
   );
 };
-
-const AuthenticationAuthorizationPage = () => {
-  return (
-    <Suspense fallback={<div>Загрузка...</div>}>
-      <AuthPage />
-    </Suspense>
-  );
-}
 
 export default AuthenticationAuthorizationPage;
