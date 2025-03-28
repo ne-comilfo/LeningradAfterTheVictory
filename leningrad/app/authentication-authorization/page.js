@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import './authentication-authorization-style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const AuthContent = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
