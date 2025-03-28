@@ -2,11 +2,16 @@
 
 import React, { useState, useRef } from "react";
 import './authentication-authorization-style.css';
+import dynamic from "next/dynamic";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
-const AuthContent = () => {
+const AuthContent = dynamic(() => Promise.resolve(AuthContentComponent), {
+  ssr: false,
+});
+
+const AuthContentComponent = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const emailRef = useRef(null);
   const usernameRef = useRef(null);
