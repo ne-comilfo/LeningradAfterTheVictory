@@ -43,6 +43,24 @@ const PersonalAccountPage = () => {
         }
     };
 
+    const LogOut = async () => {
+        try {
+            const response = await fetch('http://194.87.252.234:8079/api/authentication/logout', {
+                method: "GET", 
+                credentials: "include",
+            });
+    
+            if (response.ok) {
+                const currentUrl = window.location.pathname;
+                router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
+            } else {
+                console.error("Ошибка при выходе:", response.status);
+            }
+        } catch (error) {
+            console.error("Ошибка запроса при выходе:", error);
+        }
+    };
+    
     useEffect(() => {
         handleAuth(); // Проверяем токен на сервере
 
@@ -111,7 +129,7 @@ const PersonalAccountPage = () => {
                     <div>Почта</div>
                     <div className="data">{userEmail}</div>
                 </div>
-                <a href="../authentication-authorization" className="exit-button">Выйти</a>
+                <button onClick={LogOut} className="exit-button">Выйти</button>
             </div>
         </div>
     );
@@ -157,7 +175,7 @@ const PersonalAccountPage = () => {
         <div className="action-buttons">
             <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранное</div>
             <div className="selected-button">Посещенное</div>
-            <a href="../authentication-authorization/index2.html" className="exit-button switch">Выйти</a>
+            <button onClick={LogOut} className="exit-button switch">Выйти</button>
         </div>
     );
 
@@ -165,7 +183,7 @@ const PersonalAccountPage = () => {
         <div className="action-buttons">
             <div className="selected-button">Избранное</div>
             <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Посещенное</div>
-            <a href="../authentication-authorization/index2.html" className="exit-button switch">Выйти</a>
+            <button onClick={LogOut} className="exit-button switch">Выйти</button>
         </div>
     );
 
