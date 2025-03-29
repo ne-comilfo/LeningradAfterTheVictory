@@ -21,7 +21,7 @@ const PersonalAccountPage = () => {
     const handleAuth = async () => {
         try {
             const response = await fetch('http://194.87.252.234:6060/api/user/getUser', {
-                method: "GET",
+                method: "POST",
                 credentials: "include", 
             });
 
