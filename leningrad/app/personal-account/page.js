@@ -45,7 +45,7 @@ const PersonalAccountPage = () => {
 
     const LogOut = async () => {
         try {
-            const response = await fetch('http://194.87.252.234:8079/api/authentication/logout', {
+            const response = await fetch('http://194.87.252.234:6060/api/authentication/logout', {
                 method: "GET", 
                 credentials: "include",
             });
