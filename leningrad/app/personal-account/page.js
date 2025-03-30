@@ -51,8 +51,11 @@ const PersonalAccountPage = () => {
             });
     
             if (response.ok) {
-                const currentUrl = window.location.pathname;
-                router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
+                setLoading(true)
+                setTimeout(() => {
+                    const currentUrl = window.location.pathname;
+                    router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
+                }, 2000);
             } else {
                 console.error("Ошибка при выходе:", response.status);
             }
