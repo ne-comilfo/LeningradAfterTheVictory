@@ -16,6 +16,14 @@ body {
   margin: 0;
 }
 
+.download {
+  color: #0D74BD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50vh;
+  font-size: clamp(25px, 2.5vh, 45px);
+}
 .switch {
   cursor: pointer;
   text-decoration: none;
