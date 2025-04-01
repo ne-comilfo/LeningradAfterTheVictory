@@ -11,67 +11,91 @@ import { useSearchParams } from 'next/navigation';
 
 const AttractionInfoComponent = () => {
 
-        const searchParams = useSearchParams();
-        const id = searchParams.get('id');
+    const searchParams = useSearchParams();
+    const id = searchParams.get('id');
+    const [routes, setRoutes] = useState([]);
+    const [building, setBuilding] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-        const [building, setBuilding] = useState(null);
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState(null);
+    useEffect(() => {
+        if (!id) return;
 
-        useEffect(() => {
-            if (!id) return;
+        const fetchData = async () => {
+            try {
+                const buildingResponse = await fetch(`http://194.87.252.234:6060/api/attractions/attraction/${id}`);
+                if (!buildingResponse.ok) throw new Error('Не удалось загрузить данные о здании');
+                const buildingData = await buildingResponse.json();
+                setBuilding(buildingData);
 
-            const fetchBuilding = async () => {
-                try {
-                    const response = await fetch(`http://194.87.252.234:6060/api/attractions/attraction/${id}`);
+                // Загрузка маршрутов
+                const routesResponse = await fetch("http://194.87.252.234:6060/api/routes/get-all");
+                if (!routesResponse.ok) throw new Error('Не удалось загрузить список маршрутов');
+                const routesList = await routesResponse.json();
 
-                    if (!response.ok) {
-                        throw new Error('Не удалось загрузить данные');
-                    }
+                const routeDetails = await Promise.all(
+                    routesList.map(route => 
+                        fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`)
+                            .then(res => res.json())
+                    )
+                );
 
-                    const data = await response.json();
-                    setBuilding(data);
-                    console.log(data);
+                const matchedRoutes = routeDetails
+                    .filter(route => 
+                        route.attractions.some(attraction => attraction.id === parseInt(id))
+                    )
+                    .map(route => ({
+                        name: route.name,
+                        id: route.id,
+                        image: route.url
+                    }));
 
-                } catch (error) {
-                    setError(error.message);
-                } finally {
-                    setLoading(false);
-                }
-            };
+                setRoutes(matchedRoutes);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-            fetchBuilding();
-        }, [id]);
+        fetchData();
+    }, [id]);
 
+    if (loading) return <div className="loading-or-error">Загрузка...</div>;
 
-        if (loading) return <div className="loading-or-error">Загрузка...</div>;
-
-        if (error) return <div className="loading-or-error">Ошибка: {error}</div>;
-
+    if (error) return <div className="loading-or-error">Ошибка: {error}</div>;
 
 
     return (
-        <div className="page-style">
-            <img className="main-image" src={building.mainImage} alt="главная картинка"/>
-            <h1 className="attraction-title">{`${building.name}, ${building.yearOfCreation}`}</h1>
+        <>
+            <div className="white">
+                <h1 className="attraction-title">{`${building.name}, ${building.yearOfCreation}`}</h1>
 
-            <ButtonPanel/>
+                <img className="main-image" src={building.linksPreview} />
+                <div className="preview-text">{`${building.smallDescription}`}</div>
 
-            <TimePeriodSection key={0} section={{ name: "До блокады", image: building.linksBefore, description: building.descriptionBefore }} />
-            <TimePeriodSection key={1} section={{ name: "Во время блокады", image: building.linksIn, description: building.descriptionIn }} />
-            <TimePeriodSection key={2} section={{ name: "После блокады", image: building.linksAfter, description: building.descriptionAfter }} />
+                <ButtonPanel attractionId={building?.id} />
 
-            {Array.isArray(building.interestingFacts) && building.interestingFacts.length > 0 ? (
-                <InterestingFacts facts={building.interestingFacts} />
-            ) : null}
-        </div>
+                <TimePeriodSection routes={routes} key={0} section={{ name: "До блокады", image: building.linksBefore, description: building.descriptionBefore }} />
+            </div>
+            <div className="page-style">
+                <TimePeriodSection routes={routes} key={1} section={{ name: "После блокады", image: building.linksIn, description: building.descriptionIn }} />
+                <TimePeriodSection routes={routes} key={2} section={{ name: "Настоящее время", image: building.linksAfter, description: building.descriptionAfter }} />
+            </div>
+            <div className="white">
+                {building.interestingFacts.length > 0 ? (
+                    <InterestingFacts facts={building.interestingFacts} />
+                ) : null}
+            </div>
+
+        </>
     );
 }
 
-export default function AttractionInfoPage () {
+export default function AttractionInfoPage() {
     return (
         <Suspense fallback={<div className="loading-or-error">Загрузка...</div>}>
-        <AttractionInfoComponent />
+            <AttractionInfoComponent />
         </Suspense>
     );
 }

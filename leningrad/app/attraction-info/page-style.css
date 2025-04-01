@@ -1,16 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
 
-.attraction-title{
-    font-size: 2.5vw;
+.attraction-title {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-size: 3vw;
     font-weight: 400;
     line-height: 3.1vw;
-    margin-left: 18.7%;
+    margin-left: 15.7%;
     margin-right: 18.7%;
-    text-align: justify;
+    text-align: center;
     white-space: pre-wrap;
 }
 
-.page-style{
+.white {
+    background-color: white;
+    width: 100%;
+    padding: 5.5% 8.4% 7.8%;
+}
+
+.preview-text {
+    padding-top: 5%;
+    padding-bottom: 5%;
+    text-align: center;
+    white-space: pre-wrap;
+    font-size: 1.7vw;
+    line-height: 2.1vw;
+    font-weight: 500;
+    margin: 0;
+    width: 100%;
+}
+
+.page-style {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -27,16 +47,17 @@
 }
 
 
-
-.main-image{
-    border-radius: 1.6vw;
-    margin-left: 5.5vw;
-    margin-right: 5.5vw;
+.main-image {
+    border: none;
+    border-radius: 27.5px !important;
+    margin-left: 5vw;
+    margin-top: 50px;
     margin-bottom: 1.8vw;
     display: block;
-    object-fit: contain;
-    max-width: 100%;
-    max-height: 72.4vw;
+    object-fit: cover;
+    width: 56.25vw;
+    height: 489px;
+
     @media (max-width: 768px) {
         margin-left: 1.3vw;
         margin-right: 1.3vw;
@@ -45,7 +66,7 @@
     }
 }
 
-.loading-or-error{
+.loading-or-error {
     display: flex;
     justify-content: center;
     margin-top: 15%;
