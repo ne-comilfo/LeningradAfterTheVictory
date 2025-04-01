@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link"; // Импортируем Link для кликабельных изображений
+import Link from "next/link";
 import styles from "../routes/routes.module.css";
 import { useRouter } from "next/navigation";
 
-const API_URL = "http://194.87.252.234:6060/api/categories/get-all";
+const API_URL = "http://194.87.252.234:6060/api/routes/get-all";
 
 // Данные маршрутов
 const routes = [
@@ -15,7 +15,7 @@ const routes = [
     title: "Восточные навигаторы",
     description:
       "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
-    image: "https://storage.yandexcloud.net/social-network-media/e5e0c275-da4f-4d90-b142-39f97d1fbdbc_temp857219656945222913.tmp",
+    image: "https://tse1.mm.bing.net/th?id=OIP.GXseP5xVv3QGkOixYgTEkgHaFj&pid=Api",
   },
   {
     id: 2,
@@ -88,6 +88,10 @@ const RouteCard = ({ route }) => {
   };
 
 
+  const handleLeftArrowClick = () => setIsDescriptionOpen(false);
+  const handleRightArrowClick = () => setIsDescriptionOpen(true);
+
+
   return (
     <div className={styles.routeCard} onTouchStart={handleTouchStart}>
       <div className={`${styles.cardInner} ${isDescriptionOpen ? styles.showDescription : ""}`}>
@@ -99,9 +103,18 @@ const RouteCard = ({ route }) => {
           <div className={styles.cardDescription}>
             <p>{route.description}</p>
           </div>
-          <div className={styles.arrow}>
-            <span>{isDescriptionOpen ? "→" : "←"}</span>
-          </div>
+          {!isDescriptionOpen && (
+            <div className={styles.arrowRight} onClick={handleRightArrowClick}>
+              <span className={styles.customArrowLine1}></span>
+              <span className={styles.customArrowLine2}></span>
+            </div>
+          )}
+          {isDescriptionOpen && (
+            <div className={styles.arrowLeft} onClick={handleLeftArrowClick}>
+              <span className={styles.customArrowLine1}></span>
+              <span className={styles.customArrowLine2}></span>
+            </div>
+          )}
         </div>
         {/* Контейнер с описанием для мобильной версии */}
         <div className={styles.descriptionWrapper}>
@@ -142,7 +155,7 @@ const App = () => {
         if (!response.ok) {
           throw new Error(`Ошибка запроса: ${response.status}`);
         }
-        const data = await response.text();
+        const data = await response.json();
         console.log(data);
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
