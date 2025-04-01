@@ -1,8 +1,14 @@
 import "./to-go-button-style.css"
+import { useRouter } from "next/navigation"
 
-export default function ToGoButton() {
+export default function ToGoButton({ attractionId }) {
+    const router = useRouter();
+    const handleClick = () => {
+        router.push(`/map?id=${attractionId}`);
+    }
     return(
-        <button className="route-button">
+        
+        <button className="to-go-button" onClick={handleClick}>
             <svg className="to-go-button-image" viewBox="0 0 89 91" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M44.0453 81.1793C44.0453 81.1793 71.5896 56.3068 71.5896 37.6524C71.5896 22.1987 59.2576 9.6709 44.0453 9.6709C28.833 9.6709 16.501 22.1987 16.501 37.6524C16.501 56.3068 44.0453 81.1793 44.0453 81.1793Z"
@@ -12,7 +18,7 @@ export default function ToGoButton() {
                     stroke="#0B83D9" strokeWidth="2.7933"/>
             </svg>
             <span>
-                В путь
+                На карте
             </span>
         </button>
     )

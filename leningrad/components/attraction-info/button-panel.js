@@ -1,14 +1,12 @@
 import "./button-panel-style.css"
 import HeartButton from "@/components/attraction-info/heart-button";
 import ToGoButton from "@/components/attraction-info/to-go-button";
-import RouteButton from "@/components/attraction-info/route-button";
 
-export default function ButtonPanel() {
+export default function ButtonPanel({ attractionId}) {
     return(
     <div className="button-panel">
         <HeartButton/>
-        <RouteButton/>
-        <ToGoButton/>
+        <ToGoButton attractionId={attractionId} />
     </div>
     )
 }

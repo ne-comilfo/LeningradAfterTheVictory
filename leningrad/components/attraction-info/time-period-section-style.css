@@ -1,6 +1,6 @@
 .time-period-section-header{
+  align-items: left;
   display: inline-block;
-  border: 0.16vw solid #0C6DB3;
   padding: 0.9% 1.9% 0.9% 1.9%;
   border-radius: 1vw;
   font-weight: 500;
@@ -8,7 +8,67 @@
   line-height: 2.3vw;
   margin-top: 4.4%;
   margin-bottom: 5%;
-  margin-left: 14%;
+}
+
+.time-period-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.time-period-section {
+  flex: 1;
+}
+
+.pop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px; /* Расстояние между линиями и текстом */
+}
+.routes-line {
+  width: 350px;
+  border: 0;
+  border-top: 2px solid black; /* Черная линия */
+  margin: 0;
+}
+
+.routes-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 10px;
+  white-space: nowrap;
+}
+
+.route-item {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center; 
+  justify-content: flex-start; 
+  width: 350px; 
+  gap: 10px;
+  text-align: left; 
+}
+
+.route-image {
+  width: 160px; 
+  height: auto;
+  object-fit: cover; /* Изображение не будет искажаться */
+  border-radius: 8px;
+}
+
+.route-name {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+  color: black;
+}
+
+.route-name:hover {
+  text-decoration: underline;
 }
 
 .time-period-section-paragraph{
@@ -20,17 +80,17 @@
   line-height: 2.1vw;
   font-weight: 500;
   margin: 0;
-  width: 100%;
+  width: 55vw;
 }
 
 .time-period-section-image {
-  border-radius: 1.6vw;
+  border-radius: 27.5px;
   padding: 0;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 2.2%;
   display: block;
   object-fit: contain;
-  max-width: 72.4vw;
-  max-height: 72.4vw;
+  width: 22.43vw;
+  height: 300px;
 }

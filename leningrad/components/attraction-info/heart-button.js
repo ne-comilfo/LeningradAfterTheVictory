@@ -18,7 +18,7 @@ export default function HeartButton() {
                 </g>
             </svg>
             <span>
-                Сохранить
+                {liked ? 'Сохранено' : 'Сохранить'}
             </span>
         </button>
     )
