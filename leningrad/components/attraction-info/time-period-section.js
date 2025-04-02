@@ -2,7 +2,6 @@ import "./time-period-section-style.css"
 import Slider from "@/components/attraction-info/images-slider";
 
 export default function TimePeriodSection({ section, routes }) {
-    console.log(routes)
     return (
         <div className="time-period-container">
             <section className="time-period-section">
