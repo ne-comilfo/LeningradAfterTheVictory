@@ -10,7 +10,6 @@ import ButtonPanel from "@/components/attraction-info/button-panel";
 import { useSearchParams } from 'next/navigation';
 
 const AttractionInfoComponent = () => {
-
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
     const [routes, setRoutes] = useState([]);
@@ -34,14 +33,14 @@ const AttractionInfoComponent = () => {
                 const routesList = await routesResponse.json();
 
                 const routeDetails = await Promise.all(
-                    routesList.map(route => 
+                    routesList.map(route =>
                         fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`)
                             .then(res => res.json())
                     )
                 );
 
                 const matchedRoutes = routeDetails
-                    .filter(route => 
+                    .filter(route =>
                         route.attractions.some(attraction => attraction.id === parseInt(id))
                     )
                     .map(route => ({
@@ -75,18 +74,19 @@ const AttractionInfoComponent = () => {
                 <div className="preview-text">{`${building.smallDescription}`}</div>
 
                 <ButtonPanel attractionId={building?.id} />
-
-                <TimePeriodSection routes={routes} key={0} section={{ name: "До блокады", image: building.linksBefore, description: building.descriptionBefore }} />
             </div>
             <div className="page-style">
+                <TimePeriodSection routes={routes} key={0} section={{ name: "До блокады", image: building.linksBefore, description: building.descriptionBefore }} />
                 <TimePeriodSection routes={routes} key={1} section={{ name: "После блокады", image: building.linksIn, description: building.descriptionIn }} />
                 <TimePeriodSection routes={routes} key={2} section={{ name: "Настоящее время", image: building.linksAfter, description: building.descriptionAfter }} />
             </div>
-            <div className="white">
-                {building.interestingFacts.length > 0 ? (
+            {building.interestingFacts.length > 0 ? (
+                <div className="white">
+
                     <InterestingFacts facts={building.interestingFacts} />
-                ) : null}
-            </div>
+
+                </div>
+            ) : null}
 
         </>
     );
