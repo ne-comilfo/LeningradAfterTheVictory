@@ -23,6 +23,26 @@ export default function Map() {
 
     const MIN_YEAR_DIFFERENCE = 9; // Минимальная разница между годами
 
+    useEffect(() => {
+        const markerId = localStorage.getItem('selectedMarkerId');
+        if (markerId && markers.length > 0) {
+            const foundMarker = markers.find(marker => String(marker.id) === String(markerId));
+            if (foundMarker) {
+                setSelectedMarker(foundMarker);
+                setIsInfoWindowOpen(true);
+                setIsExpanded(true);
+            }
+            if (map.current) {
+                map.current.flyTo({
+                    center: foundMarker.location.coordinates,
+                    zoom: 14,
+                    essential: true // Гарантирует выполнение анимации
+                });
+            }
+            localStorage.removeItem('selectedMarkerId');
+        }
+    }, [markers]);
+
     const clearRoute = () => {
         if (!map.current) return;
 
@@ -128,7 +148,6 @@ export default function Map() {
         ];
         map.current.setMaxBounds(bounds);
         map.current.setMinZoom(10);
-        map.current.setMaxZoom(14);
 
         return () => {
             if (map.current) {
@@ -190,7 +209,7 @@ export default function Map() {
                     >
                         {endYear}
                     </span>
-                    
+
                 </div>
             );
         }
@@ -245,7 +264,7 @@ export default function Map() {
         });
     }, [filteredMarkers]);
 
-    
+
 
     return (
         <div>
