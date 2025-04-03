@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
+
+.container {
+  font-family: 'Geologica', sans-serif;
+  background: linear-gradient(to bottom, #ffffff, #E9E7E1);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 50px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.textWithImage {
+  position: relative;
+}
+
+.header {
+  font-family: "Geologica", sans-serif;
+  font-size: 130px;
+  margin-top: 50px;
+  margin-left: 110px;
+  position: relative;
+  z-index: 10;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: -160px;
+  width: 1200px;
+  height: 1px;
+  background-color: #000;
+  display: inline-block;
+}
+
+.svgImage {
+  position: absolute;
+  top: 62%;
+  left: 725px;
+  transform: translateY(-50%);
+  width: 450px;
+  height: auto;
+  z-index: 1;
+}
+
+/* Стили для карточек видео */
+.videosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+  gap: 60px;
+  margin-top: 50px;
+  justify-items: center;
+}
+
+.videoCard {
+  position: relative;
+  border-radius: 40px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 550px;
+}
+
+.videoCard:hover {
+  transform: scale(1.10);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Внутренний контейнер */
+.cardInner {
+  display: flex;
+  width: 100%;
+}
+
+.cardImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+
+.cardContent {
+  padding: 15px;
+}
+
+.cardContent h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Описание (появляется при наведении) */
+.cardDescription {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.videoCard:hover .cardDescription {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cardDescription p {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Медиа-запросы */
+
+/* Для ПК */
+@media (min-width: 769px) {
+  /* Ничего дополнительно не нужно */
+}
+
+/* Для мобильных */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .header {
+    font-size: 8vw;
+    margin-left: 40px;
+    text-align: left;
+    margin-top: 70px;
+  }
+
+  .header::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: -160px;
+    width: 100px;
+    height: 1px;
+    background-color: #000;
+    display: inline-block;
+  }
+
+  .svgImage {
+    position: absolute;
+    top: 78%;
+    left: 200px;
+    transform: translateY(-50%);
+    width: 200px;
+    height: auto;
+    z-index: 1;
+  }
+
+  .videosGrid {
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 400px;
+    margin: 30px auto;
+  }
+
+  .cardImage {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .cardContent h3 {
+    font-size: 16px;
+  }
+
+  .videoCard:hover .cardDescription {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
