@@ -30,7 +30,7 @@ export default function Map() {
             if (foundMarker) {
                 setSelectedMarker(foundMarker);
                 setIsInfoWindowOpen(true);
-                setIsExpanded(true);
+                setIsExpanded(false);
             }
             if (map.current) {
                 map.current.flyTo({
