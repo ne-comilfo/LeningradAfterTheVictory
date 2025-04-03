@@ -1,11 +1,20 @@
 import "./time-period-section-style.css"
 import Slider from "@/components/attraction-info/images-slider";
 
-export default function TimePeriodSection({ section, routes }) {
-    return (
+export default function TimePeriodSection({ section, routes, isMobile }) {
+    return isMobile ? (
+        <>
+            <div className="time-period-container">
+                <section className="time-period-section">
+                    <Slider images={section.image} name={section.name} isMobile={isMobile} />
+                    <p className="time-period-section-paragraph">{section.description}</p>
+                </section>
+            </div>
+        </>
+    ) : (
         <div className="time-period-container">
             <section className="time-period-section">
-                <Slider images={section.image} name={section.name} />
+                <Slider images={section.image} name={section.name} isMobile={isMobile} />
                 <p className="time-period-section-paragraph">{section.description}</p>
             </section>
 

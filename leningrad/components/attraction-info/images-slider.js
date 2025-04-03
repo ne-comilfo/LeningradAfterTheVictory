@@ -1,14 +1,30 @@
 import { useState } from 'react';
 import './images-slider-style.css';
 
-export default function Slider({ images, name }) {
+export default function Slider({ images, name, isMobile }) {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [swiperInstance, setSwiperInstance] = useState(null);
 
     const nextImage = () => setCurrentIndex(prev => (prev + 1) % images.length);
     const prevImage = () => setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
     const isReversed = name === "После блокады";
     const containerClass = isReversed ? "period-slider-container reversed" : "period-slider-container";
-    return (
+    const customPagination = {
+        clickable: true,
+        renderBullet: function (index, className) {
+            // Показываем только первые 3 точки
+            if (index < 3) {
+                return `<span class="${className}"></span>`;
+            }
+            return '';
+        }
+    };
+
+    return isMobile ? (
+        <>
+            
+        </>
+    ) : (
         <div className={containerClass}>
             {isReversed ? (
                 <>
@@ -21,7 +37,7 @@ export default function Slider({ images, name }) {
                         ))}
                     </div>
                 </>
-            ) : ( 
+            ) : (
                 <>
                     <div className="period-title">
                         {name.split(' ').map((word, i) => (

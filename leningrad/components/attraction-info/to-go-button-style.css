@@ -3,7 +3,7 @@
     background: transparent;
     border: 0.1vw solid #0B83D9;
     border-radius: 0.9vw;
-    width: 30.3vw;
+    width: 40vw;
     height: 7.8vw;
     display: flex;
     justify-content: center;
@@ -12,6 +12,9 @@
     font-weight: 400;
     font-size: 2vw;
     line-height: 1.6vw;
+    @media (max-width: 450px) {
+        width: 36vw;
+    }
 }
 
 .to-go-button-image{
