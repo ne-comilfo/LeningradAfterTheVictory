@@ -11,11 +11,8 @@ export default function HeartButton({ attractionId }) {
         try {
             if (!liked) {
                 const response = await fetch(`http://194.87.252.234:6060/api/favorites/favoriteBuilding//${attractionId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        credentials: 'include'
-                    },
+                    method: "POST",
+                    credentials: "include", 
                 });
 
                 if (response.ok) {
