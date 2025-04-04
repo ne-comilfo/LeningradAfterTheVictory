@@ -5,7 +5,7 @@ import ToGoButton from "@/components/attraction-info/to-go-button";
 export default function ButtonPanel({ attractionId}) {
     return(
     <div className="button-panel">
-        <HeartButton/>
+        <HeartButton attractionId={attractionId} />
         <ToGoButton attractionId={attractionId} />
     </div>
     )
