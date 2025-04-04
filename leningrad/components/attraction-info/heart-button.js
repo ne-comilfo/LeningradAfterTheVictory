@@ -23,7 +23,7 @@ export default function HeartButton({ attractionId }) {
                     throw new Error('Ошибка при добавлении');
                 }
             } else {
-                const response = await fetch(`http://194.87.252.234:8090/api/favorites/favoriteBuilding/${attractionId}`, {
+                const response = await fetch(`http://194.87.252.234:6060/api/favorites/favoriteBuilding/${attractionId}`, {
                     method: 'DELETE',
                     credentials: "include",
                 });
