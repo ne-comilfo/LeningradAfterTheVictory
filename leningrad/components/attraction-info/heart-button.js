@@ -25,10 +25,7 @@ export default function HeartButton({ attractionId }) {
             } else {
                 const response = await fetch(`http://194.87.252.234:8090/api/favorites/favoriteBuilding/${attractionId}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        credentials: "include",
-                    },
+                    credentials: "include",
                 });
 
                 if (response.ok) {
