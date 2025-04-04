@@ -1,11 +1,18 @@
-import "./heart-button-style.css"
-import { useState } from 'react';
+import "./heart-button-style.css";
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function HeartButton({ attractionId }) {
     const [liked, setLiked] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+        const savedState = localStorage.getItem(`favorite_${attractionId}`);
+        if (savedState === 'true') {
+            setLiked(true);
+        }
+    }, [attractionId]);
 
     const handleClick = async () => {
         try {
@@ -17,6 +24,7 @@ export default function HeartButton({ attractionId }) {
 
                 if (response.ok) {
                     setLiked(true);
+                    localStorage.setItem(`favorite_${attractionId}`, 'true'); 
                 } else if (response.status === 401 || response.status === 422) {
                     setShowModal(true);
                 } else {
@@ -30,6 +38,7 @@ export default function HeartButton({ attractionId }) {
 
                 if (response.ok) {
                     setLiked(false);
+                    localStorage.removeItem(`favorite_${attractionId}`); 
                 } else {
                     throw new Error('Ошибка при удалении');
                 }
