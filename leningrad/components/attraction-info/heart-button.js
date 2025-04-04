@@ -10,13 +10,12 @@ export default function HeartButton({ attractionId }) {
     const handleClick = async () => {
         try {
             if (!liked) {
-                const response = await fetch('http://194.87.252.234:6060/api/favorites/favoriteBuilding', {
+                const response = await fetch(`http://194.87.252.234:6060/api/favorites/favoriteBuilding//${attractionId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         credentials: 'include'
                     },
-                    body: JSON.stringify({ attractionId })
                 });
 
                 if (response.ok) {
