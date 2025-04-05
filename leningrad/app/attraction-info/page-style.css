@@ -148,6 +148,22 @@ body {
     transition: all 0.3s ease;
 }
 
+.react-player-wrapper {
+    position: relative;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+.video-container {
+    overflow: hidden;
+    border-radius: 27.5px;
+    margin-left: 5vw;
+    margin-top: 30px;
+    margin-bottom: 1.8vw;
+    width: 50vw;
+    height: 60vh;
+    background-color: black;
+  }
 
 .main-image {
     border: none;
@@ -159,8 +175,6 @@ body {
     height: 60vh;
 }
 
-
-
 @media (max-width: 450px) {
     .main-image {
         margin-top: 10px;
@@ -171,6 +185,18 @@ body {
         justify-content: flex-start;
         z-index: 9;
         margin-bottom: 20px;
+    }
+    .video-container {
+        margin-left: 27px;
+        margin-top: 10px;
+        width: 90%;
+        height: 200px;
+        border-radius: 27.5px;
+        align-items: flex-start;
+        justify-content: flex-start;
+        z-index: 9;
+        margin-bottom: 20px;
+        background-color: black;
     }
 }
 
@@ -214,11 +240,50 @@ body {
     height: 12px;
 }
 
+.image-thumbnail-wrapper {
+    position: relative;
+    width: fit-content;
+}
+
 .image-carousel {
     width: 15vw;
     height: 18vh;
     border-radius: 15px;
     margin-top: 50px;
+    object-fit: cover;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.image-thumbnail-wrapper.top-media .image-carousel {
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+.play-icon-overlay {
+    position: absolute;
+    top: 63%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: white;
+    text-shadow: 0 0 5px rgba(0,0,0,0.8);
+    pointer-events: none;
+}
+
+
+.image-carousel.top-media {
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+.ne-top {
+    transform: scale(0.9);
 }
 
 .pip {

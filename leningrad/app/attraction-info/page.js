@@ -8,6 +8,8 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
+import dynamic from 'next/dynamic';
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import 'swiper/css';
 import 'swiper/css/pagination';
 
@@ -30,12 +32,19 @@ const MediaSwiper = ({ media, className = "" }) => {
                             {item.type === "image" ? (
                                 <img className="main-image" src={item.src} alt="" />
                             ) : (
-                                <video className="main-image" src={item.src} controls autoPlay loop />
+                                <div className="video-container">
+                                    <ReactPlayer
+                                        url={item.src}
+                                        controls
+                                        width="100%"
+                                        height="200px"
+                                    />
+                                </div>
                             )}
                         </SwiperSlide>
                     ))}
                 </Swiper>
-            </div>
+            </div >
         </>
     );
 };
@@ -133,7 +142,7 @@ const AttractionInfoComponent = () => {
 
     const media = [
         { type: "image", src: building.linksPreview },
-        { type: "video", src: "https://storage.yandexcloud.net/social-network-media/e93ad391-7d11-431b-b9ce-b6f1a94f1e32_master.m3u8" }
+        { type: "video", src: "https://storage.yandexcloud.net/social-network-media/master.m3u8", preview: "./hermitage1.png" }
     ];
 
     const getOrderedMedia = () => {
@@ -207,7 +216,18 @@ const AttractionInfoComponent = () => {
                 <h1 className="attraction-title">{`${building.name}, ${building.yearOfCreation}`}</h1>
                 <div className="pip">
                     {media[currentMediaIndex].type === "video" ? (
-                        <video className="main-image" src={media[currentMediaIndex].src} controls autoPlay loop />
+                        <div className="react-player-wrapper">
+                            <div className="video-container">
+                                <ReactPlayer
+                                    url={media[currentMediaIndex].src}
+                                    playing={true}
+
+                                    controls
+                                    width="100%"
+                                    height="100%"
+                                />
+                            </div>
+                        </div>
                     ) : (
                         <img className="main-image" src={media[currentMediaIndex].src} alt={building.name} />
                     )}
@@ -218,21 +238,21 @@ const AttractionInfoComponent = () => {
                         </button>
 
                         {getOrderedMedia().map((item, index) => (
-                            item.type === "image" ? (
-                                <img
-                                    key={index}
-                                    className={`image-carousel ${index === 0 ? "top-media" : ""}`}
-                                    src={item.src}
-                                    alt=""
-                                />
-                            ) : (
-                                <video
-                                    key={index}
-                                    className={`image-carousel ${index === 0 ? "top-media" : ""}`}
-                                    src={item.src}
-                                />
-                            )
+                            <div
+                            key={index}
+                            className={`image-thumbnail-wrapper ${index === 0 ? "top-media" : "ne-top"}`}
+                          >
+                            <img
+                              className="image-carousel"
+                              src={item.type === "video" ? item.preview : item.src}
+                              alt=""
+                            />
+                            {item.type === "video" && (
+                              <div className="play-icon-overlay"><img src="./to-play.svg"/></div>
+                            )}
+                          </div>                          
                         ))}
+
 
                         <button className="arrow-btn" onClick={handleNext}>
                             <img src="./down.svg" className="arrows" />
