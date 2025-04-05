@@ -70,8 +70,21 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   };
 
   const handleAuthRedirect = () => {
-    const currentUrl = window.location.pathname + window.location.search;
-    router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
+    // Сохраняем полное состояние в sessionStorage
+    sessionStorage.setItem('pendingAuthAction', JSON.stringify({
+      markerId: marker.id,
+      isExpanded: isExpanded,
+      view: view,
+      selectedRouteId: selectedRoute?.id || null,
+      // Добавляем координаты для восстановления позиции карты
+      mapState: {
+        center: map.current?.getCenter(),
+        zoom: map.current?.getZoom()
+      }
+    }));
+  
+    const redirectUrl = `/authentication-authorization?redirect=${encodeURIComponent('/map')}`;
+    router.push(redirectUrl);
     setShowAuthModal(false);
   };
 
@@ -322,6 +335,8 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     onClose(); // Уведомляем Map.js о закрытии
     clearRoute();
     clearMarker()
+
+    sessionStorage.removeItem('pendingAuthAction');
   };
 
   const clearMarker = () => {
