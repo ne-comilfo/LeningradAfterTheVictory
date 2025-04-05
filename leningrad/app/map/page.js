@@ -23,48 +23,7 @@ export default function Map() {
 
     const MIN_YEAR_DIFFERENCE = 9; // Минимальная разница между годами
 
-    useEffect(() => {
-        const restoreStateAfterAuth = () => {
-          const savedState = sessionStorage.getItem('pendingAuthAction');
-          if (savedState) {
-            const {
-              markerId,
-              isExpanded: savedExpanded,
-              view: savedView,
-              selectedRouteId,
-              mapState
-            } = JSON.parse(savedState);
-      
-            // Восстанавливаем позицию карты
-            if (mapState?.center && map.current) {
-              map.current.flyTo({
-                center: mapState.center,
-                zoom: mapState.zoom || 15,
-                essential: true
-              });
-            }
-      
-            // Находим маркер и открываем InfoWindow
-            const foundMarker = markers.find(m => String(m.id) === String(markerId));
-            if (foundMarker) {
-              setSelectedMarker(foundMarker);
-              setIsInfoWindowOpen(true);
-              
-              // Устанавливаем состояние InfoWindow после небольшой задержки
-              setTimeout(() => {
-                setIsExpanded(savedExpanded);
-              }, 100);
-            }
-      
-            sessionStorage.removeItem('pendingAuthAction');
-          }
-        };
-      
-        // Вызываем после загрузки маркеров
-        if (markers.length > 0) {
-          restoreStateAfterAuth();
-        }
-      }, [markers]);
+    
 
     useEffect(() => {
         const markerId = localStorage.getItem('selectedMarkerId');
