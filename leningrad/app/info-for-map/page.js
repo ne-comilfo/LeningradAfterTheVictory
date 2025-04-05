@@ -17,7 +17,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   const [savedRoutes, setSavedRoutes] = useState({}); // Сохраненные маршруты
   const [object, setObject] = useState(null); // Данные объекта
   const [isMobile, setIsMobile] = useState(false); // Мобильный вид
-  const [startY, setStartY] = useState<number | null>(null);
+  const [startY, setStartY] = useState(null); // Начальная позиция для свайпа
   const [dragOffset, setDragOffset] = useState(0); // Смещение для свайпа
   const [isDragging, setIsDragging] = useState(false); // Происходит ли свайп
   const [routes, setRoutes] = useState([]); // Список маршрутов
