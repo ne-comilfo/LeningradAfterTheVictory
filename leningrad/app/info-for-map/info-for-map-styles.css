@@ -263,6 +263,51 @@
 .route-list button:focus {
   outline: none;
 }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 80%;
+  text-align: center;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-buttons button:first-child {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+}
+
+.modal-buttons button:last-child {
+  background: #0B83D9;
+  color: white;
+  border: none;
+}
+
 
 @media (max-width: 450px) {
 
@@ -278,10 +323,11 @@
     font-family: 'Geologica', sans-serif;
   }
 
+  
   .mobile-version .floating-image {
     top: 29vh;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(var(--image-offset, 0));
     width: 100%;
     border-radius: 50px 50px 0 0;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
