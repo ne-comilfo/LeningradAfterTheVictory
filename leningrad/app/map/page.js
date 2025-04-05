@@ -39,7 +39,7 @@ export default function Map() {
             if (mapState?.center && map.current) {
               map.current.flyTo({
                 center: mapState.center,
-                zoom: mapState.zoom || 16,
+                zoom: mapState.zoom || 15,
                 essential: true
               });
             }
@@ -78,7 +78,7 @@ export default function Map() {
             if (map.current) {
                 map.current.flyTo({
                     center: foundMarker.location.coordinates,
-                    zoom: 16,
+                    zoom: 15,
                     essential: true // Гарантирует выполнение анимации
                 });
             }

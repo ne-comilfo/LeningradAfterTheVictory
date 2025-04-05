@@ -17,7 +17,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   const [savedRoutes, setSavedRoutes] = useState({}); // Сохраненные маршруты
   const [object, setObject] = useState(null); // Данные объекта
   const [isMobile, setIsMobile] = useState(false); // Мобильный вид
-  const [startY, setStartY] = useState(null); // Начальная позиция для свайпа
+  const [startY, setStartY] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState(0); // Смещение для свайпа
   const [isDragging, setIsDragging] = useState(false); // Происходит ли свайп
   const [routes, setRoutes] = useState([]); // Список маршрутов
@@ -355,10 +355,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     }
   }, [marker]);
   // Обработчик свайпа
-  const handleTouchStart = (e) => {
-    setStartY(e.touches[0].clientY);
-    setIsDragging(true);
-  };
+  
 
   const handleSaveRouteClick = async (routeId) => {
     try {
@@ -420,7 +417,6 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     const deltaY = e.touches[0].clientY - startY;
     setDragOffset(deltaY);
 
-    // Разрешаем смещение картинки только вниз (при сворачивании)
     if (deltaY > 0) {
       setImageOffset(deltaY);
     } else {
@@ -445,8 +441,13 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     setDragOffset(0);
     setImageOffset(0);
   };
+  
 
-  // Обработчик прокрутки маршрутов
+  const handleTouchStart = (e) => {
+    setStartY(e.touches[0].clientY);
+    setIsDragging(true);
+  };
+
   const handleScrollRoutes = (direction) => {
     if (routesRef.current) {
       const scrollAmount = 327; // Шаг прокрутки
