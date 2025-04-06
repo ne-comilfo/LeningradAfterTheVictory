@@ -3,8 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import "./info-for-map-styles.css";
 import HeartIcon from './HeartIcon';
+import Link from 'next/link';
 
-export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded, drawRoute, clearRoute }) {
+import * as maptilersdk from '@maptiler/sdk';
+import "@maptiler/sdk/dist/maptiler-sdk.css";
+
+export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded, drawRoute, clearRoute, map }) {
   const [isOpen, setIsOpen] = useState(true); // Управление видимостью окна
   const [view, setView] = useState("default"); // Текущий вид (описание или маршруты)
   const [selectedRoute, setSelectedRoute] = useState(null); // Выбранный маршрут
@@ -17,7 +21,12 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   const [isDragging, setIsDragging] = useState(false); // Происходит ли свайп
   const [routes, setRoutes] = useState([]); // Список маршрутов
   const routesRef = useRef(null); // Ссылка на список маршрутов
+  const [userLocation, setUserLocation] = useState(null); // Координаты пользователя
+  const userMarkerRef = useRef(null);
 
+
+
+  
   // Загрузка данных объекта и маршрутов
   useEffect(() => {
     // Сброс состояния вкладки и маршрута при изменении объекта
@@ -71,11 +80,209 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     }
   }, [marker]);
 
+  const handleStartRoute = (route) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude: userLat, longitude: userLng } = position.coords;
+          // Координаты достопримечательности из marker
+          const [markerLng, markerLat] = marker.location.coordinates;
+
+          setUserLocation([userLng, userLat]);
+
+          // Удаляем старый маркер пользователя (если есть)
+          if (userMarkerRef.current) {
+            userMarkerRef.current.remove();
+          }
+
+          // Добавляем новый маркер для местоположения пользователя
+          if (map.current) {
+            userMarkerRef.current = new maptilersdk.Marker({
+              color:"rgb(95, 163, 236)"
+            })
+              .setLngLat([userLng, userLat])
+              .addTo(map.current);
+          }
+          if (selectedRoute) {
+
+            fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`)
+              .then((response) => response.json())
+              .then((data) => {
+                const coordinates = data.attractions.map(attraction => attraction.location.coordinates);
+                const formattedCoordinates = coordinates.map(([x, y]) => ({ x, y }));
+
+                const requestBody = {
+                  "points": formattedCoordinates  // Оборачиваем массив координат в объект
+                };
+
+                fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(requestBody),  // Отправляем массив координат
+                })
+                  .then((response) => response.json())  // Обрабатываем ответ второго запроса
+                  .then((routeData) => {
+                    if (routeData.geoJson.length > 0) {
+                      try {
+                        const geoJson = routeData.geoJson; // Парсим geoJson
+                        const coordinates1 = geoJson; // Извлекаем координаты
+                        const first_coordinates = coordinates1[0]
+                        const last_coordinates = coordinates1[coordinates1.length - 1]
+
+                        // Создаем промисы для вызовов API
+                        const fetchNormalDistance = fetch(
+                          `http://194.87.252.234:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${first_coordinates[0]}&y2=${first_coordinates[1]}`
+                        ).then((response) => response.json());
+
+                        const fetchReverseDistance = fetch(
+                          `http://194.87.252.234:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${last_coordinates[0]}&y2=${last_coordinates[1]}`
+                        ).then((response) => response.json());
+
+                        // Ожидаем завершения обоих запросов
+                        Promise.all([fetchNormalDistance, fetchReverseDistance])
+                          .then(([normalData, reverseData]) => {
+                            // Проверяем, что оба запроса вернули данные
+                            if (normalData.geoJson && reverseData.geoJson) {
+                              const distance_normal = normalData.distance;
+                              const distance_reverse = reverseData.distance;
+
+                              if (distance_normal < distance_reverse) {
+                                const userCoordinates = { x: userLng, y: userLat }; // Координаты пользователя
+                                const formattedCoordinates = [userCoordinates, ...coordinates.map(([x, y]) => ({ x, y }))];
+                                const requestBody = {
+                                  points: formattedCoordinates, // Теперь массив начинается с координат пользователя
+                                };
+
+                                fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
+                                  method: 'POST',
+                                  headers: {
+                                      'Content-Type': 'application/json',
+                                  },
+                                  body: JSON.stringify(requestBody),  // Отправляем массив координат
+                              })
+                                  .then((response) => response.json())  // Обрабатываем ответ второго запроса
+                                  .then((routeData) => {
+                                      if (routeData.geoJson.length > 0) {
+                                          try {
+                                              const geoJson = routeData.geoJson; // Парсим geoJson
+                                              const coordinates1 = geoJson; // Извлекаем координаты
+                  
+                                              drawRoute(coordinates1)
+                                              setIsExpanded(false);
+                                          } catch (error) {
+                                              console.error("Ошибка при парсинге geoJson:", error);
+                                          }
+                                      } else {
+                                          console.error("geoJson не найден или пустой");
+                                      }
+                                  })
+                                  .catch((error) => {
+                                      console.error("Ошибка второго запроса:", error);  // Ошибка обработки второго запроса
+                                  });
+                                
+                              } else {
+                                const userCoordinates = { x: userLng, y: userLat }; // Координаты пользователя
+                                const formattedCoordinates = [...coordinates.map(([x, y]) => ({ x, y })), userCoordinates];
+
+                                const requestBody = {
+                                  points: formattedCoordinates, // Теперь массив заканчивается координатами пользователя
+                                };
+                                fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
+                                  method: 'POST',
+                                  headers: {
+                                      'Content-Type': 'application/json',
+                                  },
+                                  body: JSON.stringify(requestBody),  // Отправляем массив координат
+                              })
+                                  .then((response) => response.json())  // Обрабатываем ответ второго запроса
+                                  .then((routeData) => {
+                                      if (routeData.geoJson.length > 0) {
+                                          try {
+                                              const geoJson = routeData.geoJson; // Парсим geoJson
+                                              const coordinates1 = geoJson; // Извлекаем координаты
+                  
+                                              drawRoute(coordinates1)
+                                              setIsExpanded(false);
+                                          } catch (error) {
+                                              console.error("Ошибка при парсинге geoJson:", error);
+                                          }
+                                      } else {
+                                          console.error("geoJson не найден или пустой");
+                                      }
+                                  })
+                                  .catch((error) => {
+                                      console.error("Ошибка второго запроса:", error);  // Ошибка обработки второго запроса
+                                  });
+                              }
+                              
+                            } else {
+                              console.error("Один из маршрутов не найден или пустой");
+                            }
+                          })
+                          .catch((error) => {
+                            console.error("Ошибка при построении маршрута:", error);
+                          });
+                      } catch (error) {
+                        console.error("Ошибка при парсинге geoJson:", error);
+                      }
+                    } else {
+                      console.error("geoJson не найден или пустой");
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Ошибка второго запроса:", error);  // Ошибка обработки второго запроса
+                  });
+              })
+              .catch((error) => {
+                console.error("Ошибка загрузки маршрута:", error);  // Ошибка первого запроса
+              });
+
+          } else {
+            fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${markerLng}&y2=${markerLat}`)
+              .then((response) => response.json())
+              .then((routeData) => {
+                // Обрабатываем geoJson для отображения маршрута
+                if (routeData.geoJson && routeData.geoJson.length > 0) {
+                  const coordinates = routeData.geoJson;
+                  drawRoute(coordinates);
+                  setIsExpanded(false); // Отображаем маршрут на карте
+                } else {
+                  console.error("Маршрут не найден или пустой");
+                }
+              })
+              .catch((error) => {
+                console.error("Ошибка при построении маршрута:", error);
+              });
+          }
+
+        },
+        (error) => {
+          console.error("Ошибка при получении геопозиции:", error.message);
+          alert("Не удалось получить ваше местоположение. Пожалуйста, разрешите доступ к геопозиции.");
+        }
+      );
+    } else {
+      console.error("Geolocation не поддерживается вашим браузером.");
+      alert("Ваш браузер не поддерживает Geolocation.");
+    }
+  };
+
   const handleClose = () => {
     setIsOpen(false); // Закрываем окно
     onClose(); // Уведомляем Map.js о закрытии
     clearRoute();
+    clearMarker()
   };
+
+  const clearMarker = () => {
+    if (userMarkerRef.current) {
+      userMarkerRef.current.remove(); // Удаляем маркер с карты
+      userMarkerRef.current = null; // Сбрасываем ссылку на маркер
+    }
+  }
+
 
   // Обработчик свайпа
   const handleTouchStart = (e) => {
@@ -147,14 +354,17 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
           body: JSON.stringify(requestBody),  // Отправляем массив координат
         })
           .then((response) => response.json())  // Обрабатываем ответ второго запроса
-          //.then(data => console.log(data))
           .then((routeData) => {
+            
+
             if (routeData.geoJson.length > 0) {
               try {
                 const geoJson = routeData.geoJson; // Парсим geoJson
                 const coordinates1 = geoJson; // Извлекаем координаты
 
-                drawRoute(coordinates1)  // Рисуем маршрут с координатами
+
+                drawRoute(coordinates1)
+                setIsExpanded(false);
               } catch (error) {
                 console.error("Ошибка при парсинге geoJson:", error);
               }
@@ -170,8 +380,6 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
         console.error("Ошибка загрузки маршрута:", error);  // Ошибка первого запроса
       });
   };
-
-
 
 
   useEffect(() => {
@@ -219,7 +427,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                         {isExpanded && object && (
                           <>
                             <p>{object.description}</p>
-                            <a href='./attraction-info'>подробнее</a>
+                              <Link href={`/attraction-info?id=${String(marker.id)}`}>
+                                <span>подробнее</span>
+                              </Link>
                             <div className="buttons centered">
                               <button onClick={handleSave}>
                                 <HeartIcon filled={isSaved} />
@@ -229,7 +439,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 <img src="/ways.svg" className="routes" />
                                 Маршруты
                               </button>
-                              <button onClick={handleClose}>
+
+                              <button onClick={handleStartRoute}>
+                              
                                 <img src="/route.svg" className="in-the-route" />
                                 В путь
                               </button>
@@ -269,13 +481,17 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 </button>
                               </div>
                             </div>
-                            <a className="back-link" onClick={() => {setView("default")}}>⬅ Назад к описанию</a>
+
+                            <a className="back-link" onClick={() => { setView("default"); clearRoute(); clearMarker() }}>⬅ Назад к описанию</a>
+
                             <div className="buttons-1 centered">
                               <button className="active">
                                 <img src="/ways.svg" className="routes" />
                                 Маршруты
                               </button>
-                              <button onClick={handleClose}>
+
+                              <button onClick={handleStartRoute}>
+
                                 <img src="/route.svg" className="in-the-route" />
                                 В путь
                               </button>
@@ -296,13 +512,17 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                         {isExpanded && (
                           <>
                             <p>{selectedRoute.details}</p>
-                            <a className="back-link" onClick={() => {setSelectedRoute(null); clearRoute()}}>⬅ Назад к маршрутам</a>
+
+                            <a className="back-link" onClick={() => { setSelectedRoute(null); clearRoute(); clearMarker() }}>⬅ Назад к маршрутам</a>
+
                             <div className="buttons-1">
                               <button onClick={() => handleSaveRoute(selectedRoute.id)}>
                                 <HeartIcon filled={savedRoutes[selectedRoute.id]} />
                                 {savedRoutes[selectedRoute.id] ? "Сохранено" : "Сохранить"}
                               </button>
-                              <button onClick={handleClose}>
+
+                              <button onClick={() => handleStartRoute(selectedRoute)}>
+
                                 <img src="/route.svg" className="in-the-route" />
                                 В путь
                               </button>
@@ -322,7 +542,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
         <div className="pc-version">
           <div className={`info-window ${isOpen ? "open" : ""}`}>
             <div className='button-to-exit'>
-              <button onClick={handleClose}>✕</button>
+
+              <button onClick={() => { handleClose(); clearMarker() }}>✕</button>
+
             </div>
             {view === "default" && object && (
               <>
@@ -339,24 +561,30 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     <img src="/ways.svg" className="routes" />
                     Маршруты
                   </button>
-                  <button onClick={handleClose}>
+
+                  <button onClick={handleStartRoute}>
+
                     <img src="/route.svg" className="in-the-route" />
                     В путь
                   </button>
                 </div>
                 <p>{object.description}</p>
-                <a href='./attraction-info'>подробнее</a>
+                  <Link href={`/attraction-info?id=${marker.id}`}>
+                    <span>подробнее</span>
+                  </Link>
               </>
             )}
             {view === "routes" && !selectedRoute && object && (
-              <>
+                <>
                 <h2>{object.title}</h2>
                 <div className="buttons-1 centered">
                   <button className="active">
                     <img src="/ways.svg" className="routes" />
                     Маршруты
                   </button>
-                  <button onClick={handleClose}>
+
+                  <button onClick={handleStartRoute}>
+
                     <img src="/route.svg" className="in-the-route" />
                     В путь
                   </button>
@@ -370,7 +598,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     ))}
                   </ul>
                 </div>
-                <a className="back-link" onClick={() => setView("default")}>⬅ Назад к описанию</a>
+
+                <a className="back-link" onClick={() => { setView("default"); clearRoute(); clearMarker() }}>⬅ Назад к описанию</a>
+
               </>
             )}
             {selectedRoute && object && (
@@ -381,13 +611,17 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     <HeartIcon filled={savedRoutes[selectedRoute.id]} />
                     {savedRoutes[selectedRoute.id] ? "Сохранено" : "Сохранить"}
                   </button>
-                  <button onClick={handleClose}>
+
+                  <button onClick={() => handleStartRoute(selectedRoute)}>
+
                     <img src="/route.svg" className="in-the-route" />
                     В путь
                   </button>
                 </div>
                 <p>{selectedRoute.details}</p>
-                <a className="back-link" onClick={() => {setSelectedRoute(null); clearRoute()}}>⬅ Назад к маршрутам</a>
+
+                <a className="back-link" onClick={() => { setSelectedRoute(null); clearRoute(); clearMarker() }}>⬅ Назад к маршрутам</a>
+
               </>
             )}
           </div>

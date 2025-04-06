@@ -30,74 +30,50 @@
   position: absolute;
   bottom: -10px;
   left: -160px;
-  width: 1000px;
+  width: 1200px;
   height: 1px;
   background-color: #000;
   display: inline-block;
 }
 
-/* Стили для кнопок категорий (фильтров) */
-.categories {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
-  margin-left: 40px;
-  justify-content: left;
-}
+
 
 .svgImage {
   position: absolute;
-  top: 55%;
-  left: 80px;
+  top: 62%;
+  left: 725px;
   transform: translateY(-50%);
-  width: 600px;
+  width: 450px;
   height: auto;
   z-index: 1;
 }
 
-.categoryButton {
-  padding: 10px 20px;
-  margin-top: 20px;
-  border: none;
-  border-radius: 50px;
-  background-color: #f0f0f0;
-  color: #000;
-  font-size: 16px;
-  cursor: pointer;
-  z-index: 1;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-}
 
-.categoryButton:hover {
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  background-color: #e0e0e0;
-}
 
-.categoryButton.active {
-  background-color: #3B3939;
-  color: #fff;
-}
 
-/* Стили для карточек маршрутов */
-.routesGrid {
+/* Стили для карточек объектов */
+.objectsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+  gap: 60px;
+  margin-top: 50px;
+  justify-items: center;
+ 
 }
 
-.routeCard {
+.objectCard {
+  
   position: relative;
   border-radius: 40px;
   overflow: hidden;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  max-width: 400px;
-  margin: 0 auto;
+  max-width: 550px;
+ 
 }
 
-.routeCard:hover {
+.objectCard:hover {
   transform: scale(1.10);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -116,6 +92,7 @@
 
 .imageWrapper {
   position: relative;
+  cursor: pointer;
 }
 
 .cardImage {
@@ -151,9 +128,10 @@
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
 }
 
-.routeCard:hover .cardDescription {
+.objectCard:hover .cardDescription {
   opacity: 1;
   transform: translateY(0);
 }
@@ -193,6 +171,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .arrowLeft {
@@ -296,6 +275,7 @@
 @media (max-width: 768px) {
   .container {
     padding: 10px;
+
   }
 
   .header {
@@ -318,8 +298,8 @@
 
   .svgImage {
     position: absolute;
-    top: 85%;
-    left: 40px;
+    top: 78%;
+    left: 200px;
     transform: translateY(-50%);
     width: 200px;
     height: auto;
@@ -336,8 +316,11 @@
     font-size: 14px;
   }
 
-  .routesGrid {
+  .objectsGrid {
     grid-template-columns: 1fr;
+    width: 100%; /* Занимает всю ширину */
+    max-width: 400px; /* Максимальная ширина карточки */
+    margin: 30px auto;
   }
 
   .cardImage {
@@ -359,7 +342,7 @@
     display: none; /* Убираем отдельный контейнер для описания на мобильных */
   }
 
-  .routeCard:hover .cardDescription {
+  .objectCard:hover .cardDescription {
     opacity: 0; /* Скрываем описание при наведении */
     transform: translateY(10px); /* Возвращаем в исходное положение */
   }

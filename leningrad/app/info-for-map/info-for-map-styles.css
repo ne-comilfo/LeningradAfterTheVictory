@@ -120,7 +120,7 @@
   justify-content: space-between;
   margin: 15px 0;
   gap: 10px;
-  font-size: 15px;
+  font-size: 13.5px;
 }
 
 .heart {
@@ -145,7 +145,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 142px;
+  width: 145px;
   height: 65px;
   padding: 5px;
   gap: 3px;
@@ -224,8 +224,11 @@
 }
 
 .route-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  text-decoration: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
   gap: 20px;
   margin-top: 15px;
   padding-left: 0;
@@ -380,7 +383,7 @@
     justify-content: space-between;
     margin: 15px 0;
     gap: 10px;
-    font-size: 14px;
+    font-size: 13.5px;
   }
 
   .mobile-version .buttons button {

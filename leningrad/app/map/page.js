@@ -9,8 +9,6 @@ import './/page-style.css';
 import { useRouter } from 'next/navigation';
 import InfoWindow from '../info-for-map/page';
 
-
-
 export default function Map() {
     const [markers, setMarkers] = useState([]);
     const [filteredMarkers, setFilteredMarkers] = useState([]);
@@ -18,6 +16,7 @@ export default function Map() {
     const [endYear, setEndYear] = useState(null);
     const [maxYear, setMaxYear] = useState(null);
     const [minYear, setMinYear] = useState(null);
+
     const [touchStartEnd, setTouchStartEnd] = useState(null);
     const [touchMinStart, setTouchMinStart] = useState(null);
     const [touchEndMax, setTouchEndMax] = useState(null);
@@ -25,16 +24,38 @@ export default function Map() {
     const [equalEndMax, setEqualEndMax] = useState(null);
     const [selectedMarker] = useState(null); // Выбранная метка
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false); // Открыто ли окно
+
     const [isExpanded, setIsExpanded] = useState(false);
     const router = useRouter();
     const minRes = 3.2;
     const maxRes = 88.7;
     const middleDistance = 3.4;
 
+    const MIN_YEAR_DIFFERENCE = 9; // Минимальная разница между годами
+
+    useEffect(() => {
+        const markerId = localStorage.getItem('selectedMarkerId');
+        if (markerId && markers.length > 0) {
+            const foundMarker = markers.find(marker => String(marker.id) === String(markerId));
+            if (foundMarker) {
+                setSelectedMarker(foundMarker);
+                setIsInfoWindowOpen(true);
+                setIsExpanded(false);
+            }
+            if (map.current) {
+                map.current.flyTo({
+                    center: foundMarker.location.coordinates,
+                    zoom: 14,
+                    essential: true // Гарантирует выполнение анимации
+                });
+            }
+            localStorage.removeItem('selectedMarkerId');
+        }
+    }, [markers]);
+
     const clearRoute = () => {
         if (!map.current) return;
 
-        // Удаляем слой и источник маршрута, если они существуют
         if (map.current.getLayer('route')) {
             map.current.removeLayer('route');
             map.current.removeSource('route');
@@ -44,13 +65,11 @@ export default function Map() {
     const drawRoute = (coordinates) => {
         if (!map.current || !coordinates || coordinates.length === 0) return;
 
-        // Удаляем предыдущий маршрут, если он был
         if (map.current.getLayer('route')) {
             map.current.removeLayer('route');
             map.current.removeSource('route');
         }
 
-        // Создаем GeoJSON объект для маршрута
         const geojson = {
             type: 'Feature',
             properties: {},
@@ -60,7 +79,6 @@ export default function Map() {
             },
         };
 
-        // Добавляем источник и слой для маршрута
         map.current.addSource('route', {
             type: 'geojson',
             data: geojson,
@@ -80,7 +98,6 @@ export default function Map() {
             },
         });
 
-        // Масштабируем карту так, чтобы маршрут был виден
         const bounds = coordinates.reduce((bounds, coord) => {
             return bounds.extend(coord);
         }, new maptilersdk.LngLatBounds(coordinates[0], coordinates[0]));
@@ -90,7 +107,6 @@ export default function Map() {
         });
     };
 
-
     const mapContainer = useRef(null);
     const map = useRef(null);
     const spb = { lng: 30.3148, lat: 59.9343 };
@@ -98,18 +114,15 @@ export default function Map() {
     const lang = 'ru';
     maptilersdk.config.apiKey = 'ozVhpb986qzcqh7JCGLE';
 
-
-    //  Ссылки на метки для отображения
     const markerElements = useRef([]);
+
     useEffect(() => {
         const fetchMarkers = async () => {
             try {
                 const response = await fetch("http://194.87.252.234:6060/api/attractions/get-all");
-
                 const data = await response.json();
-                setMarkers(data); // Обновляем состояние с метками
+                setMarkers(data);
 
-                // Определяем минимальный и максимальный год
                 const years = data.map(marker => marker.yearOfCreation);
                 setMinYear(1703);
                 setMaxYear(2025);
@@ -123,13 +136,14 @@ export default function Map() {
         console.log(minYear);
     }, []);
 
+
     useEffect(() => {
         setMinYear(1703);
         setMaxYear(2025);
     }, []);        
 
+
     useEffect(() => {
-        // Начальные значения слайдера
         setStartYear(minYear);
         setEndYear(maxYear);
         setTouchMinStart(false);
@@ -137,9 +151,7 @@ export default function Map() {
     }, [minYear, maxYear]);
 
     useEffect(() => {
-
         if (!mapContainer.current || map.current) return;
-
 
         map.current = new maptilersdk.Map({
             container: mapContainer.current,
@@ -149,6 +161,12 @@ export default function Map() {
             language: lang,
         });
 
+        const bounds = [
+            [29.6, 59.5],
+            [30.8, 60.1],
+        ];
+        map.current.setMaxBounds(bounds);
+        map.current.setMinZoom(10);
 
         return () => {
             if (map.current) {
@@ -158,13 +176,10 @@ export default function Map() {
         };
     }, []);
 
-
-
     useEffect(() => {
-        // Фильтрация меток по годам
         if (startYear !== null && endYear !== null) {
             const filtered = markers.filter(marker => {
-                const buildYear = marker.yearOfCreation; // Год постройки здания
+                const buildYear = marker.yearOfCreation;
                 return buildYear >= startYear && buildYear <= endYear;
             });
             setFilteredMarkers(filtered);
@@ -172,9 +187,14 @@ export default function Map() {
     }, [startYear, endYear, markers]);
 
     const handleChange = (value) => {
-        // Обновляем диапазон по клику на фильтр
-        setStartYear(value[0]);
-        setEndYear(value[1]);
+        const [newStartYear, newEndYear] = value;
+
+        if (newEndYear - newStartYear < MIN_YEAR_DIFFERENCE) {
+            return;
+        }
+
+        setStartYear(newStartYear);
+        setEndYear(newEndYear);
     };
 
     const processPosition = (value1, value2, label_num) => {
@@ -245,22 +265,81 @@ export default function Map() {
     }
 
     const calculatePosition = (value) => {
+
         // Рассчитываем процентное положение для текущего значения ручки слайдера
 
         const res = ((value - minYear) / (maxYear - minYear)) * 92;
         return res;
+
+    };
+
+    const renderYearLabels = () => {
+        const difference = endYear - startYear;
+
+        if (difference === MIN_YEAR_DIFFERENCE) {
+            return (
+                <div className="slider-labels">
+                    <span className="min-label">{minYear}</span>
+                    <span className="max-label">{maxYear}</span>
+
+                    <span
+                        className="current-label start-label"
+                        style={{
+                            left: `${calculatePosition(startYear) + 4}%`,
+                            transform: 'translateX(-50%)',
+                        }}
+                    >
+                        {startYear}
+                    </span>
+                    <span
+                        className="current-label end-label"
+                        style={{
+                            left: `${calculatePosition(endYear) + 4}%`,
+                            transform: 'translateX(-50%)',
+                        }}
+                    >
+                        {endYear}
+                    </span>
+
+                </div>
+            );
+        }
+
+        return (
+            <div className="slider-labels">
+                <span className="min-label">{minYear}</span>
+                <span className="max-label">{maxYear}</span>
+
+                <span
+                    className="current-label start-label"
+                    style={{
+                        left: `${calculatePosition(startYear) + 4}%`,
+                        transform: 'translateX(-50%)',
+                    }}
+                >
+                    {startYear}
+                </span>
+                <span
+                    className="current-label end-label"
+                    style={{
+                        left: `${calculatePosition(endYear) + 4}%`,
+                        transform: 'translateX(-50%)',
+                    }}
+                >
+                    {endYear}
+                </span>
+            </div>
+        );
     };
 
     useEffect(() => {
-        if (!map.current) return; // Проверяем, что карта была инициализирована
+        if (!map.current) return;
 
-        // Очистка текущих меток, добавленных на карту
         markerElements.current.forEach(marker => marker.remove());
         markerElements.current = [];
 
-        // Добавление новых меток на карту
         filteredMarkers.forEach(marker => {
-            if (marker?.location?.coordinates) { // Проверяем, что координаты существуют
+            if (marker?.location?.coordinates) {
                 const markerElement = new maptilersdk.Marker()
                     .setLngLat(marker.location.coordinates)
                     .addTo(map.current);
@@ -323,12 +402,10 @@ export default function Map() {
                     />
                 </div>
 
+
                 <SliderLabels />
             </div>
+
         </div>
     );
-
 }
-
-
-
