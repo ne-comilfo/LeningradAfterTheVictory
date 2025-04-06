@@ -16,20 +16,10 @@ export default function Map() {
     const [endYear, setEndYear] = useState(null);
     const [maxYear, setMaxYear] = useState(null);
     const [minYear, setMinYear] = useState(null);
-
-    const [touchStartEnd, setTouchStartEnd] = useState(null);
-    const [touchMinStart, setTouchMinStart] = useState(null);
-    const [touchEndMax, setTouchEndMax] = useState(null);
-    const [equalMinStart, setEqualMinStart] = useState(null);
-    const [equalEndMax, setEqualEndMax] = useState(null);
-    const [selectedMarker] = useState(null); // Выбранная метка
-    const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false); // Открыто ли окно
-
+    const [selectedMarker, setSelectedMarker] = useState(null);
+    const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const router = useRouter();
-    const minRes = 3.2;
-    const maxRes = 88.7;
-    const middleDistance = 3.4;
 
     const MIN_YEAR_DIFFERENCE = 9; // Минимальная разница между годами
 
@@ -124,30 +114,21 @@ export default function Map() {
                 setMarkers(data);
 
                 const years = data.map(marker => marker.yearOfCreation);
-                setMinYear(1703);
-                setMaxYear(2025);
-                //setFilteredMarkers(data);
+                setMinYear(Math.min(...years));
+                setMaxYear(Math.max(...years));
+
+                setFilteredMarkers(data);
             } catch (error) {
                 console.error("Ошибка при загрузке данных:", error);
             }
         };
 
         fetchMarkers();
-        console.log(minYear);
     }, []);
-
-
-    useEffect(() => {
-        setMinYear(1703);
-        setMaxYear(2025);
-    }, []);        
-
 
     useEffect(() => {
         setStartYear(minYear);
         setEndYear(maxYear);
-        setTouchMinStart(false);
-        setTouchEndMax(false);
     }, [minYear, maxYear]);
 
     useEffect(() => {
@@ -197,80 +178,8 @@ export default function Map() {
         setEndYear(newEndYear);
     };
 
-    const processPosition = (value1, value2, label_num) => {
-        const res1 = calculatePosition(value1);
-        const res2 = calculatePosition(value2);
-    
-        setEqualMinStart(res1 <= 0);
-        setEqualEndMax(res2 >= 92);
-        setTouchMinStart(res1 <= minRes && res1 > 0);
-        setTouchEndMax(res2 >= maxRes && res2 < 92);
-
-        const limit_res1 = ((res1 <= 0 || res1 >= 92) ? res1 : Math.min(Math.max(res1, minRes), maxRes));
-        const limit_res2 = ((res2 <= 0 || res2 >= 92) ? res2 : Math.min(Math.max(res2, minRes), maxRes));
-
-        setTouchStartEnd(Math.abs(limit_res1 - limit_res2) <= middleDistance);
-        
-        if(res1 == res2) {
-            setTouchStartEnd(false);
-            return limit_res1;
-        }
-        
-        if (label_num == 1) {
-            if (equalMinStart) {
-                return 0;
-            } else if (touchMinStart) {
-                return minRes;
-            }
-        } else {
-            if (equalEndMax) {
-                return 92;
-            } else if (touchEndMax) {
-                return maxRes;
-            }
-        }
-
-        if (touchStartEnd) {
-            if (label_num == 1 && equalEndMax) {
-                return maxRes;
-            } else if (label_num == 2 && equalMinStart) {
-                return minRes;
-            }
-
-            const middle = (limit_res1 + limit_res2) / 2;
-            const middle_res1 = middle - middleDistance / 2;
-            const middle_res2 = middle + middleDistance / 2;
-
-            if (label_num == 1 && equalEndMax) {
-                return Math.min(maxRes, middle_res1);
-            } else if (label_num == 2 && equalMinStart) {
-                return Math.max(minRes, middle_res2);
-            }
-
-            setTouchMinStart(middle_res1 <= minRes);
-            setTouchEndMax(middle_res2 >= maxRes);
-            
-            if (label_num == 1) {
-                return Math.max((touchEndMax ? maxRes - middleDistance: middle_res1), minRes);
-            } else {
-                return Math.min((touchMinStart ? minRes + middleDistance: middle_res2), maxRes);
-            }
-        }
-
-        if (label_num == 1) {
-            return limit_res1;
-        } else {
-            return limit_res2;
-        }
-    }
-
     const calculatePosition = (value) => {
-
-        // Рассчитываем процентное положение для текущего значения ручки слайдера
-
-        const res = ((value - minYear) / (maxYear - minYear)) * 92;
-        return res;
-
+        return ((value - minYear) / (maxYear - minYear)) * 92;
     };
 
     const renderYearLabels = () => {
@@ -355,38 +264,14 @@ export default function Map() {
         });
     }, [filteredMarkers]);
 
-    const SliderLabels = (value) => (
-        <div className="slider-labels">
-            <span className="min-label">{minYear}</span>
-            <span className="max-label">{maxYear}</span>
 
-            <span
-                className="current-label start-label"
-                style={{
-                    left: `${processPosition(startYear, endYear, 1) + 4}%`,
-                    transform: 'translateX(-50%)',
-                }}
-            >
-                {startYear + ((touchStartEnd && !(equalMinStart || touchMinStart)) ? "-" : "")}
-            </span>
-            <span
-                className="current-label end-label"
-                style={{
-                    left: `${processPosition(startYear, endYear, 2) + 4}%`,
-                    transform: 'translateX(-50%)',
-                }}
-            >
-                {((touchStartEnd && (equalMinStart || touchMinStart)) ? "-" : "") + endYear}
-            </span>
-        </div>
-    );
 
     return (
         <div>
             <div className="map-wrap">
                 <div ref={mapContainer} className="map" />
             </div>
-            
+
             <div className="slider-container">
                 <div>
                     <Slider
@@ -395,17 +280,23 @@ export default function Map() {
                         max={maxYear}
                         value={[startYear, endYear]}
                         onChange={handleChange}
-                        type="range"
-                        id="cowbell"
-                        name="cowbell"
-                        step="1"
                     />
                 </div>
 
-
-                <SliderLabels />
+                {renderYearLabels()}
             </div>
 
+            {isInfoWindowOpen && (
+                <InfoWindow
+                    marker={selectedMarker}
+                    onClose={() => setIsInfoWindowOpen(false)}
+                    isExpanded={isExpanded}
+                    setIsExpanded={setIsExpanded}
+                    drawRoute={drawRoute}
+                    clearRoute={clearRoute}
+                    map={map}
+                />
+            )}
         </div>
     );
 }
