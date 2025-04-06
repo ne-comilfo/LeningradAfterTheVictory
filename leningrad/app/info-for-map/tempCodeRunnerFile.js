@@ -1,1 +1,2 @@
-handle
+{isExpanded && object && (
+                          <>

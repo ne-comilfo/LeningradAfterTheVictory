@@ -76,12 +76,6 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     setShowAuthModal(false);
   };
 
-  // Загрузка данных объекта и маршрутов
-  useEffect(() => {
-    // Сброс состояния вкладки и маршрута при изменении объекта
-    setView("default"); // Возвращаемся на начальную вкладку
-    setSelectedRoute(null); // Сбрасываем выбранный маршрут
-  }, [marker]);
 
   useEffect(() => {
     if (marker) {
@@ -528,7 +522,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
               <div
                 className={`mobile-info-window ${isExpanded ? "expanded" : ""}`}
                 style={{
-                  transform: `translateY(${Math.max(0, Math.min(window.innerHeight, dragOffset))}px)`,
+                  transform: `translateY(${Math.min(window.innerHeight, dragOffset)}px)`,
                   transition: isDragging ? 'none' : 'transform 0.3s ease-in-out'
                 }}
                 onTouchStart={handleTouchStart}
