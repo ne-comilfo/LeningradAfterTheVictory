@@ -33,7 +33,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     try {
       if (!isSaved) {
         const response = await fetch(
-          `http://194.87.252.234:6060/api/favorites/favoriteBuilding?id=${marker.id}`,
+          `https://leningrad-after-the-victory.ru/api/favorites/favoriteBuilding?id=${marker.id}`,
           {
             method: "POST",
             credentials: "include",
@@ -50,7 +50,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
         }
       } else {
         const response = await fetch(
-          `http://194.87.252.234:6060/api/favorites/favoriteBuilding/${marker.id}`,
+          `https://leningrad-after-the-victory.ru/api/favorites/favoriteBuilding/${marker.id}`,
           {
             method: 'DELETE',
             credentials: "include",
@@ -80,7 +80,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   useEffect(() => {
     if (marker) {
       // Загрузка данных объекта
-      fetch(`http://194.87.252.234:6060/api/attractions/attraction/${marker.id}`)
+      fetch(`https://leningrad-after-the-victory.ru/api/attractions/attraction/${marker.id}`)
         .then((response) => response.json())
         .then((data) => {
           setObject({
@@ -92,11 +92,11 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
         .catch((error) => console.error("Ошибка загрузки данных:", error));
 
       // Загрузка маршрутов
-      fetch("http://194.87.252.234:6060/api/routes/get-all") // Запрашиваем список маршрутов
+      fetch("https://leningrad-after-the-victory.ru/api/routes/get-all") // Запрашиваем список маршрутов
         .then((response) => response.json())
         .then((routesList) => {
           const routePromises = routesList.map((route) =>
-            fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`).then((res) =>
+            fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${route.id}`).then((res) =>
               res.json()
             )
           );
@@ -148,7 +148,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
           }
           if (selectedRoute) {
 
-            fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`)
+            fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${route.id}`)
               .then((response) => response.json())
               .then((data) => {
                 const coordinates = data.attractions.map(attraction => attraction.location.coordinates);
@@ -158,7 +158,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   "points": formattedCoordinates  // Оборачиваем массив координат в объект
                 };
 
-                fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
+                fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -176,11 +176,11 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
 
                         // Создаем промисы для вызовов API
                         const fetchNormalDistance = fetch(
-                          `http://194.87.252.234:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${first_coordinates[0]}&y2=${first_coordinates[1]}`
+                          `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${first_coordinates[0]}&y2=${first_coordinates[1]}`
                         ).then((response) => response.json());
 
                         const fetchReverseDistance = fetch(
-                          `http://194.87.252.234:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${last_coordinates[0]}&y2=${last_coordinates[1]}`
+                          `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${last_coordinates[0]}&y2=${last_coordinates[1]}`
                         ).then((response) => response.json());
 
                         // Ожидаем завершения обоих запросов
@@ -198,7 +198,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                   points: formattedCoordinates, // Теперь массив начинается с координат пользователя
                                 };
 
-                                fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
+                                fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
                                     'Content-Type': 'application/json',
@@ -232,7 +232,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 const requestBody = {
                                   points: formattedCoordinates, // Теперь массив заканчивается координатами пользователя
                                 };
-                                fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
+                                fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
                                     'Content-Type': 'application/json',
@@ -283,7 +283,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
               });
 
           } else {
-            fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${markerLng}&y2=${markerLat}`)
+            fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${markerLng}&y2=${markerLat}`)
               .then((response) => response.json())
               .then((routeData) => {
                 // Обрабатываем geoJson для отображения маршрута
@@ -344,7 +344,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
 
       if (!isCurrentlySaved) {
         const response = await fetch(
-          `http://194.87.252.234:6060/api/favorites/favoriteRoute?id=${routeId}`,
+          `https://leningrad-after-the-victory.ru/api/favorites/favoriteRoute?id=${routeId}`,
           {
             method: "POST",
             credentials: "include",
@@ -361,7 +361,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
         }
       } else {
         const response = await fetch(
-          `http://194.87.252.234:6060/api/favorites/favoriteRoute/${routeId}`,
+          `https://leningrad-after-the-victory.ru/api/favorites/favoriteRoute/${routeId}`,
           {
             method: 'DELETE',
             credentials: "include",
@@ -456,7 +456,7 @@ const handleTouchEnd = () => {
   const handleRouteClick = (route) => {
     setSelectedRoute(route); // Устанавливаем выбранный маршрут
 
-    fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`)
+    fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${route.id}`)
       .then((response) => response.json())
       .then((data) => {
         const coordinates = data.attractions.map(attraction => attraction.location.coordinates);
@@ -466,7 +466,7 @@ const handleTouchEnd = () => {
           "points": formattedCoordinates  // Оборачиваем массив координат в объект
         };
 
-        fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
+        fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
