@@ -8,6 +8,8 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
+import dynamic from 'next/dynamic';
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import 'swiper/css';
 import 'swiper/css/pagination';
 
@@ -30,12 +32,19 @@ const MediaSwiper = ({ media, className = "" }) => {
                             {item.type === "image" ? (
                                 <img className="main-image" src={item.src} alt="" />
                             ) : (
-                                <video className="main-image" src={item.src} controls autoPlay loop />
+                                <div className="video-container">
+                                    <ReactPlayer
+                                        url={item.src}
+                                        controls
+                                        width="100%"
+                                        height="200px"
+                                    />
+                                </div>
                             )}
                         </SwiperSlide>
                     ))}
                 </Swiper>
-            </div>
+            </div >
         </>
     );
 };
@@ -81,8 +90,10 @@ const AttractionInfoComponent = () => {
         const mediaQuery = window.matchMedia("(max-width: 450px)");
         const handleResize = (e) => setIsMobile(e.matches);
 
+
         handleResize(mediaQuery);
         mediaQuery.addEventListener("change", handleResize);
+
 
         return () => mediaQuery.removeEventListener("change", handleResize);
     }, []);
@@ -93,8 +104,8 @@ const AttractionInfoComponent = () => {
         const fetchData = async () => {
             try {
                 const [buildingRes, routesRes] = await Promise.all([
-                    fetch(`http://194.87.252.234:6060/api/attractions/attraction/${id}`),
-                    fetch("http://194.87.252.234:6060/api/routes/get-all")
+                    fetch(`https://leningrad-after-the-victory.ru/api/attractions/attraction/${id}`),
+                    fetch("https://leningrad-after-the-victory.ru/api/routes/get-all")
                 ]);
 
                 if (!buildingRes.ok || !routesRes.ok) throw new Error('Ошибка загрузки данных');
@@ -104,7 +115,7 @@ const AttractionInfoComponent = () => {
 
                 const routeDetails = await Promise.all(
                     routesList.map(route =>
-                        fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`).then(res => res.json())
+                        fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${route.id}`).then(res => res.json())
                     ));
 
                 const matchedRoutes = routeDetails
@@ -133,7 +144,7 @@ const AttractionInfoComponent = () => {
 
     const media = [
         { type: "image", src: building.linksPreview },
-        { type: "video", src: "https://storage.yandexcloud.net/social-network-media/e93ad391-7d11-431b-b9ce-b6f1a94f1e32_master.m3u8" }
+        { type: "video", src: "https://storage.yandexcloud.net/social-network-media/master.m3u8", preview: "./hermitage1.png" }
     ];
 
     const getOrderedMedia = () => {
@@ -207,7 +218,18 @@ const AttractionInfoComponent = () => {
                 <h1 className="attraction-title">{`${building.name}, ${building.yearOfCreation}`}</h1>
                 <div className="pip">
                     {media[currentMediaIndex].type === "video" ? (
-                        <video className="main-image" src={media[currentMediaIndex].src} controls autoPlay loop />
+                        <div className="react-player-wrapper">
+                            <div className="video-container">
+                                <ReactPlayer
+                                    url={media[currentMediaIndex].src}
+                                    playing={true}
+
+                                    controls
+                                    width="100%"
+                                    height="100%"
+                                />
+                            </div>
+                        </div>
                     ) : (
                         <img className="main-image" src={media[currentMediaIndex].src} alt={building.name} />
                     )}
@@ -218,21 +240,21 @@ const AttractionInfoComponent = () => {
                         </button>
 
                         {getOrderedMedia().map((item, index) => (
-                            item.type === "image" ? (
-                                <img
-                                    key={index}
-                                    className={`image-carousel ${index === 0 ? "top-media" : ""}`}
-                                    src={item.src}
-                                    alt=""
-                                />
-                            ) : (
-                                <video
-                                    key={index}
-                                    className={`image-carousel ${index === 0 ? "top-media" : ""}`}
-                                    src={item.src}
-                                />
-                            )
+                            <div
+                            key={index}
+                            className={`image-thumbnail-wrapper ${index === 0 ? "top-media" : "ne-top"}`}
+                          >
+                            <img
+                              className="image-carousel"
+                              src={item.type === "video" ? item.preview : item.src}
+                              alt=""
+                            />
+                            {item.type === "video" && (
+                              <div className="play-icon-overlay"><img src="./to-play.svg"/></div>
+                            )}
+                          </div>                          
                         ))}
+
 
                         <button className="arrow-btn" onClick={handleNext}>
                             <img src="./down.svg" className="arrows" />
