@@ -336,7 +336,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     }
   }, [marker]);
   // Обработчик свайпа
-  
+
 
   const handleSaveRouteClick = async (routeId) => {
     try {
@@ -393,41 +393,58 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     }
   }, [routes]);
 
+  const MAX_DRAG_OFFSET = 360; // Максимальное смещение в пикселях
+
   const handleTouchMove = (e) => {
     if (!isDragging || startY === null) return;
+    
     const deltaY = e.touches[0].clientY - startY;
-    setDragOffset(deltaY);
-
-    if (deltaY > 0) {
-      setImageOffset(deltaY);
-    } else {
-      setImageOffset(0);
+    
+    // Запрет свайпа вверх, если вкладка уже раскрыта
+    if (isExpanded && deltaY < 0) {
+      setDragOffset(0);
+      return;
     }
+    
+    // Ограничение смещения
+    const clampedOffset = Math.max(-MAX_DRAG_OFFSET, Math.min(MAX_DRAG_OFFSET, deltaY));
+    setDragOffset(clampedOffset);
+    setImageOffset(Math.max(0, clampedOffset));
   };
 
-  const handleTouchEnd = () => {
-    if (dragOffset < -50) {
-      setIsExpanded(true);
-    } else if (dragOffset > 50) {
-      if (isExpanded) {
-        setIsExpanded(false);
-      } else {
-        handleClose();
-      }
-    }
+const handleTouchEnd = () => {
+  const threshold = 50; // Порог для срабатывания свайпа
 
-    // Всегда сбрасываем смещение при завершении
-    setIsDragging(false);
-    setStartY(null);
+  if (dragOffset < -threshold) {
+    // Свайп вверх: раскрываем вкладку
+    setIsExpanded(true);
+    setDragOffset(0); // Сброс смещения
+    setImageOffset(0);
+  } else if (dragOffset > threshold) {
+    // Свайп вниз: закрываем или сворачиваем вкладку
+    if (isExpanded) {
+      setIsExpanded(false);
+    } else {
+      handleClose();
+    }
+    setDragOffset(0); // Сброс смещения
+    setImageOffset(0);
+  } else {
+    // Если свайп не дотянут до порога, плавно возвращаем на место
     setDragOffset(0);
     setImageOffset(0);
-  };
+  }
+
+  // Всегда сбрасываем состояние свайпа
+  setIsDragging(false);
+  setStartY(null);
+};
 
   const handleTouchStart = (e) => {
     setStartY(e.touches[0].clientY);
     setIsDragging(true);
   };
-  
+
   const handleScrollRoutes = (direction) => {
     if (routesRef.current) {
       const scrollAmount = 327; // Шаг прокрутки
@@ -507,29 +524,38 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     <div className="container">
       {isMobile && (
         <div className="mobile-version">
-          {isOpen && (
-            <>
-              {isExpanded && object && view === "default" && (
-                <img
-                  src={object.image}
-                  className="floating-image"
-                  style={{
-                    '--image-offset': `${imageOffset}px`,
-                    transform: `translateX(-50%) translateY(${imageOffset}px)`
-                  }}
-                />
-              )}
-              <div
-                className={`mobile-info-window ${isExpanded ? "expanded" : ""}`}
+        {isOpen && (
+          <>
+            {isExpanded && object && (
+              <img
+                src={object.image}
+                className="floating-image"
                 style={{
-                  transform: `translateY(${Math.min(window.innerHeight, dragOffset)}px)`,
-                  transition: isDragging ? 'none' : 'transform 0.3s ease-in-out'
+                  '--image-offset': `${imageOffset}px`,
+                  transform: `translateX(-50%) translateY(${imageOffset}px)`
                 }}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
+              />
+            )}
+            <div
+              className={`mobile-info-window ${isExpanded ? "expanded" : ""}`}
+              style={{
+                transform: `translateY(${Math.min(window.innerHeight, dragOffset)}px)`,
+                transition: isDragging ? 'none' : 'transform 0.3s ease-in-out'
+              }}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div className={`grabber ${isExpanded ? "expanded" : "collapsed"}`}></div>
+              
+              {/* Общий контейнер для контента */}
+              <div
+                className="bottom-sheet"
+                style={{
+                  transform: isExpanded ? "translateY(0)" : "translateY(83%)",
+                }}
               >
-                <div className={`grabber ${isExpanded ? "expanded" : "collapsed"}`}></div>
+                {/* Вкладка default */}
                 {view === "default" && object && (
                   <>
                     <div className="window-header">
@@ -537,85 +563,74 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     </div>
                     <div className="scrollable-content">
                       <div className="window-content">
-                        {isExpanded && object && (
-                          <>
-                            <p>{object.description}</p>
-                            <Link href={`/attraction-info?id=${String(marker.id)}`}>
-                              <span>подробнее</span>
-                            </Link>
-                            <div className="buttons centered">
-                              <button onClick={handleSaveClick}>
-                                <HeartIcon filled={isSaved} />
-                                {isSaved ? "Сохранено" : "Сохранить"}
-                              </button>
-                              <button onClick={() => setView("routes")}>
-                                <img src="/ways.svg" className="routes" />
-                                Маршруты
-                              </button>
-
-                              <button onClick={handleStartRoute}>
-
-                                <img src="/route.svg" className="in-the-route" />
-                                В путь
-                              </button>
-                            </div>
-                          </>
-                        )}
+                        <p>{object.description}</p>
+                        <Link href={`/attraction-info?id=${String(marker.id)}`}>
+                          <span>подробнее</span>
+                        </Link>
+                        <div className="buttons centered">
+                          <button onClick={handleSaveClick}>
+                            <HeartIcon filled={isSaved} />
+                            {isSaved ? "Сохранено" : "Сохранить"}
+                          </button>
+                          <button onClick={() => setView("routes")}>
+                            <img src="/ways.svg" className="routes" />
+                            Маршруты
+                          </button>
+                          <button onClick={handleStartRoute}>
+                            <img src="/route.svg" className="in-the-route" />
+                            В путь
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </>
                 )}
+      
+                {/* Вкладка routes */}
                 {view === "routes" && object && !selectedRoute && (
                   <>
                     <div className="window-header">
                       <h2>{object.title}</h2>
                     </div>
-                    
                     <div className="scrollable-content">
                       <div className="window-content">
-                        {isExpanded && (
-                          <>
-                            <p>Маршруты</p>
-                            <div className="color-for-list">
-                              <div className="route-carousel">
-                                <button className="carousel-btn left" onClick={() => handleScrollRoutes("left")}>
-                                  ◀
-                                </button>
-                                <div className="route-list-wrapper" ref={routesRef}>
-                                  <ul className="route-list">
-                                    {routes.map((route) => (
-                                      <li key={route.id}>
-                                        <button onClick={() => handleRouteClick(route)}>{route.name}</button>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                                <button className="carousel-btn right" onClick={() => handleScrollRoutes("right")}>
-                                  ▶
-                                </button>
-                              </div>
+                        <p>Маршруты</p>
+                        <div className="color-for-list">
+                          <div className="route-carousel">
+                            <button className="carousel-btn left" onClick={() => handleScrollRoutes("left")}>
+                              ◀
+                            </button>
+                            <div className="route-list-wrapper" ref={routesRef}>
+                              <ul className="route-list">
+                                {routes.map((route) => (
+                                  <li key={route.id}>
+                                    <button onClick={() => handleRouteClick(route)}>{route.name}</button>
+                                  </li>
+                                ))}
+                              </ul>
                             </div>
-
-                            <a className="back-link" onClick={() => { setView("default"); clearRoute(); clearMarker() }}>⬅ Назад к описанию</a>
-
-                            <div className="buttons-1 centered">
-                              <button className="active">
-                                <img src="/ways.svg" className="routes" />
-                                Маршруты
-                              </button>
-
-                              <button onClick={handleStartRoute}>
-
-                                <img src="/route.svg" className="in-the-route" />
-                                В путь
-                              </button>
-                            </div>
-                          </>
-                        )}
+                            <button className="carousel-btn right" onClick={() => handleScrollRoutes("right")}>
+                              ▶
+                            </button>
+                          </div>
+                        </div>
+                        <a className="back-link" onClick={() => { setView("default"); clearRoute(); clearMarker() }}>⬅ Назад к описанию</a>
+                        <div className="buttons-1 centered">
+                          <button className="active">
+                            <img src="/ways.svg" className="routes" />
+                            Маршруты
+                          </button>
+                          <button onClick={handleStartRoute}>
+                            <img src="/route.svg" className="in-the-route" />
+                            В путь
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </>
                 )}
+      
+                {/* Вкладка выбранного маршрута */}
                 {selectedRoute && object && (
                   <>
                     <div className="window-header">
@@ -623,34 +638,27 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     </div>
                     <div className="scrollable-content">
                       <div className="window-content">
-                        {isExpanded && (
-                          <>
-                            <p>{selectedRoute.details}</p>
-
-                            <a className="back-link" onClick={() => { setSelectedRoute(null); clearRoute(); clearMarker() }}>⬅ Назад к маршрутам</a>
-
-                            <div className="buttons-1">
-                              <button onClick={() => handleSaveRouteClick(selectedRoute.id)}>
-                                <HeartIcon filled={savedRoutes[selectedRoute.id]} />
-                                {savedRoutes[selectedRoute.id] ? "Сохранено" : "Сохранить"}
-                              </button>
-
-                              <button onClick={() => handleStartRoute(selectedRoute)}>
-
-                                <img src="/route.svg" className="in-the-route" />
-                                В путь
-                              </button>
-                            </div>
-                          </>
-                        )}
+                        <p>{selectedRoute.details}</p>
+                        <a className="back-link" onClick={() => { setSelectedRoute(null); clearRoute(); clearMarker() }}>⬅ Назад к маршрутам</a>
+                        <div className="buttons-1">
+                          <button onClick={() => handleSaveRouteClick(selectedRoute.id)}>
+                            <HeartIcon filled={savedRoutes[selectedRoute.id]} />
+                            {savedRoutes[selectedRoute.id] ? "Сохранено" : "Сохранить"}
+                          </button>
+                          <button onClick={() => handleStartRoute(selectedRoute)}>
+                            <img src="/route.svg" className="in-the-route" />
+                            В путь
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </>
                 )}
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
+      </div>
       )}
       {!isMobile && (
         <div className="pc-version">
