@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import styles from './CustomVideoPlayer.module.css';
 
-const CustomVideoPlayer = ({ url, poster, isPlaying }) => {
+const CustomVideoPlayer = ({ url, poster }) => {
   return (
     <div className={styles.videoWrapper}>
       <ReactPlayer
@@ -11,7 +11,8 @@ const CustomVideoPlayer = ({ url, poster, isPlaying }) => {
         width="100%"
         height="100%"
         controls
-        playing={isPlaying} // Управляем воспроизведением через проп
+        light={poster || false} // Управляем воспроизведением через проп
+        playing={true}
         config={{
           file: {
             attributes: {

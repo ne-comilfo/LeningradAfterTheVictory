@@ -10,7 +10,7 @@ const mockVideos = [
     id: 1,
     name: "Исторический обзор: Революция",
     smallDescription: "Краткий обзор революционных событий в России.",
-    url: "/videos/revolution.mp4",
+    url: "https://storage.yandexcloud.net/social-network-media/master.m3u8",
     poster: "/images/video-poster.jpg",
   },
   {
@@ -31,32 +31,12 @@ const mockVideos = [
 
 // Компонент для карточки видео
 const VideoCard = ({ video }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const handleCardClick = () => {
-    setIsPlaying(true);
-  };
 
   return (
-    <div className={styles.videoCard} onClick={handleCardClick}>
-      <div className={styles.cardInner}>
-        {/* Контейнер с видео или постером */}
-        <div className={styles.videoWrapper}>
-          {isPlaying ? (
-            <CustomVideoPlayer url={video.url} poster={video.poster} />
-          ) : (
-            <img
-              src={video.poster || "https://via.placeholder.com/400x300?text=No+Image"}
-              alt={video.name}
-              className={styles.cardImage}
-            />
-          )}
-          {!isPlaying && (
-            <div className={styles.cardDescription}>
-              <p>{video.smallDescription}</p>
-            </div>
-          )}
-        </div>
+    <div className={styles.videoCard}>
+      
+      <div className="">
+        <CustomVideoPlayer url={video.url} poster={video.poster} />
       </div>
       <div className={styles.cardContent}>
         <h3>{video.name}</h3>
@@ -73,7 +53,7 @@ const VideoPage = () => {
         <h1 className={styles.header}>Видео</h1>
         <img src="/images/hermit.png" alt="line" className={styles.svgImage} />
       </div>
-
+      
       {/* Список видео */}
       <div className={styles.videosGrid}>
         {mockVideos.map((video) => (

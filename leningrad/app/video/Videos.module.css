@@ -49,9 +49,9 @@
 /* Стили для карточек видео */
 .videosGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 60px;
-  margin-top: 50px;
+  margin-top: 100px;
   justify-items: center;
 }
 
@@ -62,7 +62,8 @@
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  max-width: 550px;
+  max-width: 400px;
+  min-width: 400px;
 }
 
 .videoCard:hover {
@@ -73,54 +74,19 @@
 /* Внутренний контейнер */
 .cardInner {
   display: flex;
-  width: 100%;
-}
-
-.cardImage {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  aspect-ratio: 16 / 9;
+  width: auto;
+  height: 100%;
 }
 
 .cardContent {
-  padding: 15px;
+  padding: 3px;
+  text-align:  center;
 }
 
 .cardContent h3 {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 10px;
-}
-
-/* Описание (появляется при наведении) */
-.cardDescription {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 15px;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  pointer-events: none;
-}
-
-.videoCard:hover .cardDescription {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.cardDescription p {
-  margin: 0;
-  font-size: 14px;
-  text-align: center;
+  margin-bottom: 5px;
 }
 
 /* Медиа-запросы */
@@ -168,21 +134,11 @@
     grid-template-columns: 1fr;
     width: 100%;
     max-width: 400px;
+    height: auto;
     margin: 30px auto;
-  }
-
-  .cardImage {
-    height: 180px;
-    width: 100%;
-    object-fit: cover;
   }
 
   .cardContent h3 {
     font-size: 16px;
-  }
-
-  .videoCard:hover .cardDescription {
-    opacity: 0;
-    transform: translateY(10px);
   }
 }

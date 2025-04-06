@@ -6,75 +6,29 @@ import styles from "../routes/routes.module.css";
 import { useRouter } from "next/navigation";
 
 const API_URL = "http://194.87.252.234:6060/api/routes/get-all";
+const API_URL_2 = "http://194.87.252.234:6060/api/categories/get-all";
 
-// Данные маршрутов
-const routes = [
-  {
-    id: 1,
-    category: "Категория 1",
-    title: "Восточные навигаторы",
-    description:
-      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
-    image: "https://tse1.mm.bing.net/th?id=OIP.GXseP5xVv3QGkOixYgTEkgHaFj&pid=Api",
-  },
-  {
-    id: 2,
-    category: "Категория 2",
-    title: "Восточные навигаторы",
-    description:
-      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
-    image: "https://tse4.mm.bing.net/th?id=OIP.Jwvp2GYz7XGJlWUu0iv1vAHaG8&pid=Api",
-  },
-  {
-    id: 3,
-    category: "Длина категории 3",
-    title: "Восточные навигаторы",
-    description:
-      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
-    image: "https://tse1.mm.bing.net/th?id=OIP.GXseP5xVv3QGkOixYgTEkgHaFj&pid=Api",
-  },
-  {
-    id: 4,
-    category: "Категория 4",
-    title: "Восточные навигаторы",
-    description:
-      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
-    image: "https://tse1.mm.bing.net/th?id=OIP.Cq1w5MftTJI0n4lITVlzdgHaFj&pid=Api",
-  },
-  {
-    id: 5,
-    category: "Категория 5",
-    title: "Восточные навигаторы",
-    description:
-      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
-    image: "https://tse1.mm.bing.net/th?id=OIP.Cq1w5MftTJI0n4lITVlzdgHaFj&pid=Api",
-  },
-  {
-    id: 6,
-    category: "Категория 6",
-    title: "Восточные навигаторы",
-    description:
-      "Это очень интересный маршрут! Прошли по нему хотя бы раз в жизни дорогие горожане, потому что у нас есть интересного много чего, но на этом маршруте вы сможете увидеть пирамиды, восхитительные пирамиды и увидеть вм. счастье...",
-    image: "https://tse1.mm.bing.net/th?id=OIP.Cq1w5MftTJI0n4lITVlzdgHaFj&pid=Api",
-  },
-];
+const truncateWords = (text, maxWords) => {
+  if (!text) return "";
+  const words = text.split(/\s+/);
+  if (words.length <= maxWords) return text;
+  return words.slice(0, maxWords).join(" ") + "...";
+};
 
 // Компонент для карточки маршрута
 const RouteCard = ({ route }) => {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const router = useRouter();
-  // Обработчики для свайпов
+
   const handleTouchStart = (e) => {
     const touchStartX = e.touches[0].clientX;
     const handleTouchMove = (moveEvent) => {
       const touchEndX = moveEvent.touches[0].clientX;
       const diffX = touchStartX - touchEndX;
 
-      // Свайп вправо (закрываем описание)
       if (diffX < -50) {
         setIsDescriptionOpen(false);
       }
-      // Свайп влево (открываем описание)
       if (diffX > 50) {
         setIsDescriptionOpen(true);
       }
@@ -84,45 +38,42 @@ const RouteCard = ({ route }) => {
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
     };
-
   };
-
 
   const handleLeftArrowClick = () => setIsDescriptionOpen(false);
   const handleRightArrowClick = () => setIsDescriptionOpen(true);
 
+  const truncatedDescription = truncateWords(route.description, 50);
 
   return (
     <div className={styles.routeCard} onTouchStart={handleTouchStart}>
       <div className={`${styles.cardInner} ${isDescriptionOpen ? styles.showDescription : ""}`}>
-        {/* Контейнер с изображением */}
-        <div className={styles.imageWrapper}>
-          <Link href={`/route/${route.id}`}>
-            <img src={route.image} alt={route.title} className={styles.cardImage} />
-          </Link>
-          <div className={styles.cardDescription}>
-            <p>{route.description}</p>
+        <Link href={`/map?id=${route.id}`}>
+          <div className={styles.imageWrapper}>
+            <img src={route.url} alt={route.name} className={styles.cardImage} />
+            <div className={styles.cardDescription}>
+              <p>{truncatedDescription}</p>
+            </div>
+            {!isDescriptionOpen && (
+              <div className={styles.arrowRight} onClick={handleRightArrowClick}>
+                <span className={styles.customArrowLine1}></span>
+                <span className={styles.customArrowLine2}></span>
+              </div>
+            )}
+            {isDescriptionOpen && (
+              <div className={styles.arrowLeft} onClick={handleLeftArrowClick}>
+                <span className={styles.customArrowLine1}></span>
+                <span className={styles.customArrowLine2}></span>
+              </div>
+            )}
           </div>
-          {!isDescriptionOpen && (
-            <div className={styles.arrowRight} onClick={handleRightArrowClick}>
-              <span className={styles.customArrowLine1}></span>
-              <span className={styles.customArrowLine2}></span>
-            </div>
-          )}
-          {isDescriptionOpen && (
-            <div className={styles.arrowLeft} onClick={handleLeftArrowClick}>
-              <span className={styles.customArrowLine1}></span>
-              <span className={styles.customArrowLine2}></span>
-            </div>
-          )}
-        </div>
-        {/* Контейнер с описанием для мобильной версии */}
+        </Link>
         <div className={styles.descriptionWrapper}>
           <p>{route.description}</p>
         </div>
       </div>
       <div className={styles.cardContent}>
-        <h3>{route.title}</h3>
+        <h3>{route.name}</h3>
       </div>
     </div>
   );
@@ -131,39 +82,71 @@ const RouteCard = ({ route }) => {
 // Основной компонент
 const App = () => {
   const [selectedCategory, setSelectedCategory] = useState("Все");
-  const [filteredRoutes, setFilteredRoutes] = useState(routes);
+  const [routes, setRoutes] = useState([]);
+  const [categories, setCategories] = useState([{ id: 0, name: "Все" }]);
+  const [filteredRoutes, setFilteredRoutes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const categories = ["Все", "Категория 1", "Категория 2", "Длина категории 3", "Категория 4"];
-
+  // Загрузка маршрутов и категорий
   useEffect(() => {
-    if (selectedCategory === "Все") {
-      setFilteredRoutes(routes);
-    } else {
-      setFilteredRoutes(routes.filter((route) => route.category === selectedCategory));
-    }
-  }, [selectedCategory]);
-
-  useEffect(() => {
-    const fetchRoutes = async () => {
+    const fetchData = async () => {
       try {
-
-        const response = await fetch(API_URL, {
+        // Загрузка маршрутов
+        const routesResponse = await fetch(API_URL, {
           credentials: "include",
           mode: "cors",
         });
-
-        if (!response.ok) {
-          throw new Error(`Ошибка запроса: ${response.status}`);
+        if (!routesResponse.ok) {
+          throw new Error(`Ошибка загрузки маршрутов: ${routesResponse.status}`);
         }
-        const data = await response.json();
-        console.log(data);
+        const routesData = await routesResponse.json();
+        console.log(routesData);
+        setRoutes(routesData);
+
+        // Загрузка категорий
+        const categoriesResponse = await fetch(API_URL_2, {
+          credentials: "include",
+          mode: "cors",
+        });
+        if (!categoriesResponse.ok) {
+          throw new Error(`Ошибка загрузки категорий: ${categoriesResponse.status}`);
+        }
+        const categoriesData = await categoriesResponse.json();
+        console.log(categoriesData);
+        setCategories([{ id: 0, name: "Все" }, ...categoriesData]);
+
+        setLoading(false);
       } catch (error) {
+        setError(error.message);
+        setLoading(false);
         console.error("Ошибка загрузки данных:", error);
       }
     };
 
-    fetchRoutes();
+    fetchData();
   }, []);
+
+  // Фильтрация маршрутов при изменении категории
+  useEffect(() => {
+    if (selectedCategory === "Все") {
+      setFilteredRoutes(routes);
+    } else {
+      const selectedCategoryObj = categories.find(cat => cat.name === selectedCategory);
+      if (selectedCategoryObj) {
+        setFilteredRoutes(routes.filter((route) => route.category.id === selectedCategoryObj.id));
+      }
+    }
+  }, [selectedCategory, routes, categories]);
+
+  // Обработка состояний загрузки и ошибки
+  if (loading) {
+    return <div className={styles.container}>Загрузка...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.container}>Ошибка: {error}</div>;
+  }
 
   return (
     <div className={styles.container}>
@@ -176,12 +159,11 @@ const App = () => {
       <div className={styles.categories}>
         {categories.map((category) => (
           <button
-            key={category}
-            className={`${styles.categoryButton} ${selectedCategory === category ? styles.active : ""
-              }`}
-            onClick={() => setSelectedCategory(category)}
+            key={category.id}
+            className={`${styles.categoryButton} ${selectedCategory === category.name ? styles.active : ""}`}
+            onClick={() => setSelectedCategory(category.name)}
           >
-            {category}
+            {category.name}
           </button>
         ))}
       </div>
