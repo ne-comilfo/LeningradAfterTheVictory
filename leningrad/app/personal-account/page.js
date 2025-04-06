@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 
 import './personal-account-style.css';
 
+
 const API_URL_ROUTES = "http://194.87.252.234:6060/api/favorites/routes";
 const API_URL_BUILDINGS = "http://194.87.252.234:6060/api/favorites/buildings";
+
 
 const PersonalAccountPage = () => {
 
@@ -24,7 +26,7 @@ const PersonalAccountPage = () => {
 
     const handleAuth = async () => {
         try {
-            const response = await fetch('http://194.87.252.234:6060/api/user/getUser', {
+            const response = await fetch('http://158.160.145.118:6060/api/user/getUser', {
                 method: "GET",
                 credentials: "include", 
             });
@@ -49,7 +51,7 @@ const PersonalAccountPage = () => {
 
     const LogOut = async () => {
         try {
-            const response = await fetch('http://194.87.252.234:6060/api/authentication/logout', {
+            const response = await fetch('http://158.160.145.118:6060/api/authentication/logout', {
                 method: "POST", 
                 credentials: "include",
             });

@@ -63,7 +63,7 @@ const TopBar = () => {
           О проекте
         </Link>
 
-        <Link href="/personal-account">
+        <Link href="/personal-account" className={`${style.navLink} ${isActive("/personal-account") || isActive("/authentication-authorization") ? style.active : ""}`} >
           <div className={style.profileIcon}>
             <img
               src="/svg/account_icon.svg"

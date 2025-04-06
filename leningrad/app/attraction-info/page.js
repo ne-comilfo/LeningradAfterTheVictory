@@ -90,8 +90,10 @@ const AttractionInfoComponent = () => {
         const mediaQuery = window.matchMedia("(max-width: 450px)");
         const handleResize = (e) => setIsMobile(e.matches);
 
+
         handleResize(mediaQuery);
         mediaQuery.addEventListener("change", handleResize);
+
 
         return () => mediaQuery.removeEventListener("change", handleResize);
     }, []);
