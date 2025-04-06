@@ -7,7 +7,7 @@
     width: 100%;
     background-color: rgba(255, 255, 255);
     
-    padding: 5px 20px;
+    padding: 10px 20px;
     z-index: 10000;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   }
@@ -62,9 +62,9 @@
   .active::after {
     content: "";
     position: absolute;
-    top: -3px; /* Расположение полоски под текстом */
-    left: -15%;
-    width: 130%;
+    top: -5px; /* Расположение полоски под текстом */
+    left: -25%;
+    width: 150%;
     height: 3px; /* Толщина полоски */
     background-color: #0D74BD; /* Синий цвет полоски */
   }
@@ -78,14 +78,13 @@
   }
   
   .profileIcon {
-    width: 30px; 
-    height: 30px; 
+    width: 45px; /* Длина контейнера */
+    height: 35px; /* Высота контейнера */
     display: flex;
     justify-content: center;
     
-    border-radius: 50px;
-    margin-top: 3px;
-    overflow: hidden; 
+    border-radius: 50px; /* Скруглённые углы */
+    overflow: hidden; /* Убираем лишнее изображение за границей */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   

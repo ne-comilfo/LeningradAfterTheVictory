@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "../objects/Objects.module.css";
 
-const API_URL = "http://158.160.145.118:6060/api/attractions/get-all";
+const API_URL = "http://194.87.252.234:6060/api/attractions/get-all";
 
 const truncateWords = (text, maxWords) => {
   if (!text) return "";

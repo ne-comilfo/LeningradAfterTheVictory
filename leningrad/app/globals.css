@@ -16,8 +16,8 @@ body {
   flex-direction: column;
 
   scroll-snap-type: y mandatory; /* Принудительное прилипание */
-  overflow-y: scroll; 
-  scroll-behavior: smooth; 
+  overflow-y: scroll; /* Включаем скроллинг */
+  scroll-behavior: smooth; /* Плавная прокрутка */
   transition: scroll-behavior 1.2s ease-in-out;
 }
 
@@ -198,6 +198,7 @@ body {
 }
 
 
+
 @media (max-width: 1700px) {
   .big-text {
     font-size: 90px;
@@ -286,7 +287,7 @@ body {
 
   .big-text {
     font-size: 3rem;
-    margin-top: 140%;
+    margin-top: 490px;
     margin-right: 5rem;
     display: block;
   }
@@ -296,7 +297,6 @@ body {
     line-height: 2.0;
     margin-right: 5rem;
     display: block;
-   
   }
 
   .bottom-left-text {

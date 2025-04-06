@@ -119,7 +119,7 @@ export default function Map() {
     useEffect(() => {
         const fetchMarkers = async () => {
             try {
-                const response = await fetch("http://158.160.145.118:6060/api/attractions/get-all");
+                const response = await fetch("http://194.87.252.234:6060/api/attractions/get-all");
                 const data = await response.json();
                 setMarkers(data);
 

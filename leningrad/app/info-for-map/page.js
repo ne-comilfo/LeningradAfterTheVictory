@@ -37,7 +37,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   useEffect(() => {
     if (marker) {
       // Загрузка данных объекта
-      fetch(`http://158.160.145.118:6060/api/attractions/attraction/${marker.id}`)
+      fetch(`http://194.87.252.234:6060/api/attractions/attraction/${marker.id}`)
         .then((response) => response.json())
         .then((data) => {
           setObject({
@@ -49,11 +49,11 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
         .catch((error) => console.error("Ошибка загрузки данных:", error));
 
       // Загрузка маршрутов
-      fetch("http://158.160.145.118:6060/api/routes/get-all") // Запрашиваем список маршрутов
+      fetch("http://194.87.252.234:6060/api/routes/get-all") // Запрашиваем список маршрутов
         .then((response) => response.json())
         .then((routesList) => {
           const routePromises = routesList.map((route) =>
-            fetch(`http://158.160.145.118:6060/api/routes/route/${route.id}`).then((res) =>
+            fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`).then((res) =>
               res.json()
             )
           );
@@ -105,7 +105,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
           }
           if (selectedRoute) {
 
-            fetch(`http://158.160.145.118:6060/api/routes/route/${route.id}`)
+            fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`)
               .then((response) => response.json())
               .then((data) => {
                 const coordinates = data.attractions.map(attraction => attraction.location.coordinates);
@@ -115,7 +115,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   "points": formattedCoordinates  // Оборачиваем массив координат в объект
                 };
 
-                fetch(`http://158.160.145.118:6060/api/routes/computeWalkingRoutesList`, {
+                fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -133,11 +133,11 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
 
                         // Создаем промисы для вызовов API
                         const fetchNormalDistance = fetch(
-                          `http://158.160.145.118:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${first_coordinates[0]}&y2=${first_coordinates[1]}`
+                          `http://194.87.252.234:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${first_coordinates[0]}&y2=${first_coordinates[1]}`
                         ).then((response) => response.json());
 
                         const fetchReverseDistance = fetch(
-                          `http://158.160.145.118:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${last_coordinates[0]}&y2=${last_coordinates[1]}`
+                          `http://194.87.252.234:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${last_coordinates[0]}&y2=${last_coordinates[1]}`
                         ).then((response) => response.json());
 
                         // Ожидаем завершения обоих запросов
@@ -155,7 +155,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                   points: formattedCoordinates, // Теперь массив начинается с координат пользователя
                                 };
 
-                                fetch(`http://158.160.145.118:6060/api/routes/computeWalkingRoutesList`, {
+                                fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
                                       'Content-Type': 'application/json',
@@ -189,7 +189,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 const requestBody = {
                                   points: formattedCoordinates, // Теперь массив заканчивается координатами пользователя
                                 };
-                                fetch(`http://158.160.145.118:6060/api/routes/computeWalkingRoutesList`, {
+                                fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
                                       'Content-Type': 'application/json',
@@ -240,7 +240,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
               });
 
           } else {
-            fetch(`http://158.160.145.118:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${markerLng}&y2=${markerLat}`)
+            fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${markerLng}&y2=${markerLat}`)
               .then((response) => response.json())
               .then((routeData) => {
                 // Обрабатываем geoJson для отображения маршрута
@@ -336,7 +336,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   const handleRouteClick = (route) => {
     setSelectedRoute(route); // Устанавливаем выбранный маршрут
 
-    fetch(`http://158.160.145.118:6060/api/routes/route/${route.id}`)
+    fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`)
       .then((response) => response.json())
       .then((data) => {
         const coordinates = data.attractions.map(attraction => attraction.location.coordinates);
@@ -346,7 +346,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
           "points": formattedCoordinates  // Оборачиваем массив координат в объект
         };
 
-        fetch(`http://158.160.145.118:6060/api/routes/computeWalkingRoutesList`, {
+        fetch(`http://194.87.252.234:6060/api/routes/computeWalkingRoutesList`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

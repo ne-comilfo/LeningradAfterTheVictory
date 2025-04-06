@@ -19,8 +19,8 @@
 .header {
   font-family: "Geologica", sans-serif;
   font-size: 130px;
-  margin-top: 30px;
-  margin-left: 90px;
+  margin-top: 50px;
+  margin-left: 110px;
   position: relative;
   z-index: 10;
 }
@@ -36,6 +36,8 @@
   display: inline-block;
 }
 
+
+
 .svgImage {
   position: absolute;
   top: 62%;
@@ -47,10 +49,12 @@
 }
 
 
+
+
 /* Стили для карточек объектов */
 .objectsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
   gap: 60px;
   margin-top: 50px;
   justify-items: center;
@@ -65,7 +69,7 @@
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  max-width: 400px;
+  max-width: 550px;
  
 }
 
@@ -99,14 +103,13 @@
 }
 
 .cardContent {
-  padding: 3px;
-  text-align: center;
+  padding: 15px;
 }
 
 .cardContent h3 {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 /* Описание (появляется при свайпе на мобильных и при наведении на ПК) */
@@ -272,6 +275,7 @@
 @media (max-width: 768px) {
   .container {
     padding: 10px;
+
   }
 
   .header {
@@ -285,9 +289,9 @@
     content: "";
     position: absolute;
     bottom: -10px;
-    
+    left: -160px;
     width: 100px;
-    height: 10px;
+    height: 1px;
     background-color: #000;
     display: inline-block;
   }
@@ -297,14 +301,14 @@
     top: 78%;
     left: 200px;
     transform: translateY(-50%);
-    width: 170px;
+    width: 200px;
     height: auto;
     z-index: 1;
   }
 
   .categories {
     flex-wrap: wrap;
-    gap: 3px;
+    gap: 8px;
   }
 
   .categoryButton {
@@ -317,11 +321,6 @@
     width: 100%; /* Занимает всю ширину */
     max-width: 400px; /* Максимальная ширина карточки */
     margin: 30px auto;
-  }
-
-  .objectCard {
-   
-    max-width: 320px; /* Ограничиваем максимальную ширину */
   }
 
   .cardImage {
