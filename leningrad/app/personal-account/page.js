@@ -10,8 +10,7 @@ const API_URL_BUILDINGS = "http://194.87.252.234:6060/api/favorites/buildings";
 
 const PersonalAccountPage = () => {
 
-    let attractionsFav = [];
-    let attractionsVis = [];
+
     const [Category, setCategory] = useState(0);
 
     const [isMobile, setIsMobile] = useState(false);
