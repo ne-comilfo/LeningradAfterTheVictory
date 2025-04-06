@@ -23,6 +23,8 @@ export default function Map() {
 
     const MIN_YEAR_DIFFERENCE = 9; // Минимальная разница между годами
 
+    
+
     useEffect(() => {
         const markerId = localStorage.getItem('selectedMarkerId');
         if (markerId && markers.length > 0) {
@@ -35,7 +37,7 @@ export default function Map() {
             if (map.current) {
                 map.current.flyTo({
                     center: foundMarker.location.coordinates,
-                    zoom: 14,
+                    zoom: 15,
                     essential: true // Гарантирует выполнение анимации
                 });
             }
@@ -257,6 +259,7 @@ export default function Map() {
                     setSelectedMarker(marker);
                     setIsInfoWindowOpen(true);
                     setIsExpanded(false);
+                    localStorage.setItem('selectedMarkerId', marker.id);
                 });
 
                 markerElements.current.push(markerElement);

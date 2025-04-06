@@ -1,1 +1,3 @@
-Сохранено
+
+{isExpanded && object && (
+                          <>

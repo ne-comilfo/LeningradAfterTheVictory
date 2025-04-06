@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import "./info-for-map-styles.css";
 import HeartIcon from './HeartIcon';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'
 
 import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
@@ -23,16 +24,58 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   const routesRef = useRef(null); // Ссылка на список маршрутов
   const [userLocation, setUserLocation] = useState(null); // Координаты пользователя
   const userMarkerRef = useRef(null);
+  const [imageOffset, setImageOffset] = useState(0);
 
+  const router = useRouter();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
+  const handleSaveClick = async () => {
+    try {
+      if (!isSaved) {
+        const response = await fetch(
+          `https://leningrad-after-the-victory.ru/api/favorites/favoriteBuilding?id=${marker.id}`,
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
 
-  
-  // Загрузка данных объекта и маршрутов
-  useEffect(() => {
-    // Сброс состояния вкладки и маршрута при изменении объекта
-    setView("default"); // Возвращаемся на начальную вкладку
-    setSelectedRoute(null); // Сбрасываем выбранный маршрут
-  }, [marker]);
+        if (response.ok) {
+          setIsSaved(true);
+          localStorage.setItem(`favorite_${marker.id}`, 'true');
+        } else if (response.status === 401 || response.status === 422) {
+          setShowAuthModal(true);
+        } else {
+          throw new Error('Ошибка при добавлении');
+        }
+      } else {
+        const response = await fetch(
+          `https://leningrad-after-the-victory.ru/api/favorites/favoriteBuilding/${marker.id}`,
+          {
+            method: 'DELETE',
+            credentials: "include",
+          }
+        );
+
+        if (response.ok) {
+          setIsSaved(false);
+          localStorage.removeItem(`favorite_${marker.id}`);
+        } else {
+          throw new Error('Ошибка при удалении');
+        }
+      }
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  };
+
+  const handleAuthRedirect = () => {
+
+    const redirectUrl = `/authentication-authorization?redirect=${encodeURIComponent('/map')}`;
+    router.push(redirectUrl);
+    setShowAuthModal(false);
+  };
+
 
   useEffect(() => {
     if (marker) {
@@ -98,7 +141,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
           // Добавляем новый маркер для местоположения пользователя
           if (map.current) {
             userMarkerRef.current = new maptilersdk.Marker({
-              color:"rgb(95, 163, 236)"
+              color: "rgb(95, 163, 236)"
             })
               .setLngLat([userLng, userLat])
               .addTo(map.current);
@@ -158,30 +201,30 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
-                                      'Content-Type': 'application/json',
+                                    'Content-Type': 'application/json',
                                   },
                                   body: JSON.stringify(requestBody),  // Отправляем массив координат
-                              })
+                                })
                                   .then((response) => response.json())  // Обрабатываем ответ второго запроса
                                   .then((routeData) => {
-                                      if (routeData.geoJson.length > 0) {
-                                          try {
-                                              const geoJson = routeData.geoJson; // Парсим geoJson
-                                              const coordinates1 = geoJson; // Извлекаем координаты
-                  
-                                              drawRoute(coordinates1)
-                                              setIsExpanded(false);
-                                          } catch (error) {
-                                              console.error("Ошибка при парсинге geoJson:", error);
-                                          }
-                                      } else {
-                                          console.error("geoJson не найден или пустой");
+                                    if (routeData.geoJson.length > 0) {
+                                      try {
+                                        const geoJson = routeData.geoJson; // Парсим geoJson
+                                        const coordinates1 = geoJson; // Извлекаем координаты
+
+                                        drawRoute(coordinates1)
+                                        setIsExpanded(false);
+                                      } catch (error) {
+                                        console.error("Ошибка при парсинге geoJson:", error);
                                       }
+                                    } else {
+                                      console.error("geoJson не найден или пустой");
+                                    }
                                   })
                                   .catch((error) => {
-                                      console.error("Ошибка второго запроса:", error);  // Ошибка обработки второго запроса
+                                    console.error("Ошибка второго запроса:", error);  // Ошибка обработки второго запроса
                                   });
-                                
+
                               } else {
                                 const userCoordinates = { x: userLng, y: userLat }; // Координаты пользователя
                                 const formattedCoordinates = [...coordinates.map(([x, y]) => ({ x, y })), userCoordinates];
@@ -192,31 +235,31 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
-                                      'Content-Type': 'application/json',
+                                    'Content-Type': 'application/json',
                                   },
                                   body: JSON.stringify(requestBody),  // Отправляем массив координат
-                              })
+                                })
                                   .then((response) => response.json())  // Обрабатываем ответ второго запроса
                                   .then((routeData) => {
-                                      if (routeData.geoJson.length > 0) {
-                                          try {
-                                              const geoJson = routeData.geoJson; // Парсим geoJson
-                                              const coordinates1 = geoJson; // Извлекаем координаты
-                  
-                                              drawRoute(coordinates1)
-                                              setIsExpanded(false);
-                                          } catch (error) {
-                                              console.error("Ошибка при парсинге geoJson:", error);
-                                          }
-                                      } else {
-                                          console.error("geoJson не найден или пустой");
+                                    if (routeData.geoJson.length > 0) {
+                                      try {
+                                        const geoJson = routeData.geoJson; // Парсим geoJson
+                                        const coordinates1 = geoJson; // Извлекаем координаты
+
+                                        drawRoute(coordinates1)
+                                        setIsExpanded(false);
+                                      } catch (error) {
+                                        console.error("Ошибка при парсинге geoJson:", error);
                                       }
+                                    } else {
+                                      console.error("geoJson не найден или пустой");
+                                    }
                                   })
                                   .catch((error) => {
-                                      console.error("Ошибка второго запроса:", error);  // Ошибка обработки второго запроса
+                                    console.error("Ошибка второго запроса:", error);  // Ошибка обработки второго запроса
                                   });
                               }
-                              
+
                             } else {
                               console.error("Один из маршрутов не найден или пустой");
                             }
@@ -274,6 +317,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     onClose(); // Уведомляем Map.js о закрытии
     clearRoute();
     clearMarker()
+
   };
 
   const clearMarker = () => {
@@ -283,48 +327,124 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     }
   }
 
-
+  useEffect(() => {
+    if (marker) {
+      const savedState = localStorage.getItem(`favorite_${marker.id}`);
+      if (savedState === 'true') {
+        setIsSaved(true);
+      }
+    }
+  }, [marker]);
   // Обработчик свайпа
+
+
+  const handleSaveRouteClick = async (routeId) => {
+    try {
+      const isCurrentlySaved = savedRoutes[routeId];
+
+      if (!isCurrentlySaved) {
+        const response = await fetch(
+          `https://leningrad-after-the-victory.ru/api/favorites/favoriteRoute?id=${routeId}`,
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
+
+        if (response.ok) {
+          setSavedRoutes(prev => ({ ...prev, [routeId]: true }));
+          localStorage.setItem(`favorite_route_${routeId}`, 'true');
+        } else if (response.status === 401 || response.status === 422) {
+          setShowAuthModal(true);
+        } else {
+          throw new Error('Ошибка при добавлении маршрута');
+        }
+      } else {
+        const response = await fetch(
+          `https://leningrad-after-the-victory.ru/api/favorites/favoriteRoute/${routeId}`,
+          {
+            method: 'DELETE',
+            credentials: "include",
+          }
+        );
+
+        if (response.ok) {
+          setSavedRoutes(prev => ({ ...prev, [routeId]: false }));
+          localStorage.removeItem(`favorite_route_${routeId}`);
+        } else {
+          throw new Error('Ошибка при удалении маршрута');
+        }
+      }
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (routes.length > 0) {
+      const savedRoutesState = {};
+      routes.forEach(route => {
+        const savedState = localStorage.getItem(`favorite_route_${route.id}`);
+        if (savedState === 'true') {
+          savedRoutesState[route.id] = true;
+        }
+      });
+      setSavedRoutes(savedRoutesState);
+    }
+  }, [routes]);
+
+  const MAX_DRAG_OFFSET = 360; // Максимальное смещение в пикселях
+
+  const handleTouchMove = (e) => {
+    if (!isDragging || startY === null) return;
+    
+    const deltaY = e.touches[0].clientY - startY;
+    
+    // Запрет свайпа вверх, если вкладка уже раскрыта
+    if (isExpanded && deltaY < 0) {
+      setDragOffset(0);
+      return;
+    }
+    
+    // Ограничение смещения
+    const clampedOffset = Math.max(-MAX_DRAG_OFFSET, Math.min(MAX_DRAG_OFFSET, deltaY));
+    setDragOffset(clampedOffset);
+    setImageOffset(Math.max(0, clampedOffset));
+  };
+
+const handleTouchEnd = () => {
+  const threshold = 50; // Порог для срабатывания свайпа
+
+  if (dragOffset < -threshold) {
+    // Свайп вверх: раскрываем вкладку
+    setIsExpanded(true);
+    setDragOffset(0); // Сброс смещения
+    setImageOffset(0);
+  } else if (dragOffset > threshold) {
+    // Свайп вниз: закрываем или сворачиваем вкладку
+    if (isExpanded) {
+      setIsExpanded(false);
+    } else {
+      handleClose();
+    }
+    setDragOffset(0); // Сброс смещения
+    setImageOffset(0);
+  } else {
+    // Если свайп не дотянут до порога, плавно возвращаем на место
+    setDragOffset(0);
+    setImageOffset(0);
+  }
+
+  // Всегда сбрасываем состояние свайпа
+  setIsDragging(false);
+  setStartY(null);
+};
+
   const handleTouchStart = (e) => {
     setStartY(e.touches[0].clientY);
     setIsDragging(true);
   };
 
-  const handleTouchMove = (e) => {
-    if (!isDragging || startY === null) return;
-    const deltaY = e.touches[0].clientY - startY;
-    setDragOffset(deltaY);
-  };
-
-  const handleTouchEnd = () => {
-    if (dragOffset < -50) {
-      setIsExpanded(true);
-    } else if (dragOffset > 50) {
-      if (isExpanded) {
-        setIsExpanded(false);
-      } else {
-        handleClose();
-      }
-    }
-    setIsDragging(false);
-    setStartY(null);
-    setDragOffset(0);
-  };
-
-  // Обработчик сохранения объекта
-  const handleSave = () => {
-    setIsSaved(!isSaved);
-  };
-
-  // Обработчик сохранения маршрута
-  const handleSaveRoute = (id) => {
-    setSavedRoutes((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
-  // Обработчик прокрутки маршрутов
   const handleScrollRoutes = (direction) => {
     if (routesRef.current) {
       const scrollAmount = 327; // Шаг прокрутки
@@ -355,7 +475,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
         })
           .then((response) => response.json())  // Обрабатываем ответ второго запроса
           .then((routeData) => {
-            
+
 
             if (routeData.geoJson.length > 0) {
               try {
@@ -404,19 +524,38 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     <div className="container">
       {isMobile && (
         <div className="mobile-version">
-          {isOpen && (
-            <>
-              {isExpanded && object && view === "default" && (
-                <img src={object.image} className="floating-image" />
-              )}
+        {isOpen && (
+          <>
+            {isExpanded && object && (
+              <img
+                src={object.image}
+                className="floating-image"
+                style={{
+                  '--image-offset': `${imageOffset}px`,
+                  transform: `translateX(-50%) translateY(${imageOffset}px)`
+                }}
+              />
+            )}
+            <div
+              className={`mobile-info-window ${isExpanded ? "expanded" : ""}`}
+              style={{
+                transform: `translateY(${Math.min(window.innerHeight, dragOffset)}px)`,
+                transition: isDragging ? 'none' : 'transform 0.3s ease-in-out'
+              }}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div className={`grabber ${isExpanded ? "expanded" : "collapsed"}`}></div>
+              
+              {/* Общий контейнер для контента */}
               <div
-                className={`mobile-info-window ${isExpanded ? "expanded" : ""}`}
-                style={{ transform: `translateY(${Math.max(0, Math.min(window.innerHeight, dragOffset))}px)`, }}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
+                className="bottom-sheet"
+                style={{
+                  transform: isExpanded ? "translateY(0)" : "translateY(83%)",
+                }}
               >
-                <div className={`grabber ${isExpanded ? "expanded" : "collapsed"}`}></div>
+                {/* Вкладка default */}
                 {view === "default" && object && (
                   <>
                     <div className="window-header">
@@ -424,34 +563,30 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     </div>
                     <div className="scrollable-content">
                       <div className="window-content">
-                        {isExpanded && object && (
-                          <>
-                            <p>{object.description}</p>
-                              <Link href={`/attraction-info?id=${String(marker.id)}`}>
-                                <span>подробнее</span>
-                              </Link>
-                            <div className="buttons centered">
-                              <button onClick={handleSave}>
-                                <HeartIcon filled={isSaved} />
-                                {isSaved ? "Сохранено" : "Сохранить"}
-                              </button>
-                              <button onClick={() => setView("routes")}>
-                                <img src="/ways.svg" className="routes" />
-                                Маршруты
-                              </button>
-
-                              <button onClick={handleStartRoute}>
-                              
-                                <img src="/route.svg" className="in-the-route" />
-                                В путь
-                              </button>
-                            </div>
-                          </>
-                        )}
+                        <p>{object.description}</p>
+                        <Link href={`/attraction-info?id=${String(marker.id)}`}>
+                          <span>подробнее</span>
+                        </Link>
+                        <div className="buttons centered">
+                          <button onClick={handleSaveClick}>
+                            <HeartIcon filled={isSaved} />
+                            {isSaved ? "Сохранено" : "Сохранить"}
+                          </button>
+                          <button onClick={() => setView("routes")}>
+                            <img src="/ways.svg" className="routes" />
+                            Маршруты
+                          </button>
+                          <button onClick={handleStartRoute}>
+                            <img src="/route.svg" className="in-the-route" />
+                            В путь
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </>
                 )}
+      
+                {/* Вкладка routes */}
                 {view === "routes" && object && !selectedRoute && (
                   <>
                     <div className="window-header">
@@ -459,49 +594,43 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     </div>
                     <div className="scrollable-content">
                       <div className="window-content">
-                        {isExpanded && (
-                          <>
-                            <p>Маршруты</p>
-                            <div className="color-for-list">
-                              <div className="route-carousel">
-                                <button className="carousel-btn left" onClick={() => handleScrollRoutes("left")}>
-                                  ◀
-                                </button>
-                                <div className="route-list-wrapper" ref={routesRef}>
-                                  <ul className="route-list">
-                                    {routes.map((route) => (
-                                      <li key={route.id}>
-                                        <button onClick={() => handleRouteClick(route)}>{route.name}</button>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                                <button className="carousel-btn right" onClick={() => handleScrollRoutes("right")}>
-                                  ▶
-                                </button>
-                              </div>
+                        <p>Маршруты</p>
+                        <div className="color-for-list">
+                          <div className="route-carousel">
+                            <button className="carousel-btn left" onClick={() => handleScrollRoutes("left")}>
+                              ◀
+                            </button>
+                            <div className="route-list-wrapper" ref={routesRef}>
+                              <ul className="route-list">
+                                {routes.map((route) => (
+                                  <li key={route.id}>
+                                    <button onClick={() => handleRouteClick(route)}>{route.name}</button>
+                                  </li>
+                                ))}
+                              </ul>
                             </div>
-
-                            <a className="back-link" onClick={() => { setView("default"); clearRoute(); clearMarker() }}>⬅ Назад к описанию</a>
-
-                            <div className="buttons-1 centered">
-                              <button className="active">
-                                <img src="/ways.svg" className="routes" />
-                                Маршруты
-                              </button>
-
-                              <button onClick={handleStartRoute}>
-
-                                <img src="/route.svg" className="in-the-route" />
-                                В путь
-                              </button>
-                            </div>
-                          </>
-                        )}
+                            <button className="carousel-btn right" onClick={() => handleScrollRoutes("right")}>
+                              ▶
+                            </button>
+                          </div>
+                        </div>
+                        <a className="back-link" onClick={() => { setView("default"); clearRoute(); clearMarker() }}>⬅ Назад к описанию</a>
+                        <div className="buttons-1 centered">
+                          <button className="active">
+                            <img src="/ways.svg" className="routes" />
+                            Маршруты
+                          </button>
+                          <button onClick={handleStartRoute}>
+                            <img src="/route.svg" className="in-the-route" />
+                            В путь
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </>
                 )}
+      
+                {/* Вкладка выбранного маршрута */}
                 {selectedRoute && object && (
                   <>
                     <div className="window-header">
@@ -509,34 +638,27 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     </div>
                     <div className="scrollable-content">
                       <div className="window-content">
-                        {isExpanded && (
-                          <>
-                            <p>{selectedRoute.details}</p>
-
-                            <a className="back-link" onClick={() => { setSelectedRoute(null); clearRoute(); clearMarker() }}>⬅ Назад к маршрутам</a>
-
-                            <div className="buttons-1">
-                              <button onClick={() => handleSaveRoute(selectedRoute.id)}>
-                                <HeartIcon filled={savedRoutes[selectedRoute.id]} />
-                                {savedRoutes[selectedRoute.id] ? "Сохранено" : "Сохранить"}
-                              </button>
-
-                              <button onClick={() => handleStartRoute(selectedRoute)}>
-
-                                <img src="/route.svg" className="in-the-route" />
-                                В путь
-                              </button>
-                            </div>
-                          </>
-                        )}
+                        <p>{selectedRoute.details}</p>
+                        <a className="back-link" onClick={() => { setSelectedRoute(null); clearRoute(); clearMarker() }}>⬅ Назад к маршрутам</a>
+                        <div className="buttons-1">
+                          <button onClick={() => handleSaveRouteClick(selectedRoute.id)}>
+                            <HeartIcon filled={savedRoutes[selectedRoute.id]} />
+                            {savedRoutes[selectedRoute.id] ? "Сохранено" : "Сохранить"}
+                          </button>
+                          <button onClick={() => handleStartRoute(selectedRoute)}>
+                            <img src="/route.svg" className="in-the-route" />
+                            В путь
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </>
                 )}
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
+      </div>
       )}
       {!isMobile && (
         <div className="pc-version">
@@ -553,7 +675,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   <img src={object.image} className="object-image" />
                 </div>
                 <div className="buttons">
-                  <button onClick={handleSave}>
+                  <button onClick={handleSaveClick}>
                     <HeartIcon filled={isSaved} />
                     {isSaved ? "Сохранено" : "Сохранить"}
                   </button>
@@ -569,14 +691,17 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   </button>
                 </div>
                 <p>{object.description}</p>
-                  <Link href={`/attraction-info?id=${marker.id}`}>
-                    <span>подробнее</span>
-                  </Link>
+                <Link href={`/attraction-info?id=${marker.id}`}>
+                  <span>подробнее</span>
+                </Link>
               </>
             )}
             {view === "routes" && !selectedRoute && object && (
-                <>
+              <>
                 <h2>{object.title}</h2>
+                <div className="image-container">
+                  <img src={object.image} className="object-image" />
+                </div>
                 <div className="buttons-1 centered">
                   <button className="active">
                     <img src="/ways.svg" className="routes" />
@@ -606,8 +731,11 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
             {selectedRoute && object && (
               <>
                 <h2>{object.title}</h2>
+                <div className="image-container">
+                  <img src={object.image} className="object-image" />
+                </div>
                 <div className="buttons-1 centered">
-                  <button onClick={() => handleSaveRoute(selectedRoute.id)}>
+                  <button onClick={() => handleSaveRouteClick(selectedRoute.id)}>
                     <HeartIcon filled={savedRoutes[selectedRoute.id]} />
                     {savedRoutes[selectedRoute.id] ? "Сохранено" : "Сохранить"}
                   </button>
@@ -627,6 +755,18 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
           </div>
         </div>
       )}
+      {showAuthModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <p>Вы не авторизованы. Хотите войти?</p>
+            <div className="modal-buttons">
+              <button onClick={() => setShowAuthModal(false)}>Остаться</button>
+              <button onClick={handleAuthRedirect}>Войти</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 }
