@@ -5,8 +5,8 @@ import Link from "next/link";
 import styles from "../routes/routes.module.css";
 import { useRouter } from "next/navigation";
 
-const API_URL = "http://194.87.252.234:6060/api/routes/get-all";
-const API_URL_2 = "http://194.87.252.234:6060/api/categories/get-all";
+const API_URL = "http://158.160.145.118:6060/api/routes/get-all";
+const API_URL_2 = "http://158.160.145.118:6060/api/categories/get-all";
 
 const truncateWords = (text, maxWords) => {
   if (!text) return "";

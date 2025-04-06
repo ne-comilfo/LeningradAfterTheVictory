@@ -23,7 +23,7 @@ const AttractionInfoComponent = () => {
 
             const fetchBuilding = async () => {
                 try {
-                    const response = await fetch(`http://194.87.252.234:6060/api/attractions/attraction/${id}`);
+                    const response = await fetch(`http://158.160.145.118:6060/api/attractions/attraction/${id}`);
 
                     if (!response.ok) {
                         throw new Error('Не удалось загрузить данные');
