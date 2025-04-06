@@ -5,10 +5,20 @@ import { useRouter } from "next/navigation";
 
 import './personal-account-style.css';
 
+<<<<<<< HEAD
 const API_URL = "http://194.87.252.234:6060/api/attractions/get-all";
+=======
+
+const API_URL_ROUTES = "http://194.87.252.234:6060/api/favorites/routes";
+const API_URL_BUILDINGS = "http://194.87.252.234:6060/api/favorites/buildings";
+
+>>>>>>> 79394a377953e355d9d24dca69d5cc84bedb84f0
 
 const PersonalAccountPage = () => {
-    const [isFavMode, setIsFavMode] = useState(false);
+
+
+    const [Category, setCategory] = useState(0);
+
     const [isMobile, setIsMobile] = useState(false);
     const [attractionsFav, setAttractionsFav] = useState([]); // Состояние для избранных
     const [attractionsVis, setAttractionsVis] = useState([]); // Состояние для посещенных
@@ -145,7 +155,6 @@ const PersonalAccountPage = () => {
                 <div className="bar">
                     <div className="bar-progress"></div>
                 </div>
-                <div className="percentage">30%</div>
             </div>
 
         </span>
@@ -174,56 +183,140 @@ const PersonalAccountPage = () => {
         </div>
     );
 
-    const VisLaptopButtons = ({ isFavMode }) => (
+    const VisLaptopButtons = ({ Category }) => (
         <div className="action-buttons">
-            <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранное</div>
-            <div className="selected-button">Посещенное</div>
-            <button onClick={LogOut} className="exit-button switch">Выйти</button>
+
+            <div className="switch-button switch" onClick={() => setCategory(0)}>Избранные места</div>
+            <div className="selected-button">Избранные маршруты</div>
+            <a href="../authentication-authorization/index2.html" className="exit-button switch">Выйти</a>
+
         </div>
     );
 
-    const FavLaptopButtons = ({ isFavMode }) => (
+    const FavLaptopButtons = ({ Category }) => (
         <div className="action-buttons">
-            <div className="selected-button">Избранное</div>
-            <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Посещенное</div>
-            <button onClick={LogOut} className="exit-button switch">Выйти</button>
+
+            <div className="selected-button">Избранные места</div>
+            <div className="switch-button switch" onClick={() => setCategory(1)}>Избранные маршруты</div>
+            <a href="../authentication-authorization/index2.html" className="exit-button switch">Выйти</a>
+
         </div>
     );
 
-    const VisMobileButtons = ({ isFavMode }) => (
+    const VisMobileButtons = ({ Category }) => (
         <div className="action-buttons">
-            <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранное</div>
-            <div className="selected-button">Посещенное</div>
+            <div className="switch-button switch" onClick={() => setCategory(0)}>Избранные места</div>
+            <div className="selected-button">Избранные маршруты</div>
         </div>
     );
 
-    const FavMobileButtons = ({ isFavMode }) => (
+    const FavMobileButtons = ({ Category }) => (
         <div className="action-buttons">
-            <div className="selected-button">Избранное</div>
-            <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Посещенное</div>
+            <div className="selected-button">Избранные места</div>
+            <div className="switch-button switch" onClick={() => setCategory(1)}>Избранные маршруты</div>
         </div>
     );
 
-    const LaptopView = ({ isFavMode }) => (
+    const LaptopView = ({ Category }) => (
         <>
             <BackgroundTransition />
             <Profile />
             <RoutesHeader />
-            {isFavMode ? <FavLaptopButtons isFavMode={isFavMode} /> : <VisLaptopButtons isFavMode={isFavMode} />}
-            {isFavMode ? <FavScrollMenu /> : <VisScrollMenu />}
+            {(Category == 0) ? <FavLaptopButtons Category={Category} /> : <VisLaptopButtons Category={Category} />}
+            {(Category == 0) ? <FavScrollMenu /> : <VisScrollMenu />}
         </>
     );
 
-    const MobileView = ({ isFavMode }) => (
+    const MobileView = ({ Category }) => (
         <>
             <BackgroundTransition />
             <MobileProfile />
-            {isFavMode ? <FavMobileButtons isFavMode={isFavMode} /> : <VisMobileButtons isFavMode={isFavMode} />}
-            {isFavMode ? <FavScrollMenu /> : <VisScrollMenu />}
+            {(Category == 0) ? <FavMobileButtons Category={Category} /> : <VisMobileButtons Category={Category} />}
+            {(Category == 0) ? <FavScrollMenu /> : <VisScrollMenu />}
         </>
     );
 
-    return (isMobile ? (<MobileView isFavMode={isFavMode} />) : (<LaptopView isFavMode={isFavMode} />));
+
+    async function fetchData() {
+        try {
+            const requestURL = API_URL;
+            const requestVis = new Request(requestURL);
+            const responseVis = await fetch(requestVis);
+            attractionsVis = await responseVis.json();
+            const responseFav = await fetch(requestVis);
+            attractionsFav = await responseFav.json();
+            console.log("done!!");
+        } catch (error) {
+            console.log('error >> ', error.message);
+        }
+    }
+
+    useEffect(() => {
+    
+        const fetchRoutes = async () => {
+          try {
+            
+            const response = await fetch(API_URL_ROUTES);
+            if (!response.ok) {
+              throw new Error(`Ошибка запроса: ${response.status}`);
+            }
+            const data = await response.text();
+            console.log(data)
+            attractionsVis = await data.json();
+          } catch (error) {
+            console.error("Ошибка загрузки данных:", error);
+          }
+        };
+
+        const fetchBuildings = async () => {
+            try {
+              
+              const response = await fetch(API_URL_BUILDINGS);
+              if (!response.ok) {
+                throw new Error(`Ошибка запроса: ${response.status}`);
+              }
+              const data = await response.text();
+              console.log(data)
+              attractionsFav = await data.json();
+            } catch (error) {
+              console.error("Ошибка загрузки данных:", error);
+            }
+          };
+
+        /*async function fetchData() {
+            try {
+                const requestURL = API_URL;
+                const requestVis = new Request(requestURL);
+                const responseVis = await fetch(requestVis);
+                attractionsVis = await responseVis.json();
+                const responseFav = await fetch(requestVis);
+                attractionsFav = await responseFav.json();
+                console.log("done!!");
+            } catch (error) {
+                console.log('error >> ', error.message);
+            }
+        }*/
+    
+        fetchRoutes();
+        fetchBuildings();
+    
+        const checkMobile = () => {
+          if (window.innerWidth <= 768) {
+            setIsMobile(true);
+          } else {
+            setIsMobile(false);
+          }
+        };
+    
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+    
+        return () => {
+          window.removeEventListener("resize", checkMobile);
+        };
+      }, []);
+
+    return( isMobile ? ( <MobileView Category={Category} /> ) : ( <LaptopView Category={Category} /> ));
 
 }
 
