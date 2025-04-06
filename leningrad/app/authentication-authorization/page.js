@@ -37,11 +37,11 @@ const AuthContentComponent = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
-    let url = "http://158.160.145.118:6060/api/authentication/token";
+    let url = "https://leningrad-after-the-victory.ru/api/authentication/token";
     let formData = { username: emailRef.current.value, password: passwordRef.current.value };
 
     if (!isLoginMode) {
-      url = "http://158.160.145.118:6060/api/authentication/register";
+      url = "https://leningrad-after-the-victory.ru/api/authentication/register";
       formData = { name: usernameRef.current.value, email: emailRef.current.value, password: passwordRef.current.value };
     }
 
