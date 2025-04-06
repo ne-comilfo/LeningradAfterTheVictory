@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import './personal-account-style.css';
 
 
-const API_URL = "http://194.87.252.234:6060/api/attractions/get-all";
+const API_URL = "https://leningrad-after-the-victory.ru/api/attractions/get-all";
 
 
 
@@ -23,7 +23,7 @@ const PersonalAccountPage = () => {
 
     const handleAuth = async () => {
         try {
-            const response = await fetch('http://158.160.145.118:6060/api/user/getUser', {
+            const response = await fetch('https://leningrad-after-the-victory.ru/api/user/getUser', {
                 method: "GET",
                 credentials: "include", 
             });
@@ -48,7 +48,7 @@ const PersonalAccountPage = () => {
 
     const LogOut = async () => {
         try {
-            const response = await fetch('http://158.160.145.118:6060/api/authentication/logout', {
+            const response = await fetch('https://leningrad-after-the-victory.ru/api/authentication/logout', {
                 method: "POST", 
                 credentials: "include",
             });

@@ -104,8 +104,8 @@ const AttractionInfoComponent = () => {
         const fetchData = async () => {
             try {
                 const [buildingRes, routesRes] = await Promise.all([
-                    fetch(`http://194.87.252.234:6060/api/attractions/attraction/${id}`),
-                    fetch("http://194.87.252.234:6060/api/routes/get-all")
+                    fetch(`https://leningrad-after-the-victory.ru/api/attractions/attraction/${id}`),
+                    fetch("https://leningrad-after-the-victory.ru/api/routes/get-all")
                 ]);
 
                 if (!buildingRes.ok || !routesRes.ok) throw new Error('Ошибка загрузки данных');
@@ -115,7 +115,7 @@ const AttractionInfoComponent = () => {
 
                 const routeDetails = await Promise.all(
                     routesList.map(route =>
-                        fetch(`http://194.87.252.234:6060/api/routes/route/${route.id}`).then(res => res.json())
+                        fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${route.id}`).then(res => res.json())
                     ));
 
                 const matchedRoutes = routeDetails
