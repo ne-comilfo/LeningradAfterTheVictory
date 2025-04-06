@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import './personal-account-style.css';
 
-const API_URL_ROUTES = "http://194.87.252.234:6060/api/favorites/routes";
-const API_URL_BUILDINGS = "http://194.87.252.234:6060/api/favorites/buildings";
+const API_URL_ROUTES = "http://158.160.145.118:6060/api/favorites/routes";
+const API_URL_BUILDINGS = "http://158.160.145.118:6060/api/favorites/buildings";
 
 const PersonalAccountPage = () => {
     let attractionsFav = [];
