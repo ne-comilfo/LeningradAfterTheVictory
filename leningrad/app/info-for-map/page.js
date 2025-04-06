@@ -576,6 +576,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                     <div className="window-header">
                       <h2>{object.title}</h2>
                     </div>
+                    
                     <div className="scrollable-content">
                       <div className="window-content">
                         {isExpanded && (
@@ -696,6 +697,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
             {view === "routes" && !selectedRoute && object && (
               <>
                 <h2>{object.title}</h2>
+                <div className="image-container">
+                  <img src={object.image} className="object-image" />
+                </div>
                 <div className="buttons-1 centered">
                   <button className="active">
                     <img src="/ways.svg" className="routes" />
@@ -725,6 +729,9 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
             {selectedRoute && object && (
               <>
                 <h2>{object.title}</h2>
+                <div className="image-container">
+                  <img src={object.image} className="object-image" />
+                </div>
                 <div className="buttons-1 centered">
                   <button onClick={() => handleSaveRouteClick(selectedRoute.id)}>
                     <HeartIcon filled={savedRoutes[selectedRoute.id]} />
