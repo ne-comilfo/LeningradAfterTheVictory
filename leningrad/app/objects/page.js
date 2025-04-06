@@ -104,7 +104,6 @@ const App = () => {
         }
         const data = await response.json();
         setObjects(data);
-        console.log(data);
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
         setError(error.message);
