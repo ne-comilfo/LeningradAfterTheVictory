@@ -53,7 +53,7 @@ const PersonalAccountPage = () => {
     const LogOut = async () => {
         try {
             const response = await fetch('https://leningrad-after-the-victory.ru/api/authentication/logout', {
-                method: "GET",
+                method: "POST",
                 credentials: "include",
             });
 
