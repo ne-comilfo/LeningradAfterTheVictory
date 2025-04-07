@@ -95,7 +95,7 @@ const PersonalAccountPage = () => {
                 }
                 const data = await response.json();
                 setAttractionsFav(data);  // Сохраняем данные в состоянии
-                setAttractionsFavPhoto(attractionsFav.map(item => new Map(attractionsFavPhoto.set(item.id, fetchPlacesPhotos(item.id)))));
+                setAttractionsFavPhoto(attractionsFav.forEach(item => attractionsFavPhoto.set(item.id, fetchPlacesPhotos(item.id))));
 
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error);
