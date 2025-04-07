@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, Suspense } from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import * as maptilersdk from '@maptiler/sdk';
