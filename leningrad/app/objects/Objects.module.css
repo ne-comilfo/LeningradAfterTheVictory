@@ -320,7 +320,7 @@
   }
 
   .objectCard {
-   
+    margin: 0 auto;
     max-width: 320px; /* Ограничиваем максимальную ширину */
   }
 
