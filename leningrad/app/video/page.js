@@ -45,21 +45,24 @@ const VideoCard = ({ video }) => {
   );
 };
 
+//{/* Список видео */}
+//<div className={styles.videosGrid}>
+//{mockVideos.map((video) => (
+//  <VideoCard key={video.id} video={video} />
+//))}
+//</div>
+
 // Основной компонент
 const VideoPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.textWithImage}>
         <h1 className={styles.header}>Видео</h1>
-        <img src="/images/hermit.png" alt="line" className={styles.svgImage} />
+        <img src="/images/logo_video.png" alt="line" className={styles.svgImage} />
       </div>
+    
+      <div className={styles.textUnavailability}> Сервис пока недоступен</div>
       
-      {/* Список видео */}
-      <div className={styles.videosGrid}>
-        {mockVideos.map((video) => (
-          <VideoCard key={video.id} video={video} />
-        ))}
-      </div>
     </div>
   );
 };
