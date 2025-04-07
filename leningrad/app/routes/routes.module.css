@@ -37,13 +37,7 @@
 }
 
 /* Стили для кнопок категорий (фильтров) */
-.categories {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
-  margin-left: 40px;
-  justify-content: left;
-}
+
 
 .svgImage {
   position: absolute;
@@ -53,6 +47,23 @@
   width: 580px;
   height: auto;
   z-index: 1;
+}
+
+.categories {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  margin-left: 40px;
+  overflow-x: auto; /* Включаем горизонтальную прокрутку */
+  white-space: nowrap; /* Предотвращаем перенос текста на новую строку */
+  -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
+  scrollbar-width: none; /* Скрываем скроллбар в Firefox */
+  padding-bottom: 20px;
+}
+
+/* Скрываем скроллбар в Chrome/Safari */
+.categories::-webkit-scrollbar {
+  display: none;
 }
 
 .categoryButton {
@@ -66,6 +77,7 @@
   cursor: pointer;
   z-index: 1;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  flex: 0 0 auto; /* Предотвращаем сжатие кнопок */
 }
 
 .categoryButton:hover {
@@ -330,7 +342,7 @@
     height: auto;
     z-index: 1;
   }
-
+  /*
   .categories {
     flex-wrap: wrap;
     column-gap: 10px;
@@ -341,6 +353,28 @@
     padding: 8px 16px;
     font-size: 14px;
     margin: 12px;
+  }*/
+
+  .categories {
+    flex-wrap: nowrap; /* Убираем перенос на новую строку */
+    overflow-x: auto; /* Включаем горизонтальную прокрутку */
+    white-space: nowrap; /* Предотвращаем перенос текста */
+    -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
+    scrollbar-width: none; /* Скрываем скроллбар в Firefox */
+    gap: 10px; /* Оставляем только один gap */
+    margin-left: 20px; /* Уменьшаем отступ слева для мобильных */
+    padding-top: 20px; /* Добавляем небольшой отступ снизу для визуального разделения */
+  }
+
+  .categories::-webkit-scrollbar {
+    display: none; /* Скрываем скроллбар в Chrome/Safari */
+  }
+
+  .categoryButton {
+    padding: 8px 16px;
+    font-size: 14px;
+    margin: 0; /* Убираем margin, чтобы кнопки были ближе друг к другу */
+    flex: 0 0 auto; /* Предотвращаем сжатие кнопок */
   }
 
   .routesGrid {
