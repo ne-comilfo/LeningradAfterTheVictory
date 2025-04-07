@@ -61,7 +61,7 @@ export default function RouteWindow({
                     const coordinates = data.attractions.map(a => a.location.coordinates);
                     const formatted = coordinates.map(([x, y]) => ({ x, y }));
 
-                    fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+                    fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoutesList` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ points: formatted })
@@ -133,7 +133,7 @@ export default function RouteWindow({
               const formattedPoints = routePoints.map(([x, y]) => ({ x, y }));
       
               // Определяем ближайшую точку маршрута к пользователю
-              fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+              fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoutesList` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ points: formattedPoints }),
@@ -145,10 +145,11 @@ export default function RouteWindow({
                     const firstPoint = routeCoords[0];
                     const lastPoint = routeCoords[routeCoords.length - 1];
       
-                    // Сравниваем расстояние до первой и последней точки
+                    const q = route.id === 5 ? fetch(`https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute?x1=${userLng}&y1=${userLat}&x2=${firstPoint[0]}&y2=${firstPoint[1]}`) : fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${firstPoint[0]}&y2=${firstPoint[1]}`)
+                    const qw = route.id === 5 ? fetch(`https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute?x1=${userLng}&y1=${userLat}&x2=${firstPoint[0]}&y2=${firstPoint[1]}`) : fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${firstPoint[0]}&y2=${firstPoint[1]}`)
                     Promise.all([
-                      fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${firstPoint[0]}&y2=${firstPoint[1]}`),
-                      fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${lastPoint[0]}&y2=${lastPoint[1]}`),
+                      q,
+                      qw,
                     ])
                       .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
                       .then(([data1, data2]) => {
@@ -160,7 +161,7 @@ export default function RouteWindow({
                           ? [userPoint, ...formattedPoints]
                           : [...formattedPoints, userPoint];
       
-                        fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+                        fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoutesList` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ points: fullRoute }),
