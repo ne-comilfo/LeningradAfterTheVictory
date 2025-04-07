@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 import './personal-account-style.css';
 
 
+const API_URL = "https://leningrad-after-the-victory.ru/api/attractions/get-all";
 const API_URL_PLACES = "https://leningrad-after-the-victory.ru/api/favorites/buildings";
 const API_URL_ROUTES = "https://leningrad-after-the-victory.ru/api/favorites/routes";
 const API_URL_PLACES_PHOTOS = "https://leningrad-after-the-victory.ru/attractions/attraction/";
-
 
 const PersonalAccountPage = () => {
     const [isFavMode, setIsFavMode] = useState(false);
@@ -19,23 +19,30 @@ const PersonalAccountPage = () => {
     const [attractionsFavPhoto, setAttractionsFavPhoto] = useState(new Map());
 
     const [userName, setUserName] = useState("");  // Состояние для логина
-    const [userEmail, setUserEmail] = useState(""); 
+    const [userEmail, setUserEmail] = useState("");
     const [loading, setLoading] = useState(true);
+    const [favoriteBuildingsIds, setFavoriteBuildingsIds] = useState([]);
+    const [favoriteRoutesIds, setFavoriteRoutesIds] = useState([]);
+    const [allAttractions, setAllAttractions] = useState([]);
+    const [allRoutes, setAllRoutes] = useState([]);
     const router = useRouter();
     const [imageSrc, setImageSrc] = useState("");
-
+    const API_URL_ATTRACTIONS = "https://leningrad-after-the-victory.ru/api/attractions/get-all";
+    const API_URL_ROUTES = "https://leningrad-after-the-victory.ru/api/routes/get-all";
+    const API_FAVORITES_BUILDINGS = "https://leningrad-after-the-victory.ru/api/favorites/buildings";
+    const API_FAVORITES_ROUTES = "https://leningrad-after-the-victory.ru/api/favorites/routes";
     const handleAuth = async () => {
         try {
             const response = await fetch('https://leningrad-after-the-victory.ru/api/user/getUser', {
                 method: "GET",
-                credentials: "include", 
+                credentials: "include",
             });
 
             if (response.status === 200) {
                 const data = await response.json();
                 setUserName(data.name); // Сохраняем логин
                 setUserEmail(data.mail);
-                setLoading(false); 
+                setLoading(false);
             } else if (response.status === 422 || response.status === 500) {
                 setTimeout(() => {
                     const currentUrl = window.location.pathname;
@@ -52,16 +59,13 @@ const PersonalAccountPage = () => {
     const LogOut = async () => {
         try {
             const response = await fetch('https://leningrad-after-the-victory.ru/api/authentication/logout', {
-                method: "POST", 
+                method: "POST",
                 credentials: "include",
             });
-    
+
             if (response.ok) {
-                setLoading(true)
-                setTimeout(() => {
-                    const currentUrl = window.location.pathname;
-                    router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
-                }, 2000);
+                const currentUrl = window.location.pathname;
+                router.push(`/authentication-authorization?redirect=${encodeURIComponent(currentUrl)}`);
             } else {
                 console.error("Ошибка при выходе:", response.status);
             }
@@ -69,59 +73,49 @@ const PersonalAccountPage = () => {
             console.error("Ошибка запроса при выходе:", error);
         }
     };
-    
+
     useEffect(() => {
         handleAuth(); // Проверяем токен на сервере
-
-        async function fetchPlacesPhotos(placeID) {
+        const fetchData = async () => {
             try {
-                const response = await fetch(API_URL_PLACES_PHOTOS + placeID);
-                if (!response.ok) {
-                    throw new Error(`Ошибка запроса: ${response.status}`);
-                }
-                const data = await response.json();
-                return (placeID, data.linksPreview[0]);
+                // Загружаем ID избранных зданий и маршрутов
+                const [buildingsRes, routesRes] = await Promise.all([
+                    fetch(API_FAVORITES_BUILDINGS, { credentials: 'include' }),
+                    fetch(API_FAVORITES_ROUTES, { credentials: 'include' })
+                ]);
 
-            } catch (error) {
-                console.error("Ошибка загрузки данных:", error);
-            }
-        }
+                const [favoriteBuildings, favoriteRoutes] = await Promise.all([
+                    buildingsRes.json(),
+                    routesRes.json()
+                ]);
 
-        const fetchPlaces = async () => {
-            try {
-                const response = await fetch(API_URL_PLACES);
-                if (!response.ok) {
-                    throw new Error(`Ошибка запроса: ${response.status}`);
-                }
-                const data = await response.json();
-                setAttractionsFav(data);  // Сохраняем данные в состоянии
-                setAttractionsFavPhoto(attractionsFav.map(item => fetchPlacesPhotos(item.id)));
+                setFavoriteBuildingsIds(favoriteBuildings);
+                setFavoriteRoutesIds(favoriteRoutes);
 
-            } catch (error) {
-                console.error("Ошибка загрузки данных:", error);
-            }
-        };
+                // Загружаем все здания и маршруты
+                const [attractionsRes, routesAllRes] = await Promise.all([
+                    fetch(API_URL_ATTRACTIONS),
+                    fetch(API_URL_ROUTES)
+                ]);
 
-        const fetchRoutes = async () => {
-            try {
-                const response = await fetch(API_URL_ROUTES);
-                if (!response.ok) {
-                    throw new Error(`Ошибка запроса: ${response.status}`);
-                }
-                const data = await response.json();
-                setAttractionsVis(data);  // Сохраняем данные в состоянии
+                const [attractions, routes] = await Promise.all([
+                    attractionsRes.json(),
+                    routesAllRes.json()
+                ]);
+
+                setAllAttractions(attractions);
+                setAllRoutes(routes);
+
+
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error);
             }
         };
 
-        fetchPlaces();
-        fetchRoutes();
+        fetchData();
 
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-
+        // Проверка мобильной версии
+        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
         checkMobile();
         window.addEventListener("resize", checkMobile);
         return () => window.removeEventListener("resize", checkMobile);
@@ -172,48 +166,95 @@ const PersonalAccountPage = () => {
         </div>
     );
 
-    const VisDestination = (id, name, photoURL) => (
-        <span key={id} className="destination">
-            <img src={photoURL} className="destination-photo"></img>
-            <div className="name">{name}</div>
-        </span>
+    // Фильтруем только избранные здания
+    const favoriteBuildings = allAttractions.filter(attraction =>
+        favoriteBuildingsIds.includes(attraction.id)
     );
 
-    const FavDestination = (id, name, photoURL) => (
-        <span key={id} className="destination">
-            <img src={photoURL} className="destination-photo"></img>
-            <div className="name">{name}</div>
-        </span>
+    // Фильтруем только избранные маршруты
+    const favoriteRoutes = allRoutes.filter(route =>
+        favoriteRoutesIds.includes(route.id)
     );
+
+    const VisDestination = ({ id, name, photoURL }) => {
+        const router = useRouter();
+        
+        const handleClick = () => {
+          router.push(`/attraction-info?id=${id}`);
+        };
+      
+        return (
+          <span key={id} className="destination" onClick={handleClick}>
+            <div className="name">{name}</div>
+            <img src={photoURL || "/default-image.png"} className="destination-photo" />
+            <div className="progress">
+              <div className="bar">
+                <div className="bar-progress"></div>
+              </div>
+              <div className="percentage">30%</div>
+            </div>
+          </span>
+        );
+      };
+
+      const FavDestination = ({ id, name, photoURL }) => {
+        const router = useRouter();
+        
+        const handleClick = () => {
+          router.push('/routes');
+        };
+      
+        return (
+          <span key={id} className="destination" onClick={handleClick}>
+            <img src={photoURL || "/default-image.png"} className="destination-photo" />
+            <div className="name">{name}</div>
+          </span>
+        );
+      };
 
     const VisScrollMenu = () => (
         <div className="scrollmenu-vis">
-            {
-                attractionsVis.map(item => VisDestination(item.id, item.name, attractionsFavPhoto.get(item.id))) // TODO
-            }
+            {favoriteRoutes.map(route => (
+                <VisDestination
+                    key={route.id}
+                    id={route.id}
+                    name={route.name}
+                    photoURL={route.image?.[0]} // или другое поле с изображением
+                />
+            ))}
+
         </div>
     );
 
     const FavScrollMenu = () => (
         <div className="scrollmenu-fav">
-            {
-                attractionsFav.map(item => FavDestination(item.id, item.name, attractionsFavPhoto.get(item.id)))
-            }
+
+            {favoriteBuildings.map(building => (
+                <FavDestination
+                    key={building.id}
+                    id={building.id}
+                    name={building.name}
+                    photoURL={building.linksPreview?.[0]} // или другое поле с изображением
+                />
+            ))}
+        </div>
+    );
+    const FavLaptopButtons = ({ isFavMode }) => (
+        <div className="action-buttons">
+            <div className="selected-button">Избранные места</div>
+            <div className="switch-button switch" onClick={() => setIsFavMode(false)}>
+                Избранные маршруты
+            </div>
+            <button onClick={LogOut} className="exit-button switch">Выйти</button>
         </div>
     );
 
     const VisLaptopButtons = ({ isFavMode }) => (
         <div className="action-buttons">
-            <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранные места</div>
+            <div className="switch-button switch" onClick={() => setIsFavMode(true)}>
+                Избранные места
+            </div>
             <div className="selected-button">Избранные маршруты</div>
-            <button onClick={LogOut} className="exit-button switch">Выйти</button>
-        </div>
-    );
-
-    const FavLaptopButtons = ({ isFavMode }) => (
-        <div className="action-buttons">
-            <div className="selected-button">Избранные места</div>
-            <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Избранные маршруты</div>
             <button onClick={LogOut} className="exit-button switch">Выйти</button>
         </div>
     );
@@ -221,13 +262,13 @@ const PersonalAccountPage = () => {
     const VisMobileButtons = ({ isFavMode }) => (
         <div className="action-buttons">
             <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранные места</div>
-            <div className="selected-button">Избранные маршруты</div>
+            <div className="selected-button">Посещенное</div>
         </div>
     );
 
     const FavMobileButtons = ({ isFavMode }) => (
         <div className="action-buttons">
-            <div className="selected-button">Избранные места</div>
+            <div className="selected-button">Избранное</div>
             <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Избранные маршруты</div>
         </div>
     );

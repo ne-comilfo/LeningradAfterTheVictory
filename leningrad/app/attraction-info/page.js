@@ -144,7 +144,7 @@ const AttractionInfoComponent = () => {
 
     const media = [
         { type: "image", src: building.linksPreview },
-        { type: "video", src: "https://storage.yandexcloud.net/social-network-media/master.m3u8", preview: "./hermitage1.png" }
+        { type: "video", src: "https://storage.yandexcloud.net/social-network-media/2_master.m3u8", preview: "./hermitage1.png" }
     ];
 
     const getOrderedMedia = () => {
