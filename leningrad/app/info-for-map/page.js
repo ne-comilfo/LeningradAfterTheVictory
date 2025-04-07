@@ -79,6 +79,13 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
 
   useEffect(() => {
     if (marker) {
+      setIsSaved(false);
+    
+    // Проверяем сохранен ли новый маркер
+    const savedState = localStorage.getItem(`favorite_${marker.id}`);
+    if (savedState === 'true') {
+      setIsSaved(true);
+    }
       // Загрузка данных объекта
       fetch(`https://leningrad-after-the-victory.ru/api/attractions/attraction/${marker.id}`)
         .then((response) => response.json())
@@ -318,7 +325,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
     onClose(); // Уведомляем Map.js о закрытии
     clearRoute();
     clearMarker()
-
+    setIsSaved(false);
   };
 
   const clearMarker = () => {
