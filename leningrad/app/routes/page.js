@@ -44,11 +44,13 @@ const RouteCard = ({ route }) => {
   const handleRightArrowClick = () => setIsDescriptionOpen(true);
 
   const truncatedDescription = truncateWords(route.description, 50);
-
+  const handleClick = () => {
+    router.push(`/map?routeId=${route.id}`);
+  };
   return (
     <div className={styles.routeCard} onTouchStart={handleTouchStart}>
       <div className={`${styles.cardInner} ${isDescriptionOpen ? styles.showDescription : ""}`}>
-        <Link href={`/map?id=${route.id}`}>
+        <div onClick={handleClick}>
           <div className={styles.imageWrapper}>
             <img src={route.url} alt={route.name} className={styles.cardImage} />
             <div className={styles.cardDescription}>
@@ -67,7 +69,7 @@ const RouteCard = ({ route }) => {
               </div>
             )}
           </div>
-        </Link>
+        </div>
         <div className={styles.descriptionWrapper}>
           <p>{route.description}</p>
         </div>

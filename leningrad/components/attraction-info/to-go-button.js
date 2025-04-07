@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation"
 export default function ToGoButton({ attractionId }) {
     const router = useRouter();
     const handleClick = () => {
-        localStorage.setItem('selectedMarkerId', attractionId); // Сохраняем id
-        router.push('/map'); // URL останется чистым
+        router.push(`/map?attractionId=${attractionId}`);
     }
     return (
 
