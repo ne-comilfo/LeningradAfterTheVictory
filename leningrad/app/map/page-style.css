@@ -27,7 +27,7 @@
 .slider-container {
     position: fixed;
     bottom: 15px;
-    width: 71.4vw;
+    width: 68vw;
     padding: 0.5vw;
     left: 50%;
     transform: translateX(-50%);
@@ -40,7 +40,7 @@
 }
 
 .rc-slider {
-    width: 92%;
+    width: 57.12vw;
     position: absolute;
     top: 64%;
     transform: translate(-50%, -50%);
@@ -83,12 +83,14 @@
 }
 
 .min-label {
-    left: 4%;
+    left: 8%;
     transform: translateX(-50%);
+    
 }
 
+
 .max-label {
-    left: 96%;
+    left: 92%;
     transform: translateX(-50%);
 }
 
