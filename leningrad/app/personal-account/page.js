@@ -95,7 +95,14 @@ const PersonalAccountPage = () => {
                 }
                 const data = await response.json();
                 setAttractionsFav(data);  // Сохраняем данные в состоянии
-                setAttractionsFavPhoto(data.forEach(item => attractionsFavPhoto.set(item.id, fetchPlacesPhotos(item.id))));
+                setAttractionsFavPhoto(prevMap => {
+                    const newMap = new Map(prevMap); // Создаем новый Map на основе предыдущего состояния
+                    attractionsFav.forEach(item => {
+                        const photo = fetchPlacesPhotos(item.id);
+                        newMap.set(item.id, photo);
+                    });
+                    return newMap; // Возвращаем новый Map
+                });
 
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error);
@@ -189,7 +196,7 @@ const PersonalAccountPage = () => {
     const VisScrollMenu = () => (
         <div className="scrollmenu-vis">
             {
-                attractionsVis.map(item => VisDestination(item.id, item.name, "./photo2.png") // TODO
+                attractionsVis.map(item => VisDestination(item.id, item.name, "./photo2.png")) // TODO
             }
         </div>
     );
