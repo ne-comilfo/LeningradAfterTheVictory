@@ -8,6 +8,7 @@ import './personal-account-style.css';
 
 const API_URL_PLACES = "https://leningrad-after-the-victory.ru/api/favorites/buildings";
 const API_URL_ROUTES = "https://leningrad-after-the-victory.ru/api/favorites/routes";
+const API_URL_PLACES_PHOTOS = "https://leningrad-after-the-victory.ru/attractions/attraction/";
 
 
 const PersonalAccountPage = () => {
@@ -15,6 +16,8 @@ const PersonalAccountPage = () => {
     const [isMobile, setIsMobile] = useState(false);
     const [attractionsFav, setAttractionsFav] = useState([]); // Состояние для избранных
     const [attractionsVis, setAttractionsVis] = useState([]); // Состояние для посещенных
+    const [attractionsFavPhoto, setAttractionsFavPhoto] = useState(new Map());
+
     const [userName, setUserName] = useState("");  // Состояние для логина
     const [userEmail, setUserEmail] = useState(""); 
     const [loading, setLoading] = useState(true);
@@ -70,6 +73,20 @@ const PersonalAccountPage = () => {
     useEffect(() => {
         handleAuth(); // Проверяем токен на сервере
 
+        async function fetchPlacesPhotos(placeID) {
+            try {
+                const response = await fetch(API_URL_PLACES_PHOTOS + placeID);
+                if (!response.ok) {
+                    throw new Error(`Ошибка запроса: ${response.status}`);
+                }
+                const data = await response.json();
+                return (placeID, data.linksPreview[0]);
+
+            } catch (error) {
+                console.error("Ошибка загрузки данных:", error);
+            }
+        }
+
         const fetchPlaces = async () => {
             try {
                 const response = await fetch(API_URL_PLACES);
@@ -78,6 +95,8 @@ const PersonalAccountPage = () => {
                 }
                 const data = await response.json();
                 setAttractionsFav(data);  // Сохраняем данные в состоянии
+                setAttractionsFavPhoto(attractionsFav.map(item => fetchPlacesPhotos(item.id)));
+
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error);
             }
@@ -170,7 +189,7 @@ const PersonalAccountPage = () => {
     const VisScrollMenu = () => (
         <div className="scrollmenu-vis">
             {
-                attractionsVis.map(item => VisDestination(item.id, item.name, item.linksPreview[0]))
+                attractionsVis.map(item => VisDestination(item.id, item.name, attractionsFavPhoto.get(item.id))) // TODO
             }
         </div>
     );
@@ -178,7 +197,7 @@ const PersonalAccountPage = () => {
     const FavScrollMenu = () => (
         <div className="scrollmenu-fav">
             {
-                attractionsFav.map(item => FavDestination(item.id, item.name, item.linksPreview[0]))
+                attractionsFav.map(item => FavDestination(item.id, item.name, attractionsFavPhoto.get(item.id)))
             }
         </div>
     );
