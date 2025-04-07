@@ -45,8 +45,7 @@ const RouteCard = ({ route }) => {
 
   const truncatedDescription = truncateWords(route.description, 50);
   const handleClick = () => {
-    localStorage.setItem('selectedRouteId', route.id); 
-    router.push('/map');
+    router.push(`/map?routeId=${route.id}`);
   };
   return (
     <div className={styles.routeCard} onTouchStart={handleTouchStart}>

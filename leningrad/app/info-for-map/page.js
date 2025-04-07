@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 
-export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded, drawRoute, clearRoute, map }) {
+export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded, drawRoute, clearRoute, map, setRouteAttractionIds }) {
   const [isOpen, setIsOpen] = useState(true); // Управление видимостью окна
   const [view, setView] = useState("default"); // Текущий вид (описание или маршруты)
   const [selectedRoute, setSelectedRoute] = useState(null); // Выбранный маршрут
@@ -98,6 +98,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
           const routePromises = routesList.map((route) =>
             fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${route.id}`).then((res) =>
               res.json()
+          
             )
           );
 
@@ -111,6 +112,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   id: route.id,
                   name: route.name,
                   details: route.description,
+                  image: route.url,
                 }));
 
               setRoutes(matchedRoutes);
@@ -302,7 +304,6 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
 
         },
         (error) => {
-          console.error("Ошибка при получении геопозиции:", error.message);
           alert("Не удалось получить ваше местоположение. Пожалуйста, разрешите доступ к геопозиции.");
         }
       );
@@ -459,6 +460,8 @@ const handleTouchEnd = () => {
     fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${route.id}`)
       .then((response) => response.json())
       .then((data) => {
+        const attractionIds = data.attractions.map(attraction => attraction.id);
+      setRouteAttractionIds(attractionIds);
         const coordinates = data.attractions.map(attraction => attraction.location.coordinates);
         const formattedCoordinates = coordinates.map(([x, y]) => ({ x, y }));
 
@@ -527,8 +530,9 @@ const handleTouchEnd = () => {
         {isOpen && (
           <>
             {isExpanded && object && (
+              
               <img
-                src={object.image}
+              src={view === "default" && object ? object.image : selectedRoute?.image}
                 className="floating-image"
                 style={{
                   '--image-offset': `${imageOffset}px`,
@@ -634,8 +638,9 @@ const handleTouchEnd = () => {
                 {selectedRoute && object && (
                   <>
                     <div className="window-header">
-                      <h2>{object.title}</h2>
+                      <h2>{selectedRoute.name}</h2>
                     </div>
+                    
                     <div className="scrollable-content">
                       <div className="window-content">
                         <p>{selectedRoute.details}</p>
@@ -730,9 +735,9 @@ const handleTouchEnd = () => {
             )}
             {selectedRoute && object && (
               <>
-                <h2>{object.title}</h2>
+                <h2>{selectedRoute.name}</h2>
                 <div className="image-container">
-                  <img src={object.image} className="object-image" />
+                  <img src={selectedRoute.image} className="object-image" />
                 </div>
                 <div className="buttons-1 centered">
                   <button onClick={() => handleSaveRouteClick(selectedRoute.id)}>

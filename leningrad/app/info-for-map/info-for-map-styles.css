@@ -325,7 +325,7 @@
 
   
   .mobile-version .floating-image {
-    top: 29vh;
+    top: 24vh;
     left: 50%;
     transform: translateX(-50%) translateY(var(--image-offset, 0));
     width: 100%;
@@ -407,6 +407,7 @@
 
   /* Заголовок в окне */
   .mobile-version .window-header {
+    padding-left: 10px;
     font-size: 22px;
     color: black;
     margin-top: 30px;
