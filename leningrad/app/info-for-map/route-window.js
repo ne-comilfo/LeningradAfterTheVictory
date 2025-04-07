@@ -260,7 +260,10 @@ export default function RouteWindow({
                                 onTouchEnd={handleTouchEnd}
                             >
                                 <div className={`grabber ${isExpanded ? "expanded" : "collapsed"}`}></div>
-                                <div className="bottom-sheet">
+                                <div className="bottom-sheet"
+                                style={{
+                                    transform: isExpanded ? "translateY(0)" : "translateY(83%)",
+                                  }}>
                                     <div className="window-header">
                                         <h2>{route.name}</h2>
                                     </div>
