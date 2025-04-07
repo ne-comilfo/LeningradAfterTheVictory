@@ -14,7 +14,15 @@ const truncateWords = (text, maxWords) => {
   if (words.length <= maxWords) return text;
   return words.slice(0, maxWords).join(" ") + "...";
 };
-
+/*
+const test = 
+  {
+    id: 1,
+    name: "Исторический обзор: Революция",
+    url: "images/landmark1.png",
+    description: "ддвввлллааапап",
+  }
+*/
 // Компонент для карточки маршрута
 const RouteCard = ({ route }) => {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
