@@ -5,13 +5,19 @@ import { useRouter } from "next/navigation";
 
 import './personal-account-style.css';
 
+
 const API_URL = "https://leningrad-after-the-victory.ru/api/attractions/get-all";
+const API_URL_PLACES = "https://leningrad-after-the-victory.ru/api/favorites/buildings";
+const API_URL_ROUTES = "https://leningrad-after-the-victory.ru/api/favorites/routes";
+const API_URL_PLACES_PHOTOS = "https://leningrad-after-the-victory.ru/attractions/attraction/";
 
 const PersonalAccountPage = () => {
     const [isFavMode, setIsFavMode] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [attractionsFav, setAttractionsFav] = useState([]); // Состояние для избранных
     const [attractionsVis, setAttractionsVis] = useState([]); // Состояние для посещенных
+    const [attractionsFavPhoto, setAttractionsFavPhoto] = useState(new Map());
+
     const [userName, setUserName] = useState("");  // Состояние для логина
     const [userEmail, setUserEmail] = useState("");
     const [loading, setLoading] = useState(true);
@@ -70,7 +76,6 @@ const PersonalAccountPage = () => {
 
     useEffect(() => {
         handleAuth(); // Проверяем токен на сервере
-
         const fetchData = async () => {
             try {
                 // Загружаем ID избранных зданий и маршрутов
@@ -100,6 +105,7 @@ const PersonalAccountPage = () => {
 
                 setAllAttractions(attractions);
                 setAllRoutes(routes);
+
 
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error);
@@ -216,11 +222,13 @@ const PersonalAccountPage = () => {
                     photoURL={route.image?.[0]} // или другое поле с изображением
                 />
             ))}
+
         </div>
     );
 
     const FavScrollMenu = () => (
         <div className="scrollmenu-fav">
+
             {favoriteBuildings.map(building => (
                 <FavDestination
                     key={building.id}
