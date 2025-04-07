@@ -80,7 +80,7 @@ const PersonalAccountPage = () => {
                     throw new Error(`Ошибка запроса: ${response.status}`);
                 }
                 const data = await response.json();
-                return (placeID, data.linksPreview[0]);
+                return data.linksPreview[0];
 
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error);
@@ -95,7 +95,7 @@ const PersonalAccountPage = () => {
                 }
                 const data = await response.json();
                 setAttractionsFav(data);  // Сохраняем данные в состоянии
-                setAttractionsFavPhoto(attractionsFav.map(item => fetchPlacesPhotos(item.id)));
+                setAttractionsFavPhoto(attractionsFav.map(item => new Map(attractionsFavPhoto.set(item.id, fetchPlacesPhotos(item.id)))));
 
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error);
