@@ -174,6 +174,8 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   },
                   body: JSON.stringify(requestBody),  // Отправляем массив координат
                 })
+
+                
                   .then((response) => response.json())  // Обрабатываем ответ второго запроса
                   .then((routeData) => {
                     if (routeData.geoJson.length > 0) {
