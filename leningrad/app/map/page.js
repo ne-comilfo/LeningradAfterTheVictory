@@ -11,7 +11,7 @@ import InfoWindow from '../info-for-map/page';
 import RouteWindow from '../info-for-map/route-window';
 import { useSearchParams } from 'next/navigation';
 
-export default function Map() {
+const Popa = () => {
     const [routeAttractionIds, setRouteAttractionIds] = useState([]);
 
     const searchParams = useSearchParams();
@@ -400,4 +400,12 @@ return (
         )}
     </div>
 );
+}
+
+export default function Map() {
+    return (
+            <Suspense fallback>
+                <Popa />
+            </Suspense>
+        );
 }
