@@ -53,7 +53,7 @@ const PersonalAccountPage = () => {
     const LogOut = async () => {
         try {
             const response = await fetch('https://leningrad-after-the-victory.ru/api/authentication/logout', {
-                method: "GET",
+                method: "POST",
                 credentials: "include",
             });
 
@@ -170,25 +170,41 @@ const PersonalAccountPage = () => {
         favoriteRoutesIds.includes(route.id)
     );
 
-    const VisDestination = ({ id, name, photoURL }) => (
-        <span key={id} className="destination">
+    const VisDestination = ({ id, name, photoURL }) => {
+        const router = useRouter();
+        
+        const handleClick = () => {
+          router.push(`/attraction-info?id=${id}`);
+        };
+      
+        return (
+          <span key={id} className="destination" onClick={handleClick}>
             <div className="name">{name}</div>
             <img src={photoURL || "/default-image.png"} className="destination-photo" />
             <div className="progress">
-                <div className="bar">
-                    <div className="bar-progress"></div>
-                </div>
-                <div className="percentage">30%</div>
+              <div className="bar">
+                <div className="bar-progress"></div>
+              </div>
+              <div className="percentage">30%</div>
             </div>
-        </span>
-    );
+          </span>
+        );
+      };
 
-    const FavDestination = ({ id, name, photoURL }) => (
-        <span key={id} className="destination">
+      const FavDestination = ({ id, name, photoURL }) => {
+        const router = useRouter();
+        
+        const handleClick = () => {
+          router.push('/routes');
+        };
+      
+        return (
+          <span key={id} className="destination" onClick={handleClick}>
             <img src={photoURL || "/default-image.png"} className="destination-photo" />
             <div className="name">{name}</div>
-        </span>
-    );
+          </span>
+        );
+      };
 
     const VisScrollMenu = () => (
         <div className="scrollmenu-vis">
