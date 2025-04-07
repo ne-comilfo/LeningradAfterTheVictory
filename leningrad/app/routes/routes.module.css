@@ -279,6 +279,10 @@
 
 /* Медиа-запросы */
 
+/* ... (всё до медиа-запросов остаётся без изменений) ... */
+
+/* Медиа-запросы */
+
 /* Для ПК */
 @media (min-width: 769px) {
   .descriptionWrapper {
@@ -309,9 +313,9 @@
   .header::after {
     content: "";
     position: absolute;
-    bottom: -10px;
-    left: -160px;
-    width: 100px;
+    bottom: -5px;
+    left: 0px;
+    width: 250px;
     height: 1px;
     background-color: #000;
     display: inline-block;
@@ -319,7 +323,7 @@
 
   .svgImage {
     position: absolute;
-    top: 80%;
+    top: 75%;
     left: 40px;
     transform: translateY(-50%);
     width: 200px;
@@ -341,6 +345,14 @@
 
   .routesGrid {
     grid-template-columns: 1fr;
+    width: 100%; /* Занимает всю ширину */
+    max-width: 350px; /* Максимальная ширина контейнера с карточками */
+    margin: 30px auto; /* Центрируем контейнер */
+  }
+
+  .routeCard {
+    max-width: 320px; /* Ограничиваем максимальную ширину карточки */
+    margin: 0 auto; /* Центрируем карточку */
   }
 
   .cardImage {
@@ -353,6 +365,12 @@
     font-size: 12px;
   }
 
+  /* Стили для свайпа */
+  .cardInner {
+    width: 100%;
+    transition: transform 0.3s ease;
+  }
+
   .cardInner.showDescription .cardDescription {
     opacity: 1;
     transform: translateY(0);
@@ -362,6 +380,7 @@
     display: none; /* Убираем отдельный контейнер для описания на мобильных */
   }
 
+  /* Отключаем эффект наведения на мобильных */
   .routeCard:hover .cardDescription {
     opacity: 0; /* Скрываем описание при наведении */
     transform: translateY(10px); /* Возвращаем в исходное положение */

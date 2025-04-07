@@ -284,17 +284,17 @@
   .header::after {
     content: "";
     position: absolute;
-    bottom: -10px;
-    
-    width: 100px;
-    height: 10px;
+    bottom: -5px;
+    left: 0px;
+    width: 300px;
+    height: 1px;
     background-color: #000;
     display: inline-block;
   }
 
   .svgImage {
     position: absolute;
-    top: 78%;
+    top: 75%;
     left: 200px;
     transform: translateY(-50%);
     width: 170px;
@@ -315,7 +315,7 @@
   .objectsGrid {
     grid-template-columns: 1fr;
     width: 100%; /* Занимает всю ширину */
-    max-width: 400px; /* Максимальная ширина карточки */
+    max-width: 350px; /* Максимальная ширина карточки */
     margin: 30px auto;
   }
 
