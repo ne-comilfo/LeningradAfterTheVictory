@@ -167,7 +167,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   "points": formattedCoordinates  // Оборачиваем массив координат в объект
                 };
 
-                fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+                fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -207,7 +207,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                   points: formattedCoordinates, // Теперь массив начинается с координат пользователя
                                 };
 
-                                fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+                                fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
                                     'Content-Type': 'application/json',
@@ -241,7 +241,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 const requestBody = {
                                   points: formattedCoordinates, // Теперь массив заканчивается координатами пользователя
                                 };
-                                fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+                                fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
                                     'Content-Type': 'application/json',
@@ -476,7 +476,7 @@ const handleTouchEnd = () => {
           "points": formattedCoordinates  // Оборачиваем массив координат в объект
         };
 
-        fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+        fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -21,7 +21,10 @@ const PersonalAccountPage = () => {
     const [allRoutes, setAllRoutes] = useState([]);
     const router = useRouter();
     const [imageSrc, setImageSrc] = useState("");
-
+    const API_URL_ATTRACTIONS = "https://leningrad-after-the-victory.ru/api/attractions/get-all";
+    const API_URL_ROUTES = "https://leningrad-after-the-victory.ru/api/routes/get-all";
+    const API_FAVORITES_BUILDINGS = "https://leningrad-after-the-victory.ru/api/favorites/buildings";
+    const API_FAVORITES_ROUTES = "https://leningrad-after-the-victory.ru/api/favorites/routes";
     const handleAuth = async () => {
         try {
             const response = await fetch('https://leningrad-after-the-victory.ru/api/user/getUser', {
