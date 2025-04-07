@@ -38,6 +38,9 @@ const RouteCard = ({ route }) => {
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
     };
+
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("touchend", handleTouchEnd);
   };
 
   const handleLeftArrowClick = () => setIsDescriptionOpen(false);
