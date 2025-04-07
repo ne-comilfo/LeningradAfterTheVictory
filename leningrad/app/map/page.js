@@ -13,7 +13,7 @@ import { useSearchParams } from 'next/navigation';
 
 const Popa = () => {
     const [routeAttractionIds, setRouteAttractionIds] = useState([]);
-
+    
     const searchParams = useSearchParams();
     const attractionId = searchParams.get('attractionId');
     const [markers, setMarkers] = useState([]);
@@ -34,8 +34,8 @@ const Popa = () => {
     useEffect(() => {
         const attractionId = searchParams.get('attractionId');
         const routeId = searchParams.get('routeId');
-
-        // Обработка маркера достопримечательности
+    
+        // Обработка маркера
         if (attractionId && markers.length > 0) {
             const marker = markers.find(m => String(m.id) === attractionId);
             if (marker) {
@@ -48,78 +48,84 @@ const Popa = () => {
                 setIsInfoWindowOpen(true);
             }
         }
-
-        // Обработка маршрута (восстановленная функция)
+    
+        // Обработка маршрута
         if (routeId) {
-
-
-            fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${routeId}`)
-                .then(response => response.json())
-                .then(routeData => {
-                    const coordinates = routeData.attractions.map(attraction =>
-                        attraction.location.coordinates
-                
-              );
-              const attractionIds = routeData.attractions.map(attraction => attraction.id);
-                    setRouteAttractionIds(attractionIds);
-
-            // Формируем GeoJSON для маршрута
-            const geojson = {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                    type: 'LineString',
-                    coordinates: coordinates
-                }
+            const loadRoute = () => {
+                fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${routeId}`)
+                    .then(response => response.json())
+                    .then(routeData => {
+                        if (!map.current) return;
+    
+                        const coordinates = routeData.attractions.map(attraction =>
+                            attraction.location.coordinates
+                        );
+                        const attractionIds = routeData.attractions.map(attraction => attraction.id);
+                        setRouteAttractionIds(attractionIds);
+    
+                        const geojson = {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: coordinates
+                            }
+                        };
+    
+                        // Удаляем старый маршрут
+                        if (map.current.getLayer('route')) {
+                            map.current.removeLayer('route');
+                            map.current.removeSource('route');
+                        }
+    
+                        // Добавляем новый маршрут
+                        map.current.addSource('route', {
+                            type: 'geojson',
+                            data: geojson
+                        });
+    
+                        map.current.addLayer({
+                            id: 'route',
+                            type: 'line',
+                            source: 'route',
+                            layout: {
+                                'line-join': 'round',
+                                'line-cap': 'round'
+                            },
+                            paint: {
+                                'line-color': '#3b82f6',
+                                'line-width': 4
+                            }
+                        });
+    
+                        // Центрируем карту
+                        const bounds = coordinates.reduce((bounds, coord) => {
+                            return bounds.extend(coord);
+                        }, new maptilersdk.LngLatBounds(coordinates[0], coordinates[0]));
+    
+                        map.current.fitBounds(bounds, {
+                            padding: 50
+                        });
+    
+                        setSelectedRouteId(routeId);
+                        setIsRouteWindowOpen(true);
+                    })
+                    .catch(error => {
+                        console.error("Ошибка загрузки маршрута:", error);
+                    })
+                    .finally(() => {
+                        router.replace('/map', undefined, { shallow: true });
+                    });
             };
-
-            // Удаляем старый маршрут если есть
-            if (map.current.getLayer('route')) {
-                map.current.removeLayer('route');
-                map.current.removeSource('route');
+    
+            // Если карта готова, загружаем маршрут, иначе ждем загрузки
+            if (map.current && map.current.isStyleLoaded()) {
+                loadRoute();
+            } else if (map.current) {
+                map.current.once('load', loadRoute);
             }
-
-            // Добавляем новый маршрут
-            map.current.addSource('route', {
-                type: 'geojson',
-                data: geojson
-            });
-
-            map.current.addLayer({
-                id: 'route',
-                type: 'line',
-                source: 'route',
-                layout: {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                paint: {
-                    'line-color': '#3b82f6',
-                    'line-width': 4
-                }
-            });
-
-            // Центрируем карту на маршруте
-            const bounds = coordinates.reduce((bounds, coord) => {
-                return bounds.extend(coord);
-            }, new maptilersdk.LngLatBounds(coordinates[0], coordinates[0]));
-
-            map.current.fitBounds(bounds, {
-                padding: 50
-            });
-
-            setSelectedRouteId(routeId);
-            setIsRouteWindowOpen(true);
-        })
-        .catch(error => {
-            console.error("Ошибка загрузки маршрута:", error);
-        })
-        .finally(() => {
-            // Очищаем URL параметры после обработки
-            router.replace('/map', undefined, { shallow: true });
-        });
-}
-      }, [searchParams, markers, router]);
+        }
+    }, [searchParams, markers, router]);
 
 const clearRoute = () => {
     if (!map.current) return;
@@ -133,7 +139,14 @@ const clearRoute = () => {
 
 const drawRoute = (coordinates) => {
     if (!map.current || !coordinates || coordinates.length === 0) return;
+    
+    // Если стиль еще не загружен, ждем загрузки
+    if (!map.current.isStyleLoaded()) {
+        map.current.once('load', () => drawRoute(coordinates));
+        return;
+    }
 
+    // Удаляем старый маршрут, если есть
     if (map.current.getLayer('route')) {
         map.current.removeLayer('route');
         map.current.removeSource('route');
@@ -175,7 +188,6 @@ const drawRoute = (coordinates) => {
         padding: 50,
     });
 };
-
 const mapContainer = useRef(null);
 const map = useRef(null);
 const spb = { lng: 30.3148, lat: 59.9343 };
@@ -221,12 +233,15 @@ useEffect(() => {
         language: lang,
     });
 
-    const bounds = [
-        [29.6, 59.5],
-        [30.8, 60.1],
-    ];
-    map.current.setMaxBounds(bounds);
-    map.current.setMinZoom(10);
+    // Ждем полной загрузки карты перед настройкой границ
+    map.current.on('load', () => {
+        const bounds = [
+            [29.6, 59.5],
+            [30.8, 60.1],
+        ];
+        map.current.setMaxBounds(bounds);
+        map.current.setMinZoom(10);
+    });
 
     return () => {
         if (map.current) {
