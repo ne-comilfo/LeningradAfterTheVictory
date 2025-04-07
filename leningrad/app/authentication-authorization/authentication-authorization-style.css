@@ -15,6 +15,10 @@ main {
   align-items: center;
 } */
 
+body {
+  background: #FFFFFF;
+}
+
 .text {
   font-size: clamp(30px, 2.5vh, 48px);
   color: rgba(112, 111, 109, 1);
