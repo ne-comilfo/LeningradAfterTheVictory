@@ -13,7 +13,7 @@ import { useSearchParams } from 'next/navigation';
 
 const Popa = () => {
     const [routeAttractionIds, setRouteAttractionIds] = useState([]);
-    
+
     const searchParams = useSearchParams();
     const attractionId = searchParams.get('attractionId');
     const [markers, setMarkers] = useState([]);

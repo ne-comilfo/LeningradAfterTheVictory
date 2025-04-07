@@ -17,7 +17,7 @@ export default function HeartButton({ attractionId }) {
     const handleClick = async () => {
         try {
             if (!liked) {
-                const response = await fetch(`http://194.87.252.234:6060/api/favorites/favoriteBuilding?id=${attractionId}`, {
+                const response = await fetch(`https://leningrad-after-the-victory.ru/api/favorites/favoriteBuilding?id=${attractionId}`, {
                     method: "POST",
                     credentials: "include", 
                 });
@@ -31,7 +31,7 @@ export default function HeartButton({ attractionId }) {
                     throw new Error('Ошибка при добавлении');
                 }
             } else {
-                const response = await fetch(`http://194.87.252.234:6060/api/favorites/favoriteBuilding/${attractionId}`, {
+                const response = await fetch(`https://leningrad-after-the-victory.ru/api/favorites/favoriteBuilding/${attractionId}`, {
                     method: 'DELETE',
                     credentials: "include",
                 });
