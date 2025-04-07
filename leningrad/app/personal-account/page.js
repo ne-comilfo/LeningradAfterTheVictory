@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import './personal-account-style.css';
 
 
-const API_URL = "https://leningrad-after-the-victory.ru/api/attractions/get-all";
-
+const API_URL_PLACES = "https://leningrad-after-the-victory.ru/api/favorites/buildings";
+const API_URL_ROUTES = "https://leningrad-after-the-victory.ru/api/favorites/routes";
 
 
 const PersonalAccountPage = () => {
@@ -70,21 +70,34 @@ const PersonalAccountPage = () => {
     useEffect(() => {
         handleAuth(); // Проверяем токен на сервере
 
-        const fetchDestinations = async () => {
+        const fetchPlaces = async () => {
             try {
-                const response = await fetch(API_URL);
+                const response = await fetch(API_URL_PLACES);
                 if (!response.ok) {
                     throw new Error(`Ошибка запроса: ${response.status}`);
                 }
                 const data = await response.json();
-                setAttractionsVis(data);  // Сохраняем данные в состоянии
                 setAttractionsFav(data);  // Сохраняем данные в состоянии
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error);
             }
         };
 
-        fetchDestinations();
+        const fetchRoutes = async () => {
+            try {
+                const response = await fetch(API_URL_ROUTES);
+                if (!response.ok) {
+                    throw new Error(`Ошибка запроса: ${response.status}`);
+                }
+                const data = await response.json();
+                setAttractionsVis(data);  // Сохраняем данные в состоянии
+            } catch (error) {
+                console.error("Ошибка загрузки данных:", error);
+            }
+        };
+
+        fetchPlaces();
+        fetchRoutes();
 
         const checkMobile = () => {
             setIsMobile(window.innerWidth <= 768);
@@ -142,15 +155,8 @@ const PersonalAccountPage = () => {
 
     const VisDestination = (id, name, photoURL) => (
         <span key={id} className="destination">
-            <div className="name">{name}</div>
             <img src={photoURL} className="destination-photo"></img>
-            <div className="progress">
-                <div className="bar">
-                    <div className="bar-progress"></div>
-                </div>
-                <div className="percentage">30%</div>
-            </div>
-
+            <div className="name">{name}</div>
         </span>
     );
 
@@ -164,7 +170,7 @@ const PersonalAccountPage = () => {
     const VisScrollMenu = () => (
         <div className="scrollmenu-vis">
             {
-                attractionsVis.map(item => VisDestination(item.id, item.name, "./photo2.png"))
+                attractionsVis.map(item => VisDestination(item.id, item.name, item.linksPreview[0]))
             }
         </div>
     );
@@ -172,38 +178,38 @@ const PersonalAccountPage = () => {
     const FavScrollMenu = () => (
         <div className="scrollmenu-fav">
             {
-                attractionsFav.map(item => FavDestination(item.id, item.name, "./photo2.png"))
+                attractionsFav.map(item => FavDestination(item.id, item.name, item.linksPreview[0]))
             }
         </div>
     );
 
     const VisLaptopButtons = ({ isFavMode }) => (
         <div className="action-buttons">
-            <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранное</div>
-            <div className="selected-button">Посещенное</div>
+            <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранные места</div>
+            <div className="selected-button">Избранные маршруты</div>
             <button onClick={LogOut} className="exit-button switch">Выйти</button>
         </div>
     );
 
     const FavLaptopButtons = ({ isFavMode }) => (
         <div className="action-buttons">
-            <div className="selected-button">Избранное</div>
-            <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Посещенное</div>
+            <div className="selected-button">Избранные места</div>
+            <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Избранные маршруты</div>
             <button onClick={LogOut} className="exit-button switch">Выйти</button>
         </div>
     );
 
     const VisMobileButtons = ({ isFavMode }) => (
         <div className="action-buttons">
-            <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранное</div>
-            <div className="selected-button">Посещенное</div>
+            <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранные места</div>
+            <div className="selected-button">Избранные маршруты</div>
         </div>
     );
 
     const FavMobileButtons = ({ isFavMode }) => (
         <div className="action-buttons">
-            <div className="selected-button">Избранное</div>
-            <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Посещенное</div>
+            <div className="selected-button">Избранные места</div>
+            <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Избранные маршруты</div>
         </div>
     );
 
