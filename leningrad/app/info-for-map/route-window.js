@@ -138,7 +138,7 @@ export default function RouteWindow({
                     const formattedPoints = routePoints.map(([x, y]) => ({ x, y }));
 
                     // Определяем ближайшую точку маршрута к пользователю
-                    fetch(`${apiBase}RoutesListRoutesList`, {
+                    fetch(`${apiBase}RoutesList`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ points: formattedPoints }),
@@ -152,8 +152,8 @@ export default function RouteWindow({
 
                                 // Сравниваем расстояние до первой и последней точки
                                 Promise.all([
-                                    fetch(`${apiBase}RoutesListRoute?x1=${userLng}&y1=${userLat}&x2=${firstPoint[0]}&y2=${firstPoint[1]}`),
-                                    fetch(`${apiBase}RoutesListRoute?x1=${userLng}&y1=${userLat}&x2=${lastPoint[0]}&y2=${lastPoint[1]}`),
+                                    fetch(`${apiBase}Route?x1=${userLng}&y1=${userLat}&x2=${firstPoint[0]}&y2=${firstPoint[1]}`),
+                                    fetch(`${apiBase}Route?x1=${userLng}&y1=${userLat}&x2=${lastPoint[0]}&y2=${lastPoint[1]}`),
                                 ])
                                     .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
                                     .then(([data1, data2]) => {
@@ -165,14 +165,14 @@ export default function RouteWindow({
                                             ? [userPoint, ...formattedPoints]
                                             : [...formattedPoints, userPoint];
 
-                                        fetch(`${apiBase}RoutesListRoutesList`, {
+                                        fetch(`${apiBase}RoutesList`, {
                                             method: "POST",
                                             headers: { "Content-Type": "application/json" },
                                             body: JSON.stringify({ points: fullRoute }),
                                         })
                                             .then((res) => res.json())
                                             .then((data) => drawRoute(data.geoJson));
-                                    });
+                                    }); 
                             }
                         });
                 },
