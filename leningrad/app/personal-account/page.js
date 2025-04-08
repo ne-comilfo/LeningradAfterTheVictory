@@ -10,6 +10,7 @@ const API_URL = "https://leningrad-after-the-victory.ru/api/attractions/get-all"
 const API_URL_PLACES = "https://leningrad-after-the-victory.ru/api/favorites/buildings";
 const API_URL_ROUTES = "https://leningrad-after-the-victory.ru/api/favorites/routes";
 const API_URL_PLACES_PHOTOS = "https://leningrad-after-the-victory.ru/attractions/attraction/";
+const API_URL_ROUTES_PHOTOS = "https://leningrad-after-the-victory.ru/attractions/attraction/";
 
 const PersonalAccountPage = () => {
     const [isFavMode, setIsFavMode] = useState(false);
@@ -180,19 +181,13 @@ const PersonalAccountPage = () => {
         const router = useRouter();
         
         const handleClick = () => {
-          router.push(`/attraction-info?id=${id}`);
+          router.push('/routes');
         };
       
         return (
           <span key={id} className="destination" onClick={handleClick}>
-            <div className="name">{name}</div>
             <img src={photoURL || "/default-image.png"} className="destination-photo" />
-            <div className="progress">
-              <div className="bar">
-                <div className="bar-progress"></div>
-              </div>
-              <div className="percentage">30%</div>
-            </div>
+            <div className="name">{name}</div>
           </span>
         );
       };
