@@ -257,13 +257,13 @@ const PersonalAccountPage = () => {
         const router = useRouter();
         
         const handleClick = () => {
-          router.push('/routes');
+          router.push('/routes'); // Было `/attraction-info?id=${id}`
+
         };
       
         return (
           <span key={id} className="destination" onClick={handleClick}>
             <img src={photoURL || "/default-image.png"} className="destination-photo" />
-            <div className="name">{name}</div>
           </span>
         );
     };
@@ -272,7 +272,7 @@ const PersonalAccountPage = () => {
         const router = useRouter();
         
         const handleClick = () => {
-            router.push('/routes');
+          router.push(`/attraction-info?id=${id}`); // Было '/routes'
         };
         
         return (
@@ -286,7 +286,14 @@ const PersonalAccountPage = () => {
     const VisScrollMenu = () => (
         <div className="scrollmenu-vis">
             {favoriteRoutes.map(route => (
-                <ObjectCard key={route.id} object={route} />
+
+                <VisDestination
+                    key={route.id}
+                    id={route.id}
+                    name={route.name}
+                    photoURL={route.url} // или другое поле с изображением
+                />
+
             ))}
 
         </div>
