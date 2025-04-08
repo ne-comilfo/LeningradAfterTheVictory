@@ -160,7 +160,7 @@ const AttractionInfoComponent = () => {
                 </div>
                 <ButtonPanel attractionId={building.id} />
                 <div className="preview-text">{building.smallDescription}</div>
-            </div>
+            </div> 
 
             <div className="page-style">
                 <TimePeriodWithSwiper

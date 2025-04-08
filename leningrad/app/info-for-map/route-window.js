@@ -172,7 +172,7 @@ export default function RouteWindow({
                                         })
                                             .then((res) => res.json())
                                             .then((data) => drawRoute(data.geoJson));
-                                    });
+                                    }); 
                             }
                         });
                 },

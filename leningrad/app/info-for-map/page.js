@@ -292,7 +292,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
               .catch((error) => {
                 console.error("Ошибка загрузки маршрута:", error);  // Ошибка первого запроса
               });
-
+ 
           } else {
             fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${markerLng}&y2=${markerLat}`)
               .then((response) => response.json())
