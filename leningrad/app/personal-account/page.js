@@ -12,89 +12,6 @@ const API_URL_ROUTES = "https://leningrad-after-the-victory.ru/api/favorites/rou
 const API_URL_PLACES_PHOTOS = "https://leningrad-after-the-victory.ru/attractions/attraction/";
 const API_URL_ROUTES_PHOTOS = "https://leningrad-after-the-victory.ru/attractions/attraction/";
 
-const truncateWords = (text, maxWords) => {
-    if (!text) return "";
-    const words = text.split(/\s+/);
-    if (words.length <= maxWords) return text;
-    return words.slice(0, maxWords).join(" ") + "...";
-  };
-
-// Компонент для карточки объекта
-const ObjectCard = ({ object }) => {
-    const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
-  
-    // Обработчики для свайпов
-    const handleTouchStart = (e) => {
-      const touchStartX = e.touches[0].clientX;
-      const handleTouchMove = (moveEvent) => {
-        const touchEndX = moveEvent.touches[0].clientX;
-        const diffX = touchStartX - touchEndX;
-  
-        // Свайп вправо (закрываем описание)
-        if (diffX < -50) {
-          setIsDescriptionOpen(false);
-        }
-        // Свайп влево (открываем описание)
-        if (diffX > 50) {
-          setIsDescriptionOpen(true);
-        }
-      };
-  
-      const handleTouchEnd = () => {
-        document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleTouchEnd);
-      };
-  
-      document.addEventListener("touchmove", handleTouchMove);
-      document.addEventListener("touchend", handleTouchEnd);
-    };
-  
-    const handleLeftArrowClick = () => setIsDescriptionOpen(false);
-    const handleRightArrowClick = () => setIsDescriptionOpen(true);
-  
-    const truncatedDescription = truncateWords(object.smallDescription, 70);
-  
-    return (
-      <div className={styles.objectCard} onTouchStart={handleTouchStart}>
-        <div className={`${styles.cardInner} ${isDescriptionOpen ? styles.showDescription : ""}`}>
-          {/* Контейнер с изображением */}
-          <Link href={`/attraction-info?id=${object.id}`}>  
-            <div className={styles.imageWrapper}>
-                <img 
-                  src={object.linksPreview || "https://via.placeholder.com/400x300?text=No+Image"} 
-                  alt={object.name} 
-                  className={styles.cardImage} 
-                />
-              <div className={styles.cardDescription}>
-                <p>{truncatedDescription}</p>
-              </div>
-              {!isDescriptionOpen && (
-                <div className={styles.arrowRight} onClick={handleRightArrowClick}>
-                  <span className={styles.customArrowLine1}></span>
-                  <span className={styles.customArrowLine2}></span>
-                </div>
-              )}
-              {isDescriptionOpen && (
-                <div className={styles.arrowLeft} onClick={handleLeftArrowClick}>
-                  <span className={styles.customArrowLine1}></span>
-                  <span className={styles.customArrowLine2}></span>
-                </div>
-              )}
-            </div>
-          </Link>
-          
-          {/* Контейнер с описанием для мобильной версии */}
-          <div className={styles.descriptionWrapper}>
-            <p>{object.smallDescription}</p>
-          </div>
-        </div>
-        <div className={styles.cardContent}>
-          <h3>{object.name}</h3>
-        </div>
-      </div>
-    );
-};
-
 const PersonalAccountPage = () => {
     const [isFavMode, setIsFavMode] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -308,10 +225,17 @@ const PersonalAccountPage = () => {
 
     const FavScrollMenu = () => (
         <div className="scrollmenu-fav">
+            {favoriteRoutes.map(route => (
 
-            {favoriteBuildings.map(building => (
-                <ObjectCard key={building.id} object={building} />
+                <FavDestination
+                    key={route.id}
+                    id={route.id}
+                    name={route.name}
+                    photoURL={route.url} // или другое поле с изображением
+                />
+
             ))}
+
         </div>
     );
     
