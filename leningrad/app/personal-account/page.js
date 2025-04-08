@@ -180,7 +180,7 @@ const PersonalAccountPage = () => {
         const router = useRouter();
         
         const handleClick = () => {
-          router.push(`/attraction-info?id=${id}`);
+          router.push('/routes'); // Было `/attraction-info?id=${id}`
         };
       
         return (
@@ -189,13 +189,13 @@ const PersonalAccountPage = () => {
             <img src={photoURL || "/default-image.png"} className="destination-photo" />
           </span>
         );
-      };
+    };
 
       const FavDestination = ({ id, name, photoURL }) => {
         const router = useRouter();
         
         const handleClick = () => {
-          router.push('/routes');
+          router.push(`/attraction-info?id=${id}`); // Было '/routes'
         };
       
         return (
@@ -204,7 +204,7 @@ const PersonalAccountPage = () => {
             <div className="name">{name}</div>
           </span>
         );
-      };
+    };
 
     const VisScrollMenu = () => (
         <div className="scrollmenu-vis">
