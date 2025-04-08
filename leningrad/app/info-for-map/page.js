@@ -10,7 +10,6 @@ import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 
 export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded, drawRoute, clearRoute, map, setRouteAttractionIds }) {
-  const getRouteType = (routeId) => routeId === 5 ? 'driving' : 'walking';
   const [isOpen, setIsOpen] = useState(true); // Управление видимостью окна
   const [view, setView] = useState("default"); // Текущий вид (описание или маршруты)
   const [selectedRoute, setSelectedRoute] = useState(null); // Выбранный маршрут
@@ -157,8 +156,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
               .addTo(map.current);
           }
           if (selectedRoute) {
-            const routeType = getRouteType(selectedRoute.id); // Определяем тип маршрута
-            const apiBase = `https://leningrad-after-the-victory.ru/api/routes/compute${routeType.charAt(0).toUpperCase() + routeType.slice(1)}`;
+
             fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${route.id}`)
               .then((response) => response.json())
               .then((data) => {
@@ -169,7 +167,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                   "points": formattedCoordinates  // Оборачиваем массив координат в объект
                 };
 
-                fetch(`${apiBase}RoutesList`, {
+                fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -189,11 +187,11 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
 
                         // Создаем промисы для вызовов API
                         const fetchNormalDistance = fetch(
-                          `${apiBase}Route?x1=${userLng}&y1=${userLat}&x2=${first_coordinates[0]}&y2=${first_coordinates[1]}`
+                          `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${first_coordinates[0]}&y2=${first_coordinates[1]}`
                         ).then((response) => response.json());
 
                         const fetchReverseDistance = fetch(
-                          `${apiBase}Route?x1=${userLng}&y1=${userLat}&x2=${last_coordinates[0]}&y2=${last_coordinates[1]}`
+                          `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${last_coordinates[0]}&y2=${last_coordinates[1]}`
                         ).then((response) => response.json());
 
                         // Ожидаем завершения обоих запросов
@@ -211,7 +209,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                   points: formattedCoordinates, // Теперь массив начинается с координат пользователя
                                 };
 
-                                fetch(`${apiBase}RoutesList`, {
+                                fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
                                     'Content-Type': 'application/json',
@@ -245,7 +243,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
                                 const requestBody = {
                                   points: formattedCoordinates, // Теперь массив заканчивается координатами пользователя
                                 };
-                                fetch(`${apiBase}RoutesList`, {
+                                fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
                                   method: 'POST',
                                   headers: {
                                     'Content-Type': 'application/json',
@@ -296,7 +294,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
               });
 
           } else {
-            fetch(`${apiBase}Route?x1=${userLng}&y1=${userLat}&x2=${markerLng}&y2=${markerLat}`)
+            fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${markerLng}&y2=${markerLat}`)
               .then((response) => response.json())
               .then((routeData) => {
                 // Обрабатываем geoJson для отображения маршрута
@@ -425,7 +423,7 @@ export default function InfoWindow({ marker, onClose, isExpanded, setIsExpanded,
   };
 
 const handleTouchEnd = () => {
-  const threshold = 30; // Порог для срабатывания свайпа
+  const threshold = 50; // Порог для срабатывания свайпа
 
   if (dragOffset < -threshold) {
     // Свайп вверх: раскрываем вкладку
@@ -467,8 +465,7 @@ const handleTouchEnd = () => {
 
   const handleRouteClick = (route) => {
     setSelectedRoute(route); // Устанавливаем выбранный маршрут
-    const routeType = getRouteType(route.id); // Определяем тип маршрута
-  const apiBase = `https://leningrad-after-the-victory.ru/api/routes/compute${routeType.charAt(0).toUpperCase() + routeType.slice(1)}`;
+
     fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${route.id}`)
       .then((response) => response.json())
       .then((data) => {
@@ -481,7 +478,7 @@ const handleTouchEnd = () => {
           "points": formattedCoordinates  // Оборачиваем массив координат в объект
         };
 
-        fetch(`${apiBase}RoutesList`, {
+        fetch(route.id === 5 ? `https://leningrad-after-the-victory.ru/api/routes/computeDrivingRoute` : `https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

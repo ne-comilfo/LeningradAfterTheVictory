@@ -7,24 +7,30 @@ import { useRouter } from 'next/navigation';
 import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 
-export default function RouteWindow({
-    routeId,
-    onClose,
-    isExpanded,
-    setIsExpanded,
-    drawRoute,
-    clearRoute,
-    map
-}) {
-    const getRouteType = (routeId) => routeId === 5 ? 'driving' : 'walking';
+export default function RouteWindow({ 
+    routeId, 
+    onClose, 
+    isExpanded, 
+    setIsExpanded, 
+    drawRoute, 
+    clearRoute, 
+    map 
+  }) {
     const [selectedRoute, setSelectedRoute] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
     const userMarkerRef = useRef(null);
     const [showAuthModal, setShowAuthModal] = useState(false);
     const router = useRouter();
-
+  
     // Загрузка данных маршрута
-    
+    useEffect(() => {
+      if (routeId) {
+        fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${routeId}`)
+          .then((res) => res.json())
+          .then((data) => setSelectedRoute(data))
+          .catch((err) => console.error("Ошибка загрузки маршрута:", err));
+      }
+    }, [routeId]);
     const [isOpen, setIsOpen] = useState(true);
     const [isSaved, setIsSaved] = useState(false);
     const [route, setRoute] = useState(null);
@@ -37,53 +43,43 @@ export default function RouteWindow({
 
     // Загрузка данных маршрута
 
-
+    
     useEffect(() => {
-        if (!routeId) return; // Если routeId нет, выходим
-    
-        const fetchRouteData = async () => {
-            try {
-                // 1. Загружаем данные маршрута
-                const response = await fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${routeId}`);
-                const data = await response.json();
-                
-                // 2. Устанавливаем состояние
-                setSelectedRoute(data);
-                setRoute({
-                    id: data.id,
-                    name: data.name,
-                    details: data.description,
-                    image: data.url,
-                    attractions: data.attractions
-                });
-    
-                // 3. Определяем тип маршрута (driving/walking) и строим его
-                const routeType = getRouteType(data.id); // Используем data.id, а не selectedRoute.id
-                const apiBase = `https://leningrad-after-the-victory.ru/api/routes/compute${routeType.charAt(0).toUpperCase() + routeType.slice(1)}`;
-                const coordinates = data.attractions.map(a => a.location.coordinates);
-                const formatted = coordinates.map(([x, y]) => ({ x, y }));
-    
-                const routeResponse = await fetch(`${apiBase}RoutesList`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ points: formatted })
-                });
-                const routeData = await routeResponse.json();
-                
-                if (routeData.geoJson?.length > 0) {
-                    drawRoute(routeData.geoJson);
-                }
-    
-                // 4. Проверяем, сохранён ли маршрут
-                const savedState = localStorage.getItem(`favorite_route_${routeId}`) === 'true';
-                setIsSaved(savedState);
-            } catch (error) {
-                console.error("Ошибка загрузки маршрута:", error);
-            }
-        };
-    
-        fetchRouteData();
-    }, [routeId, drawRoute]); // Добавляем drawRoute в зависимости
+        if (routeId) {
+            fetch(`https://leningrad-after-the-victory.ru/api/routes/route/${routeId}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setRoute({
+                        id: data.id,
+                        name: data.name,
+                        details: data.description,
+                        image: data.url,
+                        attractions: data.attractions
+                    });
+
+                    // Отрисовка маршрута
+                    const coordinates = data.attractions.map(a => a.location.coordinates);
+                    const formatted = coordinates.map(([x, y]) => ({ x, y }));
+
+                    fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ points: formatted })
+                    })
+                        .then(res => res.json())
+                        .then(routeData => {
+                            if (routeData.geoJson?.length > 0) {
+                                drawRoute(routeData.geoJson);
+                            }
+                        });
+                })
+                .catch(console.error);
+
+            // Проверка сохраненности
+            const savedState = localStorage.getItem(`favorite_route_${routeId}`) === 'true';
+            setIsSaved(savedState);
+        }
+    }, [routeId]);
 
     const handleSaveClick = async () => {
         try {
@@ -117,71 +113,70 @@ export default function RouteWindow({
 
     const handleStartRoute = () => {
         if (!selectedRoute || !map.current) return;
-        const routeType = getRouteType(selectedRoute.id);
-        const apiBase = `https://leningrad-after-the-victory.ru/api/routes/compute${routeType.charAt(0).toUpperCase() + routeType.slice(1)}`;
+      
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude: userLat, longitude: userLng } = position.coords;
-                    setUserLocation([userLng, userLat]);
-
-                    // Удаляем старый маркер пользователя
-                    if (userMarkerRef.current) userMarkerRef.current.remove();
-
-                    // Добавляем новый маркер
-                    userMarkerRef.current = new maptilersdk.Marker({ color: "rgb(95, 163, 236)" })
-                        .setLngLat([userLng, userLat])
-                        .addTo(map.current);
-
-                    // Получаем координаты точек маршрута
-                    const routePoints = selectedRoute.attractions.map(a => a.location.coordinates);
-                    const formattedPoints = routePoints.map(([x, y]) => ({ x, y }));
-
-                    // Определяем ближайшую точку маршрута к пользователю
-                    fetch(`${apiBase}RoutesListRoutesList`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ points: formattedPoints }),
-                    })
-                        .then((res) => res.json())
-                        .then((routeData) => {
-                            if (routeData.geoJson?.length > 0) {
-                                const routeCoords = routeData.geoJson;
-                                const firstPoint = routeCoords[0];
-                                const lastPoint = routeCoords[routeCoords.length - 1];
-
-                                // Сравниваем расстояние до первой и последней точки
-                                Promise.all([
-                                    fetch(`${apiBase}RoutesListRoute?x1=${userLng}&y1=${userLat}&x2=${firstPoint[0]}&y2=${firstPoint[1]}`),
-                                    fetch(`${apiBase}RoutesListRoute?x1=${userLng}&y1=${userLat}&x2=${lastPoint[0]}&y2=${lastPoint[1]}`),
-                                ])
-                                    .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
-                                    .then(([data1, data2]) => {
-                                        const isFirstCloser = data1.distance < data2.distance;
-                                        const userPoint = { x: userLng, y: userLat };
-
-                                        // Строим маршрут от пользователя до ближайшей точки
-                                        const fullRoute = isFirstCloser
-                                            ? [userPoint, ...formattedPoints]
-                                            : [...formattedPoints, userPoint];
-
-                                        fetch(`${apiBase}RoutesListRoutesList`, {
-                                            method: "POST",
-                                            headers: { "Content-Type": "application/json" },
-                                            body: JSON.stringify({ points: fullRoute }),
-                                        })
-                                            .then((res) => res.json())
-                                            .then((data) => drawRoute(data.geoJson));
-                                    });
-                            }
-                        });
-                },
-                (error) => alert("Ошибка геолокации: " + error.message)
-            );
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude: userLat, longitude: userLng } = position.coords;
+              setUserLocation([userLng, userLat]);
+      
+              // Удаляем старый маркер пользователя
+              if (userMarkerRef.current) userMarkerRef.current.remove();
+      
+              // Добавляем новый маркер
+              userMarkerRef.current = new maptilersdk.Marker({ color: "rgb(95, 163, 236)" })
+                .setLngLat([userLng, userLat])
+                .addTo(map.current);
+      
+              // Получаем координаты точек маршрута
+              const routePoints = selectedRoute.attractions.map(a => a.location.coordinates);
+              const formattedPoints = routePoints.map(([x, y]) => ({ x, y }));
+      
+              // Определяем ближайшую точку маршрута к пользователю
+              fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ points: formattedPoints }),
+              })
+                .then((res) => res.json())
+                .then((routeData) => {
+                  if (routeData.geoJson?.length > 0) {
+                    const routeCoords = routeData.geoJson;
+                    const firstPoint = routeCoords[0];
+                    const lastPoint = routeCoords[routeCoords.length - 1];
+      
+                    // Сравниваем расстояние до первой и последней точки
+                    Promise.all([
+                      fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${firstPoint[0]}&y2=${firstPoint[1]}`),
+                      fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoute?x1=${userLng}&y1=${userLat}&x2=${lastPoint[0]}&y2=${lastPoint[1]}`),
+                    ])
+                      .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
+                      .then(([data1, data2]) => {
+                        const isFirstCloser = data1.distance < data2.distance;
+                        const userPoint = { x: userLng, y: userLat };
+      
+                        // Строим маршрут от пользователя до ближайшей точки
+                        const fullRoute = isFirstCloser
+                          ? [userPoint, ...formattedPoints]
+                          : [...formattedPoints, userPoint];
+      
+                        fetch(`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ points: fullRoute }),
+                        })
+                          .then((res) => res.json())
+                          .then((data) => drawRoute(data.geoJson));
+                      });
+                  }
+                });
+            },
+            (error) => alert("Ошибка геолокации: " + error.message)
+          );
         } else {
-            alert("Геолокация не поддерживается вашим браузером");
+          alert("Геолокация не поддерживается вашим браузером");
         }
-    };
+      };
 
     const clearMarker = () => {
         if (userMarkerRef.current) {
@@ -216,7 +211,7 @@ export default function RouteWindow({
     };
 
     const handleTouchEnd = () => {
-        const threshold = 0;
+        const threshold = 50;
         if (dragOffset < -threshold) {
             setIsExpanded(true);
         } else if (dragOffset > threshold) {
@@ -266,9 +261,9 @@ export default function RouteWindow({
                             >
                                 <div className={`grabber ${isExpanded ? "expanded" : "collapsed"}`}></div>
                                 <div className="bottom-sheet"
-                                    style={{
-                                        transform: isExpanded ? "translateY(0)" : "translateY(83%)",
-                                    }}>
+                                style={{
+                                    transform: isExpanded ? "translateY(0)" : "translateY(83%)",
+                                  }}>
                                     <div className="window-header">
                                         <h2>{route.name}</h2>
                                     </div>
