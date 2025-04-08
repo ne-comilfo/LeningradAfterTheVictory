@@ -151,7 +151,7 @@ const AttractionInfoComponent = () => {
         return media[currentMediaIndex].type === "video" ? [...media].reverse() : media;
     };
 
-    return isMobile ? (
+    return isMobile ? ( 
         <>
             <div className="white">
                 <h1 className="attraction-title">{`${building.name}, ${building.yearOfCreation}`}</h1>
