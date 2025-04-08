@@ -219,7 +219,7 @@ const PersonalAccountPage = () => {
                     key={route.id}
                     id={route.id}
                     name={route.name}
-                    photoURL={route.image?.[0]} // или другое поле с изображением
+                    photoURL={route.url?.[0]} // или другое поле с изображением
                 />
             ))}
 
