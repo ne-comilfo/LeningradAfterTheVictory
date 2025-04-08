@@ -1,3 +1,1 @@
-
-{isExpanded && object && (
-                          <>
+`https://leningrad-after-the-victory.ru/api/routes/computeWalkingRoutesList`
