@@ -13,7 +13,7 @@ const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-// Выносим повторяющийся блок в отдельный компонент
+// Выносим повторяющийся блок в отдельный компонент бля
 const MediaSwiper = ({ media, className = "" }) => {
     return (
         <>
