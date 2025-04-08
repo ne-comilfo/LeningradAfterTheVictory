@@ -12,6 +12,13 @@ const API_URL_ROUTES = "https://leningrad-after-the-victory.ru/api/favorites/rou
 const API_URL_PLACES_PHOTOS = "https://leningrad-after-the-victory.ru/attractions/attraction/";
 const API_URL_ROUTES_PHOTOS = "https://leningrad-after-the-victory.ru/attractions/attraction/";
 
+const truncateWords = (text, maxWords) => {
+    if (!text) return "";
+    const words = text.split(/\s+/);
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(" ") + "...";
+  };
+
 // Компонент для карточки объекта
 const ObjectCard = ({ object }) => {
     const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
