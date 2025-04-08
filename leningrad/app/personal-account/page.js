@@ -257,13 +257,13 @@ const PersonalAccountPage = () => {
     const VisMobileButtons = ({ isFavMode }) => (
         <div className="action-buttons">
             <div className="switch-button switch" onClick={() => setIsFavMode(true)}>Избранные места</div>
-            <div className="selected-button">Посещенное</div>
+            <div className="selected-button">Избранные маршруты</div>
         </div>
     );
 
     const FavMobileButtons = ({ isFavMode }) => (
         <div className="action-buttons">
-            <div className="selected-button">Избранное</div>
+            <div className="selected-button">Избранные места</div>
             <div className="switch-button switch" onClick={() => setIsFavMode(false)}>Избранные маршруты</div>
         </div>
     );
