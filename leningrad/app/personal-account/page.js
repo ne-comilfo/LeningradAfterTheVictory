@@ -187,12 +187,6 @@ const PersonalAccountPage = () => {
           <span key={id} className="destination" onClick={handleClick}>
             <div className="name">{name}</div>
             <img src={photoURL || "/default-image.png"} className="destination-photo" />
-            <div className="progress">
-              <div className="bar">
-                <div className="bar-progress"></div>
-              </div>
-              <div className="percentage">30%</div>
-            </div>
           </span>
         );
       };
