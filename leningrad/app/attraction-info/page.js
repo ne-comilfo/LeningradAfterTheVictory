@@ -13,7 +13,7 @@ const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-// Выносим повторяющийся блок в отдельный компонент
+// Выносим повторяющийся блок в отдельный компонент бля
 const MediaSwiper = ({ media, className = "" }) => {
     return (
         <>
@@ -151,7 +151,7 @@ const AttractionInfoComponent = () => {
         return media[currentMediaIndex].type === "video" ? [...media].reverse() : media;
     };
 
-    return isMobile ? (
+    return isMobile ? ( 
         <>
             <div className="white">
                 <h1 className="attraction-title">{`${building.name}, ${building.yearOfCreation}`}</h1>
@@ -160,7 +160,7 @@ const AttractionInfoComponent = () => {
                 </div>
                 <ButtonPanel attractionId={building.id} />
                 <div className="preview-text">{building.smallDescription}</div>
-            </div>
+            </div> 
 
             <div className="page-style">
                 <TimePeriodWithSwiper
