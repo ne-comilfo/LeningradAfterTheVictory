@@ -126,7 +126,7 @@ const HomePage = () => {
             </li>
           </ul>
           <div className="about-stats">
-              <StatBox label={{number: "> 20", text: 'Объектов'}} />
+              <StatBox label={{number: "> 40", text: 'Объектов'}} />
               <StatBox label={{number: "> 5", text: 'Маршрутов'}} />
               <StatBox label={{number: "> 10", text: 'Источников'}} />
         
