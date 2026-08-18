@@ -1,11 +1,11 @@
-<h1 align="center">Ленинград после победы</h1>
+<h1 align="left">Ленинград после победы</h1>
 
-<p align="center">
+<p align="left">
   Интерактивная карта Санкт-Петербурга, на которой можно увидеть,<br>
   каким город был до блокады, каким стал после и как выглядит сегодня.
 </p>
 
-<p align="center">
+<p align="left">
   <img alt="Next.js" src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white">
   <img alt="React" src="https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB">
   <img alt="MapTiler" src="https://img.shields.io/badge/MapTiler-0099FF?style=flat&logo=maplibre&logoColor=white">
